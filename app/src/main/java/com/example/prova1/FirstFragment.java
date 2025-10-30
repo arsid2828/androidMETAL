@@ -18,7 +18,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 public class FirstFragment extends Fragment {
 
     /**
-     * esndrogo
+     * esndrogo tongo
      * Questo è il "callback" che viene eseguito non appena la mappa è pronta per essere usata.
      * È qui che inseriremo tutta la logica per personalizzare la mappa.
      */
