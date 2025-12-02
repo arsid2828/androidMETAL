@@ -33,7 +33,7 @@ public class FirstFragment extends Fragment {
             LatLng sudOvest = new LatLng(44.8, 10.5);
             LatLng nordEst = new LatLng(46.5, 13.0);
             LatLngBounds venetoBounds = new LatLngBounds(sudOvest, nordEst);
-
+                                                                                                                                                                                                                                  
             // 2. Centriamo la visuale sulla regione Veneto.
             // Il 'padding' di 50 (pixel) assicura che ci sia un po' di margine.
             googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(venetoBounds, 50));

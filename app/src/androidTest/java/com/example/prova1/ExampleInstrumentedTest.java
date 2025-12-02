@@ -24,4 +24,4 @@ public class ExampleInstrumentedTest {
         assertEquals("com.example.prova1", appContext.getPackageName());
     }
 }
-// gay tutti quanti
+// ciao sauro
