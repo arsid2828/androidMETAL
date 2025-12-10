@@ -3,15 +3,18 @@ package com.example.prova1.api;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface MeteoAlarmApiService {
-    // Per ora scarichiamo il raw JSON per vedere la struttura o usare un parser generico se necessario
-    @GET("collections")
+    @GET("collections?f=json")
     Call<ResponseBody> getCollections();
 
-    // Esempio query warning per posizione (da verificare la sintassi esatta EDR)
-    // Spesso EDR usa WKT per le coordinate, es: coords=POINT(lon lat)
-    @GET("collections/warnings/position")
-    Call<ResponseBody> getWarningsByPosition(@Query("coords") String wktCoords);
+    // Secondo i metadata, l'endpoint dati è "locations"
+    // URL: collections/{collectionId}/locations
+    @GET("collections/{collectionId}/locations?f=json")
+    Call<ResponseBody> getWarningsByLocations(
+            @Path("collectionId") String collectionId, 
+            @Query("bbox") String bbox
+    );
 }
