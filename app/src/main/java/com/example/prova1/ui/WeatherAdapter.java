@@ -25,8 +25,9 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
     @NonNull
     @Override
     public WeatherViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Usiamo il nuovo layout specifico per il meteo
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item_news, parent, false); // Reusing the layout for now
+                .inflate(R.layout.list_item_weather, parent, false);
         return new WeatherViewHolder(itemView);
     }
 
@@ -56,9 +57,10 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
 
         WeatherViewHolder(@NonNull View itemView) {
             super(itemView);
-            title = itemView.findViewById(R.id.news_title);
-            description = itemView.findViewById(R.id.news_description);
-            date = itemView.findViewById(R.id.news_date);
+            // Colleghiamo i nuovi ID del layout list_item_weather.xml
+            title = itemView.findViewById(R.id.weather_title);
+            description = itemView.findViewById(R.id.weather_description);
+            date = itemView.findViewById(R.id.weather_date);
         }
     }
 }
