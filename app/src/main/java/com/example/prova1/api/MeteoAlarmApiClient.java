@@ -7,7 +7,10 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MeteoAlarmApiClient {
-    private static final String BASE_URL = "https://api.meteoalarm.org/edr/v1/";
+    // URL BASE CORRETTO DALLA DOCUMENTAZIONE SWAGGER
+    private static final String BASE_URL = "https://api.meteoalarm.org/metadata/v1/";
+    
+    // Chiave API
     private static final String API_KEY = "ca7015d45849e2a94d9d3920749e5f6cdda58eb2abe4fdd755921bf9c725a617";
     
     private static Retrofit retrofit = null;
@@ -20,11 +23,11 @@ public class MeteoAlarmApiClient {
             OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
             httpClient.addInterceptor(logging);
             
+            // Header "x-api-key" come richiesto da questa documentazione specifica
             httpClient.addInterceptor(chain -> {
                 Request original = chain.request();
                 Request request = original.newBuilder()
-                        // CORREZIONE: Il server richiede "Bearer Token"
-                        .header("Authorization", "Bearer " + API_KEY)
+                        .header("x-api-key", API_KEY)
                         .method(original.method(), original.body())
                         .build();
                 return chain.proceed(request);

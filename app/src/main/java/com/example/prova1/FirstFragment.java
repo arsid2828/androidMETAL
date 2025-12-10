@@ -131,7 +131,7 @@ public class FirstFragment extends Fragment {
         }
     }
 
-    // --- OPEN METEO (INTATTO) ---
+    // --- OPEN METEO ---
     private void fetchOpenMeteoData() {
         WeatherApiService apiService = WeatherApiClient.getClient().create(WeatherApiService.class);
         String currentParams = "temperature_2m,precipitation,wind_speed_10m";
@@ -159,146 +159,71 @@ public class FirstFragment extends Fragment {
         });
     }
 
-    // --- METEOALARM (LOGICA DINAMICA) ---
+    // --- METEOALARM ---
     private void fetchMeteoAlarmData() {
         MeteoAlarmApiService apiService = MeteoAlarmApiClient.getClient().create(MeteoAlarmApiService.class);
         
-        Log.d("METEOALARM_DEBUG", "Step 1: Cerco le collections disponibili...");
+        Log.d("METEOALARM_DEBUG", "Chiamo /warnings/location con lat=" + currentLat + ", lon=" + currentLon);
+
+        Call<ResponseBody> call = apiService.getWarningsByLocation(currentLat, currentLon);
         
-        // Prima chiamata: Scopriamo come si chiama la collection
-        apiService.getCollections().enqueue(new Callback<ResponseBody>() {
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     try {
                         String json = response.body().string();
-                        // Log.d("METEOALARM_DEBUG", "Collections JSON: " + json);
+                        Log.d("METEOALARM_DEBUG", "Risposta JSON: " + json);
                         
-                        String collectionId = parseFirstCollectionId(json);
-                        Log.d("METEOALARM_DEBUG", "Collection trovata: " + collectionId);
-                        
-                        if (collectionId != null) {
-                            fetchWarningsWithCorrectCollection(apiService, collectionId);
-                        } else {
-                             addWeatherItem(new WeatherItem("MeteoAlarm", "Errore: Nessuna collection trovata.", "Oggi"));
-                             checkRequestsFinished();
-                        }
-                    } catch (Exception e) {
-                        Log.e("METEOALARM_DEBUG", "Errore lettura collections: " + e.getMessage());
-                        checkRequestsFinished();
-                    }
-                } else {
-                    Log.e("METEOALARM_DEBUG", "Errore Collections: " + response.code());
-                    addWeatherItem(new WeatherItem("MeteoAlarm", "Server non raggiungibile (Code " + response.code() + ")", "Oggi"));
-                    checkRequestsFinished();
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                Log.e("METEOALARM_DEBUG", "Fail Collections: " + t.getMessage());
-                checkRequestsFinished();
-            }
-        });
-    }
-    
-    // Seconda chiamata: Usiamo l'ID corretto per cercare gli allarmi
-    private void fetchWarningsWithCorrectCollection(MeteoAlarmApiService apiService, String collectionId) {
-        double delta = 0.05; 
-        String bbox = (currentLon - delta) + "," + (currentLat - delta) + "," +
-                      (currentLon + delta) + "," + (currentLat + delta);
-        
-        Log.d("METEOALARM_DEBUG", "Step 2: Chiedo LOCATIONS per " + collectionId + " con BBOX " + bbox);
-
-        // USIAMO L'ENDPOINT LOCATIONS
-        apiService.getWarningsByLocations(collectionId, bbox).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    try {
-                        String json = response.body().string();
-                        Log.d("METEOALARM_DEBUG", "Risposta Finale: " + json);
-                        
-                        if (!isFeatureCollectionEmpty(json)) {
-                            addWeatherItem(new WeatherItem("⚠️ Allerte Attive", parseMeteoAlarmJson(json), "Oggi"));
-                        } else {
+                        if (json.trim().equals("[]") || json.trim().isEmpty()) {
                              addWeatherItem(new WeatherItem("MeteoAlarm", "✅ Nessuna allerta attiva.", "Oggi"));
+                        } else {
+                            addWeatherItem(new WeatherItem("⚠️ Allerte Attive", parseMeteoAlarmJson(json), "Oggi"));
                         }
                     } catch (Exception e) {
-                         Log.e("METEOALARM_DEBUG", "Errore parsing finale: " + e.getMessage());
+                        Log.e("METEOALARM_DEBUG", "Errore parsing: " + e.getMessage());
                     }
                 } else {
-                    Log.e("METEOALARM_DEBUG", "Errore Locations: " + response.code());
-                    addWeatherItem(new WeatherItem("MeteoAlarm", "Errore query (" + response.code() + ")", "Oggi"));
+                    Log.e("METEOALARM_DEBUG", "Errore Server: " + response.code() + " " + response.message());
+                    addWeatherItem(new WeatherItem("MeteoAlarm", "Errore: " + response.code(), "Oggi"));
                 }
                 checkRequestsFinished();
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                Log.e("METEOALARM_DEBUG", "Errore Rete: " + t.getMessage());
                 checkRequestsFinished();
             }
         });
-    }
-
-    private String parseFirstCollectionId(String jsonString) {
-        try {
-            JSONObject root = new JSONObject(jsonString);
-            if (root.has("collections")) {
-                JSONArray collections = root.getJSONArray("collections");
-                if (collections.length() > 0) {
-                    return collections.getJSONObject(0).getString("id");
-                }
-            }
-        } catch (Exception e) {}
-        return null;
-    }
-
-    private boolean isFeatureCollectionEmpty(String jsonString) {
-        try {
-            JSONObject root = new JSONObject(jsonString);
-            if (root.has("features")) {
-                return root.getJSONArray("features").length() == 0;
-            }
-        } catch (Exception e) {}
-        return true;
     }
 
     private String parseMeteoAlarmJson(String jsonString) {
         try {
-            JSONObject root = new JSONObject(jsonString);
-            if (root.has("features")) {
-                JSONArray features = root.getJSONArray("features");
-                if (features.length() == 0) return "Nessuna allerta.";
-                
-                StringBuilder sb = new StringBuilder();
-                int limit = Math.min(features.length(), 10);
-                
-                for (int i = 0; i < limit; i++) {
-                    JSONObject feature = features.getJSONObject(i);
-                    JSONObject properties = feature.optJSONObject("properties");
-                    if (properties != null) {
-                        String event = properties.optString("event", "Avviso Generico");
-                        String severity = properties.optString("severity", "N/A"); 
-                        String awarenessLevel = properties.optString("awareness_level", ""); 
-                        String onset = properties.optString("onset", "");
-                        
-                        String colorEmoji = "⚠️";
-                        if (awarenessLevel.contains("Yellow") || severity.contains("Moderate")) colorEmoji = "🟡";
-                        if (awarenessLevel.contains("Orange") || severity.contains("Severe")) colorEmoji = "🟠";
-                        if (awarenessLevel.contains("Red") || severity.contains("Extreme")) colorEmoji = "🔴";
+            // La nuova API restituisce direttamente un array di oggetti
+            JSONArray warnings = new JSONArray(jsonString);
+            if (warnings.length() == 0) return "Nessuna allerta.";
 
-                        sb.append(colorEmoji).append(" ").append(event)
-                          .append("\nLivello: ").append(severity).append(" / ").append(awarenessLevel)
-                          .append("\nInizio: ").append(onset).append("\n\n");
-                    }
-                }
-                return sb.toString();
+            StringBuilder sb = new StringBuilder();
+            int limit = Math.min(warnings.length(), 5);
+
+            for (int i = 0; i < limit; i++) {
+                JSONObject warning = warnings.getJSONObject(i);
+                String type = warning.optString("type", "Avviso");
+                String level = warning.optString("level", "N/A");
+                
+                String colorEmoji = "⚠️";
+                if (level.equalsIgnoreCase("yellow")) colorEmoji = "🟡";
+                if (level.equalsIgnoreCase("orange")) colorEmoji = "🟠";
+                if (level.equalsIgnoreCase("red")) colorEmoji = "🔴";
+
+                sb.append(colorEmoji).append(" ").append(type).append(" (Livello: ").append(level).append(")\n");
             }
+            return sb.toString();
         } catch (Exception e) {
-            return "Errore lettura dati.";
+            Log.e("METEOALARM_PARSE", "Errore: " + e.getMessage());
+            return "Dati illeggibili.";
         }
-        return "Dati non leggibili.";
     }
 
     private synchronized void addWeatherItem(WeatherItem item) {
