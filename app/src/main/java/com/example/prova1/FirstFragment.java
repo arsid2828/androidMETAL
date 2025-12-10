@@ -12,14 +12,19 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.metal.idrogeo.api.ApiClient;
-import com.metal.idrogeo.api.IdrogeoApiService;
-import com.metal.idrogeo.api.NewsItem;
-import com.metal.idrogeo.ui.NewsAdapter;
+import com.example.prova1.api.MeteoAlarmApiClient;
+import com.example.prova1.api.MeteoAlarmApiService;
+import com.example.prova1.api.WeatherApiClient;
+import com.example.prova1.api.WeatherApiService;
+import com.example.prova1.models.OpenMeteoResponse;
+import com.example.prova1.models.WeatherItem;
+import com.example.prova1.ui.WeatherAdapter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -27,8 +32,8 @@ import retrofit2.Response;
 public class FirstFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private NewsAdapter newsAdapter;
-    private List<NewsItem> dummyList = new ArrayList<>();
+    private WeatherAdapter weatherAdapter;
+    private List<WeatherItem> weatherList = new ArrayList<>();
 
     @Override
     public View onCreateView(
@@ -42,59 +47,96 @@ public class FirstFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // 1. Inizializza la UI
         recyclerView = view.findViewById(R.id.news_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // 2. Prepara e mostra SUBITO i dati di prova
-        setupDummyData();
-        newsAdapter = new NewsAdapter(new ArrayList<>(dummyList)); // Usa una copia per sicurezza
-        recyclerView.setAdapter(newsAdapter);
-        Toast.makeText(getContext(), "Dati di prova caricati. Tento di aggiornare...", Toast.LENGTH_SHORT).show();
+        weatherAdapter = new WeatherAdapter(weatherList);
+        recyclerView.setAdapter(weatherAdapter);
 
-        // 3. ORA, in background, prova a scaricare i dati veri
-        fetchNews();
+        // Pulisci la lista e scarica i dati
+        weatherList.clear();
+        fetchOpenMeteoData();
+        fetchMeteoAlarmData();
     }
 
-    /**
-     * Prepara la lista di dati finti.
-     */
-    private void setupDummyData() {
-        dummyList.clear();
-        NewsItem news1 = new NewsItem(1, "FRANA DI PROVA", "Questa è la descrizione di una frana di test.", "2024-01-01", "http://example.com");
-        NewsItem news2 = new NewsItem(2, "ALLUVIONE DI TEST", "Descrizione dell'alluvione di prova.", "2024-01-02", "http://example.com");
-        dummyList.add(news1);
-        dummyList.add(news2);
-    }
+    private void fetchOpenMeteoData() {
+        WeatherApiService apiService = WeatherApiClient.getClient().create(WeatherApiService.class);
+        
+        // Esempio: Venezia
+        double lat = 45.44;
+        double lon = 12.33;
+        String currentParams = "temperature_2m,precipitation,wind_speed_10m";
 
-    private void fetchNews() {
-        IdrogeoApiService apiService = ApiClient.getClient().create(IdrogeoApiService.class);
-        Call<List<NewsItem>> call = apiService.getNews();
+        Call<OpenMeteoResponse> call = apiService.getForecast(lat, lon, currentParams);
 
-        call.enqueue(new Callback<List<NewsItem>>() {
+        call.enqueue(new Callback<OpenMeteoResponse>() {
             @Override
-            public void onResponse(@NonNull Call<List<NewsItem>> call, @NonNull Response<List<NewsItem>> response) {
-                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                    // SUCCESSO: ABBIAMO DATI VERI!
-                    List<NewsItem> realNews = response.body();
-                    newsAdapter.updateData(realNews); // Aggiorna la UI con i dati veri
-                    Toast.makeText(getContext(), "AGGIORNAMENTO RIUSCITO: Mostrando " + realNews.size() + " notizie vere.", Toast.LENGTH_LONG).show();
+            public void onResponse(@NonNull Call<OpenMeteoResponse> call, @NonNull Response<OpenMeteoResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    OpenMeteoResponse data = response.body();
+                    
+                    if (data.getCurrent() != null) {
+                        String title = "Open-Meteo: Venezia";
+                        String desc = "Temp: " + data.getCurrent().getTemperature2m() + data.getCurrentUnits().getTemperature2m() +
+                                      "\nPrecip: " + data.getCurrent().getPrecipitation() + data.getCurrentUnits().getPrecipitation() +
+                                      "\nVento: " + data.getCurrent().getWindSpeed10m() + data.getCurrentUnits().getWindSpeed10m();
+                        String date = data.getCurrent().getTime();
+
+                        addWeatherItem(new WeatherItem(title, desc, date));
+                    }
                 } else {
-                    // FALLIMENTO (ma senza crash): L'API non ha notizie o ha dato errore.
-                    // NON FACCIAMO NIENTE ALLA UI. I dati di prova restano.
-                    Toast.makeText(getContext(), "AGGIORNAMENTO FALLITO: L'API non ha restituito notizie. Mantengo i dati di prova.", Toast.LENGTH_LONG).show();
-                    Log.w("FirstFragment", "API ha risposto con codice: " + response.code() + " o corpo vuoto. Mantengo dati di prova.");
+                    Log.e("FirstFragment", "Errore OpenMeteo: " + response.code());
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<NewsItem>> call, @NonNull Throwable t) {
-                // FALLIMENTO DI RETE: Il server non è stato raggiunto.
-                // NON FACCIAMO NIENTE ALLA UI. I dati di prova restano.
-                Toast.makeText(getContext(), "AGGIORNAMENTO FALLITO: Errore di connessione. Mantengo i dati di prova.", Toast.LENGTH_LONG).show();
-                Log.e("FirstFragment", "Fallimento della chiamata di rete. Mantengo dati di prova.", t);
+            public void onFailure(@NonNull Call<OpenMeteoResponse> call, @NonNull Throwable t) {
+                Log.e("FirstFragment", "Errore call OpenMeteo", t);
             }
         });
+    }
+
+    private void fetchMeteoAlarmData() {
+        MeteoAlarmApiService apiService = MeteoAlarmApiClient.getClient().create(MeteoAlarmApiService.class);
+
+        // Proviamo a cercare warning per la stessa posizione (Venezia approx).
+        // WKT: POINT(lon lat) -> POINT(12.33 45.44)
+        String wkt = "POINT(12.33 45.44)";
+        
+        Call<ResponseBody> call = apiService.getWarningsByPosition(wkt);
+        
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        // Per ora prendiamo il JSON grezzo, poi si potrà parsare meglio
+                        String rawJson = response.body().string();
+                        // Tronchiamo per evitare stringhe troppo lunghe nella UI di test
+                        String preview = rawJson.length() > 200 ? rawJson.substring(0, 200) + "..." : rawJson;
+                        
+                        addWeatherItem(new WeatherItem("MeteoAlarm (Raw Data)", preview, "Oggi"));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    // Se fallisce la ricerca per posizione, proviamo a listare le collection per debug
+                     Log.w("FirstFragment", "MeteoAlarm position failed: " + response.code());
+                     addWeatherItem(new WeatherItem("MeteoAlarm", "Nessun allarme o errore API (" + response.code() + ")", "Oggi"));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                Log.e("FirstFragment", "Errore call MeteoAlarm", t);
+                 addWeatherItem(new WeatherItem("MeteoAlarm", "Errore connessione: " + t.getMessage(), "Oggi"));
+            }
+        });
+    }
+
+    private synchronized void addWeatherItem(WeatherItem item) {
+        weatherList.add(item);
+        weatherAdapter.notifyItemInserted(weatherList.size() - 1);
     }
 
     @Override
