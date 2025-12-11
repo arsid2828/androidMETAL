@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         // Controlla e richiede i permessi di localizzazione all'avvio
         checkAndRequestLocationPermissions();
     }
-
+//ciao
     private void checkAndRequestLocationPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             // Permesso già concesso, non fare nulla.
