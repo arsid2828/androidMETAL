@@ -127,6 +127,8 @@ public class FirstFragment extends Fragment {
     private synchronized void checkRequestsFinished() {
         pendingRequests--;
         if (pendingRequests <= 0) {
+            // Add the map placeholder as the third item
+            addWeatherItem(new WeatherItem("", "(aggiungere mappa)", ""));
             swipeRefreshLayout.setRefreshing(false);
         }
     }

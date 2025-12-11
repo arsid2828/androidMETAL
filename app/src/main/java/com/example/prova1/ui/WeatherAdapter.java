@@ -14,7 +14,11 @@ import com.example.prova1.models.WeatherItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder> {
+public class WeatherAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    // Define constants for the view types
+    private static final int VIEW_TYPE_WEATHER = 0;
+    private static final int VIEW_TYPE_MAP = 1;
 
     private List<WeatherItem> weatherList;
 
@@ -22,21 +26,40 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         this.weatherList = weatherList != null ? weatherList : new ArrayList<>();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        // Use the title to distinguish the map item
+        if ("(aggiungere mappa)".equals(weatherList.get(position).getDescription())) {
+            return VIEW_TYPE_MAP;
+        } else {
+            return VIEW_TYPE_WEATHER;
+        }
+    }
+
     @NonNull
     @Override
-    public WeatherViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Usiamo il nuovo layout specifico per il meteo
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item_weather, parent, false);
-        return new WeatherViewHolder(itemView);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        if (viewType == VIEW_TYPE_MAP) {
+            View mapView = inflater.inflate(R.layout.list_item_map, parent, false);
+            return new MapViewHolder(mapView);
+        } else {
+            View weatherView = inflater.inflate(R.layout.list_item_weather, parent, false);
+            return new WeatherViewHolder(weatherView);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull WeatherViewHolder holder, int position) {
-        WeatherItem currentItem = weatherList.get(position);
-        holder.title.setText(currentItem.getTitle());
-        holder.description.setText(currentItem.getDescription());
-        holder.date.setText(currentItem.getDate());
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        int viewType = getItemViewType(position);
+        if (viewType == VIEW_TYPE_WEATHER) {
+            WeatherViewHolder weatherHolder = (WeatherViewHolder) holder;
+            WeatherItem currentItem = weatherList.get(position);
+            weatherHolder.title.setText(currentItem.getTitle());
+            weatherHolder.description.setText(currentItem.getDescription());
+            weatherHolder.date.setText(currentItem.getDate());
+        }
+        // No data needs to be bound for the MapViewHolder
     }
 
     @Override
@@ -50,6 +73,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         notifyDataSetChanged();
     }
 
+    // ViewHolder for your regular weather items
     static class WeatherViewHolder extends RecyclerView.ViewHolder {
         final TextView title;
         final TextView description;
@@ -57,10 +81,16 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
 
         WeatherViewHolder(@NonNull View itemView) {
             super(itemView);
-            // Colleghiamo i nuovi ID del layout list_item_weather.xml
             title = itemView.findViewById(R.id.weather_title);
             description = itemView.findViewById(R.id.weather_description);
             date = itemView.findViewById(R.id.weather_date);
+        }
+    }
+
+    // ViewHolder for the map placeholder
+    static class MapViewHolder extends RecyclerView.ViewHolder {
+        MapViewHolder(@NonNull View itemView) {
+            super(itemView);
         }
     }
 }
