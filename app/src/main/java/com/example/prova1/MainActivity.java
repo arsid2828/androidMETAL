@@ -1,7 +1,8 @@
 package com.example.prova1;
 
 import android.Manifest;
-import android.content.pm.PackageManager;import android.os.Bundle;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,17 +52,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
-        // Imposta l'azione del FloatingActionButton per segnalare un'emergenza
-        binding.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Logica per segnalare un'emergenza (attualmente mostra solo un messaggio)
-                Snackbar.make(view, "Funzione 'Segnala Emergenza' da implementare.", Snackbar.LENGTH_LONG)
-                        .setAnchorView(R.id.fab)
-                        .setAction("Action", null).show();
-            }
-        });
 
         // Controlla e richiede i permessi di localizzazione all'avvio
         checkAndRequestLocationPermissions();
