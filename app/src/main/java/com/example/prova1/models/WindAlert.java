@@ -1,5 +1,7 @@
 package com.example.prova1.models;
 
+import java.util.Objects;
+
 public class WindAlert {
     private final String title;
     private final String content;
@@ -21,5 +23,19 @@ public class WindAlert {
 
     public int getColor() {
         return color;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WindAlert windAlert = (WindAlert) o;
+        return Objects.equals(title, windAlert.title) &&
+               Objects.equals(content, windAlert.content);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, content);
     }
 }
