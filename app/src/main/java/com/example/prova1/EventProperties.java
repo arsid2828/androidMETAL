@@ -1,46 +1,30 @@
-// Create this file at: C:/Users/ricux/StudioProjects/androidMETAL/app/src/main/java/com/example/prova1/EventProperties.java
+//File per ora inutile, da modificare per usare con meteoalarm se funzionerà
+
 
 package com.example.prova1;
 
 import com.google.gson.annotations.SerializedName;
 
-// This class maps to the "properties" object within each feature.
 public class EventProperties {
 
-    // Example fields. Replace these with the actual keys from your API's JSON response.
-    @SerializedName("id_evento")
-    private String eventId;
+    // Campi per MeteoAlarm (API Europea)
 
-    @SerializedName("tipologia")
-    private String type;
+    @SerializedName("event") // Esempio: "Thunderstorms"
+    private String event;
 
-    @SerializedName("data_inizio")
-    private String startDate;
+    @SerializedName("severity") // Esempio: "Severe" (Arancione) o "Extreme" (Rosso)
+    private String severity;
 
-    // --- Getter and Setter methods for the fields ---
+    @SerializedName("headline") // Esempio: "Storm warning for Venice..."
+    private String headline;
 
-    public String getEventId() {
-        return eventId;
-    }
+    @SerializedName("onset") // Data di inizio, es: "2025-12-12T10:00:00"
+    private String onset;
 
-    public void setEventId(String eventId) {
-        this.eventId = eventId;
-    }
+    // --- Getter methods ---
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
+    public String getEvent() { return event; }
+    public String getSeverity() { return severity; }
+    public String getHeadline() { return headline; }
+    public String getOnset() { return onset; }
 }
-
