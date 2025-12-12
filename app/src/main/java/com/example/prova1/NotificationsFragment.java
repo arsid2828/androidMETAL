@@ -13,13 +13,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prova1.models.AlertViewModel;
+import com.example.prova1.models.WindAlert;
 import com.example.prova1.ui.AlertAdapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class NotificationsFragment extends Fragment {
+import java.util.ArrayList;
+
+public class NotificationsFragment extends Fragment implements AlertAdapter.OnDeleteClickListener {
 
     private AlertViewModel alertViewModel;
     private RecyclerView recyclerView;
     private AlertAdapter adapter;
+    private FloatingActionButton fabDeleteAll;
 
     @Nullable
     @Override
@@ -32,17 +37,40 @@ public class NotificationsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         recyclerView = view.findViewById(R.id.alerts_recycler_view);
+        fabDeleteAll = view.findViewById(R.id.fab_delete_all);
+
+        setupRecyclerView();
+        setupViewModel();
+        setupFab();
+    }
+
+    private void setupRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new AlertAdapter(new ArrayList<>(), this);
+        recyclerView.setAdapter(adapter);
+    }
 
+    private void setupViewModel() {
         alertViewModel = new ViewModelProvider(requireActivity()).get(AlertViewModel.class);
-
         alertViewModel.getWindAlerts().observe(getViewLifecycleOwner(), windAlerts -> {
-            if (adapter == null) {
-                adapter = new AlertAdapter(windAlerts);
-                recyclerView.setAdapter(adapter);
+            adapter.submitList(windAlerts);
+            // Mostra o nascondi il FAB in base alla presenza di notifiche
+            if (windAlerts == null || windAlerts.isEmpty()) {
+                fabDeleteAll.hide();
             } else {
-                adapter.notifyDataSetChanged();
+                fabDeleteAll.show();
             }
         });
+    }
+
+    private void setupFab() {
+        fabDeleteAll.setOnClickListener(v -> {
+            alertViewModel.deleteAllAlerts();
+        });
+    }
+
+    @Override
+    public void onDeleteClick(WindAlert alert) {
+        alertViewModel.deleteAlert(alert);
     }
 }

@@ -16,7 +16,6 @@ public class AlertViewModel extends AndroidViewModel {
 
     public AlertViewModel(@NonNull Application application) {
         super(application);
-        // All'avvio, carica le notifiche salvate in precedenza
         loadInitialAlerts();
     }
 
@@ -29,26 +28,15 @@ public class AlertViewModel extends AndroidViewModel {
         return windAlerts;
     }
 
-    /**
-     * Aggiunge una lista di nuove notifiche, le salva su file e aggiorna la UI.
-     * Il meccanismo anti-duplicati è gestito dallo StorageHelper.
-     */
     public void addNewAlerts(List<WindAlert> newAlerts) {
         if (newAlerts == null || newAlerts.isEmpty()) {
             return;
         }
-
-        // Salva le nuove notifiche. L'helper si occupa di evitare i duplicati.
         NotificationStorageHelper.saveAlerts(getApplication(), newAlerts);
-
-        // Ricarica la lista completa dal file per avere un'unica fonte di verità e aggiorna la UI.
         List<WindAlert> allAlerts = NotificationStorageHelper.loadAlerts(getApplication());
         windAlerts.setValue(allAlerts);
     }
 
-    /**
-     * Metodo di convenienza per aggiungere un singolo alert.
-     */
     public void addWindAlert(WindAlert alert) {
         if (alert == null) {
             return;
@@ -56,5 +44,19 @@ public class AlertViewModel extends AndroidViewModel {
         List<WindAlert> newAlerts = new ArrayList<>();
         newAlerts.add(alert);
         addNewAlerts(newAlerts);
+    }
+
+    public void deleteAlert(WindAlert alert) {
+        List<WindAlert> currentAlerts = windAlerts.getValue();
+        if (currentAlerts != null) {
+            currentAlerts.remove(alert);
+            NotificationStorageHelper.overwriteAlerts(getApplication(), currentAlerts);
+            windAlerts.setValue(new ArrayList<>(currentAlerts)); 
+        }
+    }
+
+    public void deleteAllAlerts() {
+        NotificationStorageHelper.overwriteAlerts(getApplication(), new ArrayList<>());
+        windAlerts.setValue(new ArrayList<>());
     }
 }

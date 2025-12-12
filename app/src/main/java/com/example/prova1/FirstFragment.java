@@ -308,7 +308,7 @@ public class FirstFragment extends Fragment {
             return; // Nessuna notifica sotto i 30 km/h
         }
 
-        WindAlert newAlert = new WindAlert(title, contentText, color);
+        WindAlert newAlert = new WindAlert(System.currentTimeMillis(), "Posizione attuale", title, contentText, color);
 
         // Controlla se il livello di allerta è cambiato rispetto all'ultimo inviato
         if (lastSentWindAlert != null && lastSentWindAlert.getTitle().equals(newAlert.getTitle())) {
