@@ -54,4 +54,9 @@
         android:name="com.example.prova1.RegisterFragment"
         android:label="Register"
         tools:layout="@layout/fragment_register" />
+    <fragment
+        android:id="@+id/NotificationsFragment"
+        android:name="com.example.prova1.NotificationsFragment"
+        android:label="Notifiche"
+        tools:layout="@layout/fragment_notifications" />
 </navigation>

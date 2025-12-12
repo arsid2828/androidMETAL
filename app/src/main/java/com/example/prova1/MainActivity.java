@@ -54,8 +54,16 @@ public class MainActivity extends AppCompatActivity {
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> invalidateOptionsMenu());
 
         binding.bottomNavigation.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.navigation_home) {
+            int itemId = item.getItemId();
+            if (itemId == R.id.navigation_home) {
                 navController.navigate(R.id.FirstFragment);
+                return true;
+            } else if (itemId == R.id.navigation_notifications) {
+                navController.navigate(R.id.NotificationsFragment);
+                return true;
+            } else if (itemId == R.id.navigation_profile) {
+                // Per ora, simuliamo che l'utente non sia loggato
+                Snackbar.make(binding.getRoot(), "effettua il login o registrati", Snackbar.LENGTH_LONG).show();
                 return true;
             }
             return false;
