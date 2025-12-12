@@ -6,17 +6,6 @@
     app:startDestination="@id/FirstFragment">
 
     <fragment
-        android:id="@+id/HomeFragment"
-        android:name="com.example.prova1.HomeFragment"
-        android:label="Home"
-        tools:layout="@layout/fragment_home">
-
-        <action
-            android:id="@+id/action_HomeFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
-    </fragment>
-
-    <fragment
         android:id="@+id/FirstFragment"
         android:name="com.example.prova1.FirstFragment"
         android:label="@string/first_fragment_label"
@@ -28,16 +17,6 @@
         <action
             android:id="@+id/action_FirstFragment_to_LoginFragment"
             app:destination="@id/LoginFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/SecondFragment"
-        android:name="com.example.prova1.SecondFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
-
-        <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
     </fragment>
     <fragment
         android:id="@+id/LoginFragment"
