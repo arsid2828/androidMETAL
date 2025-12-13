@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Colori Primari -->
+    <color name="colorPrimary">#1A237E</color> <!-- Blu Scuro -->
+    <color name="colorPrimaryVariant">#0D1B59</color> <!-- Variante più scura -->
+    <color name="colorOnPrimary">#FFFFFF</color> <!-- Testo su primario (Bianco) -->
+
+    <!-- Colori Secondari -->
+    <color name="colorSecondary">#FF6F00</color> <!-- Arancione Accento -->
+    <color name="colorSecondaryVariant">#E66000</color> <!-- Variante più scura -->
+    <color name="colorOnSecondary">#FFFFFF</color> <!-- Testo su secondario (Bianco) -->
+
+    <!-- Colori di Sfondo e Superficie -->
+    <color name="backgroundColor">#F5F5F5</color> <!-- Sfondo leggermente grigio -->
+    <color name="surfaceColor">#FFFFFF</color> <!-- Colore per CardView, Toolbar, etc. -->
+    <color name="colorOnSurface">#212121</color> <!-- Testo su superfici (Nero/Grigio scuro) -->
+    <color name="colorOnBackground">#212121</color> <!-- Testo su sfondo -->
+
+    <!-- Colori Standard -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="light_blue">#ADD8E6</color>
 </resources>

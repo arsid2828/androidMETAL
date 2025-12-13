@@ -4,14 +4,18 @@ package com.example.prova1;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,11 +34,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.prova1.api.MeteoAlarmApiClient;
-import com.example.prova1.api.MeteoAlarmApiService;
+import com.example.prova1.api.FeedApiClient;
+import com.example.prova1.api.FeedApiService;
 import com.example.prova1.api.WeatherApiClient;
 import com.example.prova1.api.WeatherApiService;
 import com.example.prova1.models.AlertViewModel;
+import com.example.prova1.models.AtomEntry;
+import com.example.prova1.models.AtomFeed;
 import com.example.prova1.models.OpenMeteoResponse;
 import com.example.prova1.models.WeatherItem;
 import com.example.prova1.models.WindAlert;
@@ -42,13 +48,11 @@ import com.example.prova1.ui.WeatherAdapter;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -63,14 +67,12 @@ public class FirstFragment extends Fragment {
     private FusedLocationProviderClient fusedLocationClient;
     private AlertViewModel alertViewModel;
 
-    private double currentLat = 45.44;
+    private double currentLat = 45.44; // Default: Venezia
     private double currentLon = 12.33;
 
     private static final String CHANNEL_ID = "wind_notification_channel";
     private static final int NOTIFICATION_ID = 1;
-    private static final double WIND_SPEED_THRESHOLD = 30.0; // Soglia minima per la prima allerta
-
-    private WindAlert lastSentWindAlert = null;
+    private static final double WIND_SPEED_THRESHOLD = 30.0;
 
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -101,40 +103,36 @@ public class FirstFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         alertViewModel = new ViewModelProvider(requireActivity()).get(AlertViewModel.class);
-
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
 
+        setupUI(view);
+        createNotificationChannel();
+        refreshData();
+    }
+
+    private void setupUI(View view) {
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         recyclerView = view.findViewById(R.id.news_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
         weatherAdapter = new WeatherAdapter(weatherList);
         recyclerView.setAdapter(weatherAdapter);
-
-        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorSecondary);
         swipeRefreshLayout.setOnRefreshListener(this::refreshData);
-
-        createNotificationChannel();
-        refreshData();
     }
 
     private void refreshData() {
         if (!swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(true);
         weatherList.clear();
         weatherAdapter.notifyDataSetChanged();
-        lastSentWindAlert = null; // Resetta l'ultima allerta inviata al refresh
 
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
         } else {
             getCurrentLocationAndFetchData();
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
         }
     }
 
@@ -145,10 +143,13 @@ public class FirstFragment extends Fragment {
                     if (location != null) {
                         currentLat = location.getLatitude();
                         currentLon = location.getLongitude();
-                        Toast.makeText(getContext(), "Posizione: " + currentLat + ", " + currentLon, Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getContext(), "Posizione non trovata. Uso default.", Toast.LENGTH_SHORT).show();
                     }
+                    startDataFetch();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Errore GPS. Uso default.", Toast.LENGTH_SHORT).show();
                     startDataFetch();
                 });
     }
@@ -156,114 +157,123 @@ public class FirstFragment extends Fragment {
     private void startDataFetch() {
         pendingRequests = 2;
         fetchOpenMeteoData();
-        fetchMeteoAlarmData();
+        fetchFeedData();
     }
 
     private synchronized void checkRequestsFinished() {
         pendingRequests--;
         if (pendingRequests <= 0) {
-            addWeatherItem(new WeatherItem("", "(aggiungere mappa)", ""));
             swipeRefreshLayout.setRefreshing(false);
         }
     }
 
     private void fetchOpenMeteoData() {
-        WeatherApiService apiService = WeatherApiClient.getClient().create(WeatherApiService.class);
-        String currentParams = "temperature_2m,precipitation,wind_speed_10m";
-
-        Call<OpenMeteoResponse> call = apiService.getForecast(currentLat, currentLon, currentParams);
-        call.enqueue(new Callback<OpenMeteoResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<OpenMeteoResponse> call, @NonNull Response<OpenMeteoResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    OpenMeteoResponse data = response.body();
-                    if (data.getCurrent() != null) {
-                        String desc = String.format("Temp: %s%s Vento: %s%s Precipitazioni: %s%s",
+        WeatherApiClient.getClient().create(WeatherApiService.class)
+            .getForecast(currentLat, currentLon, "temperature_2m,precipitation,wind_speed_10m")
+            .enqueue(new Callback<OpenMeteoResponse>() {
+                @Override
+                public void onResponse(@NonNull Call<OpenMeteoResponse> call, @NonNull Response<OpenMeteoResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        OpenMeteoResponse data = response.body();
+                        if (data.getCurrent() != null) {
+                            String desc = String.format("Temp: %.1f%s, Vento: %.1f%s, Precip: %.1f%s",
                                 data.getCurrent().getTemperature2m(), data.getCurrentUnits().getTemperature2m(),
                                 data.getCurrent().getWindSpeed10m(), data.getCurrentUnits().getWindSpeed10m(),
                                 data.getCurrent().getPrecipitation(), data.getCurrentUnits().getPrecipitation());
-                        addWeatherItem(new WeatherItem("☁️ Meteo: Tua Posizione", desc, "Oggi"));
+                            addWeatherItem(new WeatherItem("☁️ Meteo Attuale", desc, "Ora"));
 
-                        // Controlla la velocità del vento e invia la notifica appropriata
-                        if (data.getCurrent().getWindSpeed10m() >= WIND_SPEED_THRESHOLD) {
-                            sendWindNotification(data.getCurrent().getWindSpeed10m());
+                            if (data.getCurrent().getWindSpeed10m() >= WIND_SPEED_THRESHOLD) {
+                                sendWindNotification(data.getCurrent().getWindSpeed10m());
+                            }
                         }
+                    } else {
+                         addWeatherItem(new WeatherItem("☁️ Meteo Attuale", "Dati non disponibili", ""));
                     }
+                    checkRequestsFinished();
                 }
-                checkRequestsFinished();
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<OpenMeteoResponse> call, @NonNull Throwable t) {
-                checkRequestsFinished();
-            }
-        });
+                @Override
+                public void onFailure(@NonNull Call<OpenMeteoResponse> call, @NonNull Throwable t) {
+                    addWeatherItem(new WeatherItem("☁️ Meteo Attuale", "Errore di rete", ""));
+                    checkRequestsFinished();
+                }
+            });
     }
 
-    private void fetchMeteoAlarmData() {
-        MeteoAlarmApiService apiService = MeteoAlarmApiClient.getClient().create(MeteoAlarmApiService.class);
-
-        Log.d("METEOALARM_DEBUG", "Chiamo /warnings/location con lat=" + currentLat + ", lon=" + currentLon);
-
-        Call<ResponseBody> call = apiService.getWarningsByLocation(currentLat, currentLon);
-
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    try {
-                        String json = response.body().string();
-                        Log.d("METEOALARM_DEBUG", "Risposta JSON: " + json);
-
-                        if (json.trim().equals("[]") || json.trim().isEmpty()) {
-                            addWeatherItem(new WeatherItem("MeteoAlarm", "✅ Nessuna allerta attiva.", "Oggi"));
-                        } else {
-                            addWeatherItem(new WeatherItem("⚠️ Allerte Attive", parseMeteoAlarmJson(json), "Oggi"));
-                        }
-                    } catch (Exception e) {
-                        Log.e("METEOALARM_DEBUG", "Errore parsing: " + e.getMessage());
-                    }
-                } else {
-                    Log.e("METEOALARM_DEBUG", "Errore Server: " + response.code() + " " + response.message());
-                    addWeatherItem(new WeatherItem("MeteoAlarm", "Errore: " + response.code(), "Oggi"));
-                }
-                checkRequestsFinished();
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                Log.e("METEOALARM_DEBUG", "Errore Rete: " + t.getMessage());
-                checkRequestsFinished();
-            }
-        });
-    }
-
-    private String parseMeteoAlarmJson(String jsonString) {
+    private void fetchFeedData() {
+        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
         try {
-            JSONArray warnings = new JSONArray(jsonString);
-            if (warnings.length() == 0) return "Nessuna allerta.";
-
-            StringBuilder sb = new StringBuilder();
-            int limit = Math.min(warnings.length(), 5);
-
-            for (int i = 0; i < limit; i++) {
-                JSONObject warning = warnings.getJSONObject(i);
-                String type = warning.optString("type", "Avviso");
-                String level = warning.optString("level", "N/A");
-
-                String colorEmoji = "⚠️";
-                if (level.equalsIgnoreCase("yellow")) colorEmoji = "🟡";
-                if (level.equalsIgnoreCase("orange")) colorEmoji = "🟠";
-                if (level.equalsIgnoreCase("red")) colorEmoji = "🔴";
-
-                sb.append(colorEmoji).append(" ").append(type).append(" (Livello: ").append(level).append(") ");
+            List<Address> addresses = geocoder.getFromLocation(currentLat, currentLon, 1);
+            if (addresses == null || addresses.isEmpty()) {
+                addWeatherItem(new WeatherItem("Feed Allarmi", "Impossibile determinare la posizione.", ""));
+                checkRequestsFinished();
+                return;
             }
-            return sb.toString();
-        } catch (Exception e) {
-            Log.e("METEOALARM_PARSE", "Errore: " + e.getMessage());
-            return "Dati illeggibili.";
+
+            Address address = addresses.get(0);
+            String countryName = address.getCountryName();
+            String region = address.getAdminArea(); // Es. "Veneto"
+
+            String feedUrl;
+            if ("italy".equalsIgnoreCase(countryName)) {
+                feedUrl = "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-italy";
+            } else if ("hungary".equalsIgnoreCase(countryName)) {
+                feedUrl = "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-hungary";
+            } else if ("spain".equalsIgnoreCase(countryName)) {
+                feedUrl = "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-spain";
+            } else {
+                addWeatherItem(new WeatherItem("Feed Allarmi", "Feed non disponibile per questo luogo.", ""));
+                checkRequestsFinished();
+                return;
+            }
+
+            FeedApiClient.getClient().create(FeedApiService.class).getFeed(feedUrl)
+                .enqueue(new Callback<AtomFeed>() {
+                    @Override
+                    public void onResponse(@NonNull Call<AtomFeed> call, @NonNull Response<AtomFeed> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            AtomFeed feed = response.body();
+                            String alertSummary = findAlertForRegion(feed, region);
+                            addWeatherItem(new WeatherItem("Feed Allarmi", alertSummary, "Oggi"));
+                        } else {
+                            addWeatherItem(new WeatherItem("Feed Allarmi", "Errore nel caricamento del feed.", ""));
+                        }
+                        checkRequestsFinished();
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<AtomFeed> call, @NonNull Throwable t) {
+                        Log.e("FEED_ERROR", "Errore di rete feed", t);
+                        addWeatherItem(new WeatherItem("Feed Allarmi", "Errore di rete.", ""));
+                        checkRequestsFinished();
+                    }
+                });
+
+        } catch (IOException e) {
+            Log.e("GEOCODER_ERROR", "Errore Geocoder: " + e.getMessage());
+            addWeatherItem(new WeatherItem("Feed Allarmi", "Errore di geolocalizzazione.", ""));
+            checkRequestsFinished();
         }
     }
+
+    private String findAlertForRegion(AtomFeed feed, String region) {
+        if (feed == null || feed.getEntries() == null || region == null) {
+            return "✅ Nessuna allerta attiva.";
+        }
+
+        for (AtomEntry entry : feed.getEntries()) {
+            if (entry.getTitle() != null && entry.getTitle().toLowerCase().contains(region.toLowerCase())) {
+                String message = entry.getSummary();
+                if (message == null || message.trim().isEmpty()) {
+                    message = entry.getTitle();
+                }
+                return "⚠️ " + message;
+            }
+        }
+
+        return "✅ Nessuna allerta attiva per la tua regione.";
+    }
+
 
     private synchronized void addWeatherItem(WeatherItem item) {
         weatherList.add(item);
@@ -272,49 +282,48 @@ public class FirstFragment extends Fragment {
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Canale Vento Forte";
-            String description = "Notifiche per vento forte";
-            int importance = NotificationManager.IMPORTANCE_HIGH; // Aumenta l'importanza per le notifiche heads-up
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            NotificationManager notificationManager = requireActivity().getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Allerte Vento", NotificationManager.IMPORTANCE_HIGH);
+            channel.setDescription("Notifiche per allerte di vento forte.");
+            requireActivity().getSystemService(NotificationManager.class).createNotificationChannel(channel);
         }
     }
 
-    @SuppressLint("MissingPermission")
+    @SuppressLint({"MissingPermission", "NewApi"})
     private void sendWindNotification(double windSpeed) {
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
 
         String title;
-        String contentText = "Velocità del vento: " + windSpeed + " km/h";
         int color;
-
         if (windSpeed >= 90) {
             title = "Pericolo Uragani";
-            color = Color.MAGENTA; // Viola
+            color = Color.MAGENTA;
         } else if (windSpeed >= 60) {
             title = "Vento Molto Forte";
             color = Color.RED;
         } else if (windSpeed >= 40) {
             title = "Vento Forte";
-            color = Color.rgb(255, 165, 0); // Arancione
-        } else if (windSpeed >= 30) {
-            title = "Vento Moderatamente Forte";
-            color = Color.YELLOW;
+            color = Color.rgb(255, 165, 0);
         } else {
-            return; // Nessuna notifica sotto i 30 km/h
+            title = "Vento Moderato";
+            color = Color.YELLOW;
         }
 
-        WindAlert newAlert = new WindAlert(System.currentTimeMillis(), "Posizione attuale", title, contentText, color);
-
-        // Controlla se il livello di allerta è cambiato rispetto all'ultimo inviato
-        if (lastSentWindAlert != null && lastSentWindAlert.getTitle().equals(newAlert.getTitle())) {
-            Log.d("WIND_NOTIFICATION", "Skipping notification, alert level is unchanged.");
-            return; // Salta la notifica se il livello è identico
+        // Controlla se una notifica identica è già attiva
+        NotificationManager notificationManager = (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        StatusBarNotification[] activeNotifications = notificationManager.getActiveNotifications();
+        for (StatusBarNotification sbn : activeNotifications) {
+            if (sbn.getId() == NOTIFICATION_ID) {
+                String existingTitle = sbn.getNotification().extras.getString(Notification.EXTRA_TITLE);
+                if (title.equals(existingTitle)) {
+                    Log.d("WIND_NOTIFICATION", "Skipping notification, an identical one is already active.");
+                    return; // Esce senza inviare una notifica duplicata
+                }
+                break; 
+            }
         }
+
+        String contentText = String.format("Velocità del vento: %.1f km/h", windSpeed);
+        WindAlert newAlert = new WindAlert(System.currentTimeMillis(), "Posizione Attuale", title, contentText, color);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
@@ -322,12 +331,11 @@ public class FirstFragment extends Fragment {
                 .setContentText(contentText)
                 .setColor(color)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setOnlyAlertOnce(true); // Evita di riprodurre il suono/vibrazione all'aggiornamento
+                .setOnlyAlertOnce(true); // <-- AGGIUNTO PER SILENZIARE GLI AGGIORNAMENTI
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(requireContext());
-        notificationManager.notify(NOTIFICATION_ID, builder.build());
+        NotificationManagerCompat.from(requireContext()).notify(NOTIFICATION_ID, builder.build());
 
-        lastSentWindAlert = newAlert; // Aggiorna l'ultima allerta inviata
-        alertViewModel.addWindAlert(newAlert); // Aggiunge l'allerta al ViewModel per la UI
+        // Aggiunge l'allerta alla UI interna dell'app (es. NotificationsFragment)
+        alertViewModel.addWindAlert(newAlert);
     }
 }
