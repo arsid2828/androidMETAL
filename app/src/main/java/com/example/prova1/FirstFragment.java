@@ -70,8 +70,10 @@ public class FirstFragment extends Fragment {
     private double currentLat = 45.44; // Default: Venezia
     private double currentLon = 12.33;
 
-    private static final String CHANNEL_ID = "wind_notification_channel";
-    private static final int NOTIFICATION_ID = 1;
+    private static final String WIND_CHANNEL_ID = "wind_notification_channel";
+    private static final String FEED_CHANNEL_ID = "feed_notification_channel";
+    private static final int WIND_NOTIFICATION_ID = 1;
+    private static final int FEED_NOTIFICATION_ID = 2;
     private static final double WIND_SPEED_THRESHOLD = 30.0;
 
     private final ActivityResultLauncher<String> requestPermissionLauncher =
@@ -106,7 +108,7 @@ public class FirstFragment extends Fragment {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
 
         setupUI(view);
-        createNotificationChannel();
+        createNotificationChannels(); // Changed method name
         refreshData();
     }
 
@@ -233,8 +235,7 @@ public class FirstFragment extends Fragment {
                     public void onResponse(@NonNull Call<AtomFeed> call, @NonNull Response<AtomFeed> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             AtomFeed feed = response.body();
-                            String alertSummary = findAlertForRegion(feed, region);
-                            addWeatherItem(new WeatherItem("Feed Allarmi", alertSummary, "Oggi"));
+                            findAlertForRegion(feed, region);
                         } else {
                             addWeatherItem(new WeatherItem("Feed Allarmi", "Errore nel caricamento del feed.", ""));
                         }
@@ -256,35 +257,61 @@ public class FirstFragment extends Fragment {
         }
     }
 
-    private String findAlertForRegion(AtomFeed feed, String region) {
+    private void findAlertForRegion(AtomFeed feed, String region) {
         if (feed == null || feed.getEntries() == null || region == null) {
-            return "✅ Nessuna allerta attiva.";
+            addWeatherItem(new WeatherItem("Feed Allarmi", "✅ Nessuna allerta attiva.", ""));
+            return;
         }
 
         for (AtomEntry entry : feed.getEntries()) {
             if (entry.getTitle() != null && entry.getTitle().toLowerCase().contains(region.toLowerCase())) {
-                String message = entry.getSummary();
-                if (message == null || message.trim().isEmpty()) {
-                    message = entry.getTitle();
+                String title = entry.getTitle();
+                String summary = entry.getSummary() != null ? entry.getSummary() : title;
+
+                // Estrae la durata dell'allerta dal summary
+                String durationText = title; // Fallback
+                String[] sentences = summary.split("\\. ");
+                for (String sentence : sentences) {
+                    if (sentence.toLowerCase().startsWith("valid to") || sentence.toLowerCase().startsWith("valido fino al")) {
+                        durationText = sentence;
+                        break;
+                    }
                 }
-                return "⚠️ " + message;
+
+                int color = Color.GRAY;
+                String lowerCaseTitle = title.toLowerCase();
+                if (lowerCaseTitle.contains("red")) {
+                    color = Color.RED;
+                } else if (lowerCaseTitle.contains("orange")) {
+                    color = Color.rgb(255, 165, 0);
+                } else if (lowerCaseTitle.contains("yellow")) {
+                    color = Color.YELLOW;
+                }
+
+                addWeatherItem(new WeatherItem("⚠️ Feed Allarmi", summary, "Oggi"));
+                sendFeedNotification(title, summary, durationText, color);
+                return;
             }
         }
-
-        return "✅ Nessuna allerta attiva per la tua regione.";
+        addWeatherItem(new WeatherItem("Feed Allarmi", "✅ Nessuna allerta attiva per la tua regione.", ""));
     }
-
 
     private synchronized void addWeatherItem(WeatherItem item) {
         weatherList.add(item);
         weatherAdapter.notifyItemInserted(weatherList.size() - 1);
     }
 
-    private void createNotificationChannel() {
+    private void createNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Allerte Vento", NotificationManager.IMPORTANCE_HIGH);
-            channel.setDescription("Notifiche per allerte di vento forte.");
-            requireActivity().getSystemService(NotificationManager.class).createNotificationChannel(channel);
+            NotificationManager notificationManager = requireActivity().getSystemService(NotificationManager.class);
+
+            NotificationChannel windChannel = new NotificationChannel(WIND_CHANNEL_ID, "Allerte Vento", NotificationManager.IMPORTANCE_HIGH);
+            windChannel.setDescription("Notifiche per allerte di vento forte.");
+            notificationManager.createNotificationChannel(windChannel);
+
+            NotificationChannel feedChannel = new NotificationChannel(FEED_CHANNEL_ID, "Allarmi Feed", NotificationManager.IMPORTANCE_HIGH);
+            feedChannel.setDescription("Notifiche da feed esterni.");
+            notificationManager.createNotificationChannel(feedChannel);
         }
     }
 
@@ -308,34 +335,62 @@ public class FirstFragment extends Fragment {
             color = Color.YELLOW;
         }
 
-        // Controlla se una notifica identica è già attiva
-        NotificationManager notificationManager = (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        StatusBarNotification[] activeNotifications = notificationManager.getActiveNotifications();
-        for (StatusBarNotification sbn : activeNotifications) {
-            if (sbn.getId() == NOTIFICATION_ID) {
-                String existingTitle = sbn.getNotification().extras.getString(Notification.EXTRA_TITLE);
-                if (title.equals(existingTitle)) {
-                    Log.d("WIND_NOTIFICATION", "Skipping notification, an identical one is already active.");
-                    return; // Esce senza inviare una notifica duplicata
-                }
-                break; 
-            }
+        if (isNotificationActive(WIND_NOTIFICATION_ID, title)) {
+            Log.d("WIND_NOTIFICATION", "Skipping duplicate notification.");
+            return;
         }
 
         String contentText = String.format("Velocità del vento: %.1f km/h", windSpeed);
         WindAlert newAlert = new WindAlert(System.currentTimeMillis(), "Posizione Attuale", title, contentText, color);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), CHANNEL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), WIND_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle(title)
                 .setContentText(contentText)
                 .setColor(color)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setOnlyAlertOnce(true); // <-- AGGIUNTO PER SILENZIARE GLI AGGIORNAMENTI
+                .setOnlyAlertOnce(true);
 
-        NotificationManagerCompat.from(requireContext()).notify(NOTIFICATION_ID, builder.build());
-
-        // Aggiunge l'allerta alla UI interna dell'app (es. NotificationsFragment)
+        NotificationManagerCompat.from(requireContext()).notify(WIND_NOTIFICATION_ID, builder.build());
         alertViewModel.addWindAlert(newAlert);
+    }
+
+    @SuppressLint({"MissingPermission", "NewApi"})
+    private void sendFeedNotification(String title, String summary, String durationText, int color) {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
+
+        if (isNotificationActive(FEED_NOTIFICATION_ID, title)) {
+            Log.d("FEED_NOTIFICATION", "Skipping duplicate notification.");
+            return;
+        }
+
+        WindAlert newAlert = new WindAlert(System.currentTimeMillis(), "Feed Esterno", title, summary, color);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), FEED_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle(title)
+                .setContentText(durationText) // <-- USA LA DURATA COME TESTO PRINCIPALE
+                .setColor(color)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(summary)) // <-- USA IL TESTO COMPLETO PER LA VISUALIZZAZIONE ESTESA
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setOnlyAlertOnce(true);
+
+        NotificationManagerCompat.from(requireContext()).notify(FEED_NOTIFICATION_ID, builder.build());
+        alertViewModel.addWindAlert(newAlert);
+    }
+
+    @SuppressLint("NewApi")
+    private boolean isNotificationActive(int notificationId, String title) {
+        NotificationManager notificationManager = (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        StatusBarNotification[] activeNotifications = notificationManager.getActiveNotifications();
+        for (StatusBarNotification sbn : activeNotifications) {
+            if (sbn.getId() == notificationId) {
+                String existingTitle = sbn.getNotification().extras.getString(Notification.EXTRA_TITLE);
+                if (title.equals(existingTitle)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
