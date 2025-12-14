@@ -165,6 +165,7 @@ public class FirstFragment extends Fragment {
     private synchronized void checkRequestsFinished() {
         pendingRequests--;
         if (pendingRequests <= 0) {
+            addWeatherItem(new WeatherItem("", "(aggiungere mappa)", ""));
             swipeRefreshLayout.setRefreshing(false);
         }
     }

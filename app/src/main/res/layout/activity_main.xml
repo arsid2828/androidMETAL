@@ -10,7 +10,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/background_rain" 
+        android:src="@drawable/background_rain"
         android:scaleType="centerCrop" />
 
     <com.google.android.material.appbar.AppBarLayout
@@ -34,7 +34,7 @@
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/appBarLayout"
+        android:layout_below="@+id/appBarLayout"
         android:layout_above="@+id/bottom_navigation">
 
         <include layout="@layout/content_main" />
@@ -46,10 +46,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_marginBottom="-16dp"
+        android:background="@drawable/bottom_nav_background"
+        app:itemIconTint="@color/bottom_nav_item_color"
+        app:itemTextColor="@color/bottom_nav_item_color"
         app:labelVisibilityMode="unlabeled"
-        app:menu="@menu/bottom_nav_menu"
-        android:background="@color/black"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white"/>
+        app:menu="@menu/bottom_nav_menu" />
 
 </RelativeLayout>
