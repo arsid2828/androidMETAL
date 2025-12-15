@@ -5,12 +5,15 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.WindowCompat;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
@@ -18,12 +21,18 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.prova1.databinding.ActivityMainBinding;
+import com.example.prova1.ui.AddLocationDialogFragment;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
+    private TextView toolbarTitle;
+    private Toolbar toolbar;
 
     private final ActivityResultLauncher<String[]> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
@@ -40,30 +49,58 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        setSupportActionBar(binding.toolbar);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        toolbarTitle = findViewById(R.id.toolbar_title);
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
+
+        Set<Integer> topLevelDestinations = new HashSet<>();
+        topLevelDestinations.add(R.id.HomeFragment);
+        topLevelDestinations.add(R.id.NotificationsFragment);
+        topLevelDestinations.add(R.id.AllerteFragment);
+        topLevelDestinations.add(R.id.ImpostazioniFragment);
+        appBarConfiguration = new AppBarConfiguration.Builder(topLevelDestinations).build();
+        
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
-        // Add a listener to invalidate the menu on destination change
-        navController.addOnDestinationChangedListener((controller, destination, arguments) -> invalidateOptionsMenu());
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            toolbarTitle.setText(destination.getLabel());
+            
+            int destinationId = destination.getId();
+            if (destinationId == R.id.HomeFragment) {
+                toolbar.setNavigationIcon(R.drawable.ic_home);
+            } else if (destinationId == R.id.NotificationsFragment) {
+                toolbar.setNavigationIcon(R.drawable.ic_notifications);
+            } else if (destinationId == R.id.AllerteFragment) {
+                toolbar.setNavigationIcon(R.drawable.ic_alert);
+            } else if (destinationId == R.id.ImpostazioniFragment) {
+                toolbar.setNavigationIcon(R.drawable.ic_settings);
+            }
+
+            invalidateOptionsMenu();
+        });
 
         binding.bottomNavigation.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.navigation_home) {
-                navController.navigate(R.id.FirstFragment);
+                navController.navigate(R.id.HomeFragment);
                 return true;
             } else if (itemId == R.id.navigation_notifications) {
                 navController.navigate(R.id.NotificationsFragment);
                 return true;
-            } else if (itemId == R.id.navigation_profile) {
-                // Per ora, simuliamo che l'utente non sia loggato
-                Snackbar.make(binding.getRoot(), "effettua il login o registrati", Snackbar.LENGTH_LONG).show();
+            } else if (itemId == R.id.navigation_alerts) {
+                navController.navigate(R.id.AllerteFragment);
+                return true;
+            } else if (itemId == R.id.navigation_settings) {
+                navController.navigate(R.id.ImpostazioniFragment);
                 return true;
             }
             return false;
@@ -89,15 +126,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        NavDestination currentDestination = navController.getCurrentDestination();
+        NavDestination currentDestination = Navigation.findNavController(this, R.id.nav_host_fragment_content_main).getCurrentDestination();
 
         if (menu != null && currentDestination != null) {
-            MenuItem loginItem = menu.findItem(R.id.action_login);
-            if (loginItem != null) {
-                boolean isLoginPage = currentDestination.getId() == R.id.LoginFragment;
-                boolean isRegisterPage = currentDestination.getId() == R.id.RegisterFragment;
-                loginItem.setVisible(!isLoginPage && !isRegisterPage);
+            MenuItem addItem = menu.findItem(R.id.action_add_location);
+            if (addItem != null) {
+                addItem.setVisible(currentDestination.getId() == R.id.HomeFragment);
             }
         }
         return super.onPrepareOptionsMenu(menu);
@@ -105,14 +139,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        // Handle the login item click manually
-        if (item.getItemId() == R.id.action_login) {
-            navController.navigate(R.id.LoginFragment);
+        if (item.getItemId() == R.id.action_add_location) {
+            Fragment navHostFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
+            if (navHostFragment != null) {
+                Fragment currentFragment = navHostFragment.getChildFragmentManager().getPrimaryNavigationFragment();
+                if (currentFragment instanceof HomeFragment) {
+                    ((HomeFragment) currentFragment).showAddLocationDialog();
+                }
+            }
             return true;
         }
-        // Let NavigationUI handle other menu items
-        return NavigationUI.onNavDestinationSelected(item, navController) || super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

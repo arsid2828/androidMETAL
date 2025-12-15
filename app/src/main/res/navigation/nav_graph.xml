@@ -3,36 +3,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/HomeFragment">
 
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="com.example.prova1.FirstFragment"
+        android:id="@+id/HomeFragment"
+        android:name="com.example.prova1.HomeFragment"
         android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        tools:layout="@layout/fragment_home" />
 
-        <action
-            android:id="@+id/action_FirstFragment_to_LoginFragment"
-            app:destination="@id/LoginFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/LoginFragment"
-        android:name="com.example.prova1.LoginFragment"
-        android:label="Login"
-        tools:layout="@layout/fragment_login">
-
-        <action
-            android:id="@+id/action_LoginFragment_to_RegisterFragment"
-            app:destination="@id/RegisterFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/RegisterFragment"
-        android:name="com.example.prova1.RegisterFragment"
-        android:label="Register"
-        tools:layout="@layout/fragment_register" />
     <fragment
         android:id="@+id/NotificationsFragment"
         android:name="com.example.prova1.NotificationsFragment"
         android:label="Notifiche"
         tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/AllerteFragment"
+        android:name="com.example.prova1.AllerteFragment"
+        android:label="Allerte"
+        tools:layout="@layout/fragment_allerte" />
+
+    <fragment
+        android:id="@+id/ImpostazioniFragment"
+        android:name="com.example.prova1.ImpostazioniFragment"
+        android:label="Impostazioni"
+        tools:layout="@layout/fragment_impostazioni" />
 </navigation>
