@@ -6,6 +6,7 @@ public class LocationData {
     private double longitude;
     private String weatherInfo = "Caricamento...";
     private String alertInfo = "";
+    private String airQualityInfo = ""; // Campo dedicato per la qualità dell'aria
     private boolean isFavorite = false;
     private boolean isCurrentLocation = false;
 
@@ -36,6 +37,10 @@ public class LocationData {
         return alertInfo;
     }
 
+    public String getAirQualityInfo() {
+        return airQualityInfo;
+    }
+
     public boolean isFavorite() {
         return isFavorite;
     }
@@ -55,6 +60,10 @@ public class LocationData {
 
     public void setAlertInfo(String alertInfo) {
         this.alertInfo = alertInfo;
+    }
+
+    public void setAirQualityInfo(String airQualityInfo) {
+        this.airQualityInfo = airQualityInfo;
     }
 
     public void setFavorite(boolean favorite) {

@@ -21,10 +21,14 @@ public class CurrentUnits {
     @SerializedName("wind_speed_10m")
     private String windSpeed10m;
 
+    @SerializedName("pm2_5")
+    private String pm25;
+
     public String getTime() { return time; }
     public String getInterval() { return interval; }
     public String getTemperature2m() { return temperature2m; }
     public String getRelativeHumidity2m() { return relativeHumidity2m; }
     public String getPrecipitation() { return precipitation; }
     public String getWindSpeed10m() { return windSpeed10m; }
+    public String getPm25() { return pm25; }
 }

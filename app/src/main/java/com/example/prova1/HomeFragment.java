@@ -33,6 +33,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.prova1.api.AirQualityApiClient;
+import com.example.prova1.api.AirQualityApiService;
 import com.example.prova1.api.FeedApiClient;
 import com.example.prova1.api.FeedApiService;
 import com.example.prova1.api.WeatherApiClient;
@@ -72,9 +74,12 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
     private static final String WIND_CHANNEL_ID = "wind_notification_channel";
     private static final String FEED_CHANNEL_ID = "feed_notification_channel";
     private static final String TEMP_CHANNEL_ID = "temp_notification_channel";
+    private static final String AIR_QUALITY_CHANNEL_ID = "air_quality_notification_channel";
     private static final int WIND_NOTIFICATION_ID = 1;
     private static final int FEED_NOTIFICATION_ID = 2;
+    private static final int AIR_QUALITY_NOTIFICATION_ID = 3;
     private static final double WIND_SPEED_THRESHOLD = 30.0;
+    private static final double PM25_THRESHOLD = 25.0;
 
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -142,8 +147,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         locations.addAll(locationRepository.getSavedLocations());
 
         for(LocationData location : locations) {
-            fetchOpenMeteoData(location);
-            fetchFeedData(location);
+            fetchAllDataForLocation(location);
         }
 
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -155,6 +159,12 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
         }
+    }
+
+    private void fetchAllDataForLocation(LocationData locationData) {
+        fetchOpenMeteoData(locationData);
+        fetchAirQualityData(locationData);
+        fetchFeedData(locationData);
     }
 
     @SuppressLint("MissingPermission")
@@ -178,7 +188,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                     swipeRefreshLayout.setRefreshing(false);
                 });
     }
-    
+
     @SuppressLint("MissingPermission")
     private void getCurrentLocationAndFetchData() {
         getCurrentLocationAndFetchData(false);
@@ -198,8 +208,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         locations.add(locationData);
         sortAndDisplayLocations();
         locationRepository.saveLocations(locations);
-        fetchOpenMeteoData(locationData);
-        fetchFeedData(locationData);
+        fetchAllDataForLocation(locationData);
     }
 
     public void showAddLocationDialog() {
@@ -283,6 +292,37 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                 });
     }
 
+    private void fetchAirQualityData(final LocationData locationData) {
+        AirQualityApiClient.getClient().create(AirQualityApiService.class)
+                .getAirQuality(locationData.getLatitude(), locationData.getLongitude(), "pm2_5")
+                .enqueue(new Callback<OpenMeteoResponse>() {
+                    @Override
+                    public void onResponse(@NonNull Call<OpenMeteoResponse> call, @NonNull Response<OpenMeteoResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            OpenMeteoResponse data = response.body();
+                            if (data.getCurrent() != null && data.getCurrent().getPm25() > 0) {
+                                String airQualityInfo = String.format("PM2.5: %.1f%s", data.getCurrent().getPm25(), data.getCurrentUnits().getPm25());
+                                locationData.setAirQualityInfo(airQualityInfo);
+
+                                if (data.getCurrent().getPm25() >= PM25_THRESHOLD) {
+                                    sendAirQualityNotification(data.getCurrent().getPm25(), locationData);
+                                }
+                            }
+                        } else {
+                            locationData.setAirQualityInfo("");
+                        }
+                        locationAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<OpenMeteoResponse> call, @NonNull Throwable t) {
+                        locationData.setAirQualityInfo("");
+                        locationAdapter.notifyDataSetChanged();
+                        Log.e("AirQuality", "Failure: " + t.getMessage());
+                    }
+                });
+    }
+
     private void fetchFeedData(final LocationData locationData) {
         Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
         try {
@@ -341,15 +381,12 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
 
         } catch (IOException e) {
             Log.e("GEOCODER_ERROR", "Errore Geocoder: " + e.getMessage());
-            locationData.setAlertInfo("");
-            locationAdapter.notifyDataSetChanged();
-            swipeRefreshLayout.setRefreshing(false);
         }
     }
 
     private void findAlertForRegion(AtomFeed feed, String region, LocationData locationData) {
         if (feed == null || feed.getEntries() == null || region == null) {
-            locationData.setAlertInfo("");
+            locationData.setAlertInfo("✅ Nessuna allerta attiva.");
             return;
         }
 
@@ -368,22 +405,20 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                 }
 
                 int color = Color.GRAY;
-                String lowerCaseTitle = title.toLowerCase();
-                if (lowerCaseTitle.contains("red")) {
+                if (title.toLowerCase().contains("red")) {
                     color = Color.RED;
-                } else if (lowerCaseTitle.contains("orange")) {
+                } else if (title.toLowerCase().contains("orange")) {
                     color = Color.rgb(255, 165, 0);
-                } else if (lowerCaseTitle.contains("yellow")) {
+                } else if (title.toLowerCase().contains("yellow")) {
                     color = Color.YELLOW;
                 }
 
-                locationData.setAlertInfo(summary);
+                locationData.setAlertInfo("⚠️ " + summary);
                 sendFeedNotification(title, summary, durationText, color, locationData);
                 return;
             }
         }
-
-        locationData.setAlertInfo("");
+        locationData.setAlertInfo("✅ Nessuna allerta attiva per la tua regione.");
     }
 
     private void createNotificationChannels() {
@@ -391,16 +426,16 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
             NotificationManager notificationManager = requireActivity().getSystemService(NotificationManager.class);
 
             NotificationChannel windChannel = new NotificationChannel(WIND_CHANNEL_ID, "Allerte Vento", NotificationManager.IMPORTANCE_HIGH);
-            windChannel.setDescription("Notifiche per allerte di vento forte.");
             notificationManager.createNotificationChannel(windChannel);
 
             NotificationChannel feedChannel = new NotificationChannel(FEED_CHANNEL_ID, "Allarmi Feed", NotificationManager.IMPORTANCE_HIGH);
-            feedChannel.setDescription("Notifiche da feed esterni.");
             notificationManager.createNotificationChannel(feedChannel);
 
             NotificationChannel tempChannel = new NotificationChannel(TEMP_CHANNEL_ID, "Allerte Temperatura", NotificationManager.IMPORTANCE_HIGH);
-            tempChannel.setDescription("Notifiche per temperature estreme.");
             notificationManager.createNotificationChannel(tempChannel);
+
+            NotificationChannel airQualityChannel = new NotificationChannel(AIR_QUALITY_CHANNEL_ID, "Qualità dell'Aria", NotificationManager.IMPORTANCE_HIGH);
+            notificationManager.createNotificationChannel(airQualityChannel);
         }
     }
 
@@ -492,6 +527,42 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                 .setOnlyAlertOnce(true);
 
         NotificationManagerCompat.from(requireContext()).notify(location.getName().hashCode(), builder.build());
+        alertViewModel.addWindAlert(newAlert);
+    }
+
+    @SuppressLint({"MissingPermission", "NewApi"})
+    private void sendAirQualityNotification(double pm25, LocationData location) {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
+
+        String title;
+        int color;
+        if (pm25 > 75) {
+            title = "Qualità dell'Aria Nociva";
+            color = Color.MAGENTA;
+        } else if (pm25 > 50) {
+            title = "Qualità dell'Aria Molto Scarsa";
+            color = Color.RED;
+        } else if (pm25 > 25) {
+            title = "Qualità dell'Aria Scarsa";
+            color = Color.rgb(255, 165, 0);
+        } else {
+            return;
+        }
+
+        if (isNotificationActive(AIR_QUALITY_NOTIFICATION_ID, title)) return;
+
+        String contentText = String.format("PM2.5: %.1f µg/m³ a %s", pm25, location.getName());
+        WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), title, contentText, color);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), AIR_QUALITY_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle(title)
+                .setContentText(contentText)
+                .setColor(color)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setOnlyAlertOnce(true);
+
+        NotificationManagerCompat.from(requireContext()).notify(AIR_QUALITY_NOTIFICATION_ID, builder.build());
         alertViewModel.addWindAlert(newAlert);
     }
 
