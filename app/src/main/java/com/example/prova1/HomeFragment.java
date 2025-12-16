@@ -448,10 +448,10 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         if (windSpeed >= 150) {
             title = "In questo momento a " + location.getName() + " Pericolo Uragani";
             color = Color.MAGENTA;
-        } else if (windSpeed >= 60) {
+        } else if (windSpeed >= 70) {
             title = "In questo momento a " + location.getName() + " Vento Molto Forte";
             color = Color.RED;
-        } else if (windSpeed >= 40) {
+        } else if (windSpeed >= 45) {
             title = "In questo momento a " + location.getName() + " Vento Forte";
             color = Color.rgb(255, 165, 0);
         } else {
