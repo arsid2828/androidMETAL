@@ -262,7 +262,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                         if (response.isSuccessful() && response.body() != null) {
                             OpenMeteoResponse data = response.body();
                             if (data.getCurrent() != null) {
-                                String desc = String.format("Temperatura: %.1f%s, Umidità: %d%s, Vento: %.1f%s, Precipitazioni: %.1f%s",
+                                String desc = String.format("Temperatura: %.1f%s\nUmidità: %d%s\nVento: %.1f%s\nPrecipitazioni: %.1f%s",
                                         data.getCurrent().getTemperature2m(), data.getCurrentUnits().getTemperature2m(),
                                         data.getCurrent().getRelativeHumidity2m(), data.getCurrentUnits().getRelativeHumidity2m(),
                                         data.getCurrent().getWindSpeed10m(), data.getCurrentUnits().getWindSpeed10m(),
