@@ -262,7 +262,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                         if (response.isSuccessful() && response.body() != null) {
                             OpenMeteoResponse data = response.body();
                             if (data.getCurrent() != null) {
-                                String desc = String.format("Temp: %.1f%s, Umidità: %d%s, Vento: %.1f%s, Precip: %.1f%s",
+                                String desc = String.format("Temperatura: %.1f%s, Umidità: %d%s, Vento: %.1f%s, Precipitazioni: %.1f%s",
                                         data.getCurrent().getTemperature2m(), data.getCurrentUnits().getTemperature2m(),
                                         data.getCurrent().getRelativeHumidity2m(), data.getCurrentUnits().getRelativeHumidity2m(),
                                         data.getCurrent().getWindSpeed10m(), data.getCurrentUnits().getWindSpeed10m(),
@@ -301,7 +301,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                         if (response.isSuccessful() && response.body() != null) {
                             OpenMeteoResponse data = response.body();
                             if (data.getCurrent() != null && data.getCurrent().getPm25() > 0) {
-                                String airQualityInfo = String.format("PM2.5: %.1f%s", data.getCurrent().getPm25(), data.getCurrentUnits().getPm25());
+                                String airQualityInfo = String.format("Qualità dell'aria in PM2.5: %.1f%s", data.getCurrent().getPm25(), data.getCurrentUnits().getPm25());
                                 locationData.setAirQualityInfo(airQualityInfo);
 
                                 if (data.getCurrent().getPm25() >= PM25_THRESHOLD) {
@@ -445,17 +445,17 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
 
         String title;
         int color;
-        if (windSpeed >= 90) {
-            title = "Pericolo Uragani";
+        if (windSpeed >= 150) {
+            title = "In questo momento a " + location.getName() + " Pericolo Uragani";
             color = Color.MAGENTA;
         } else if (windSpeed >= 60) {
-            title = "Vento Molto Forte";
+            title = "In questo momento a " + location.getName() + " Vento Molto Forte";
             color = Color.RED;
         } else if (windSpeed >= 40) {
-            title = "Vento Forte";
+            title = "In questo momento a " + location.getName() + " Vento Forte";
             color = Color.rgb(255, 165, 0);
         } else {
-            title = "Vento Moderato";
+            title = "In questo momento a " + location.getName() + " Vento Moderato";
             color = Color.YELLOW;
         }
 
@@ -501,26 +501,35 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
     private void sendTemperatureNotification(double temp, LocationData location) {
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
 
-        String title = null;
+        String titleSuffix = null;
         int color = 0;
-        if (temp >= 35) {
-            title = "Caldo Intenso";
+
+        if (temp >= 38) {
+            titleSuffix = "Caldo Estremo";
             color = Color.RED;
-        } else if (temp <= 0) {
-            title = "Gelo Intenso";
+        } else if (temp >= 34) {
+            titleSuffix = "Caldo";
+            color = Color.rgb(255, 165, 0);
+        } else if (temp <= -5) {
+            titleSuffix = "Gelo";
+            color = Color.BLUE;
+        } else if (temp <= 2) {
+            titleSuffix = "Freddo";
             color = Color.CYAN;
+        } else {
+            return;
         }
 
-        if (title == null) return;
+        String notificationTitle = "In questo momento a " + location.getName() + " " + titleSuffix;
 
-        if (isNotificationActive(location.getName().hashCode(), title)) return;
+        if (isNotificationActive(location.getName().hashCode(), notificationTitle)) return;
 
         String contentText = String.format("Temperatura: %.1f°C a %s", temp, location.getName());
-        WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), title, contentText, color);
+        WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), notificationTitle, contentText, color);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), TEMP_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentTitle(title)
+                .setContentTitle(notificationTitle)
                 .setContentText(contentText)
                 .setColor(color)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -551,7 +560,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
 
         if (isNotificationActive(AIR_QUALITY_NOTIFICATION_ID, title)) return;
 
-        String contentText = String.format("PM2.5: %.1f µg/m³ a %s", pm25, location.getName());
+        String contentText = String.format("Qualità dell'aria in PM2.5: %.1f µg/m³ a %s", pm25, location.getName());
         WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), title, contentText, color);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), AIR_QUALITY_CHANNEL_ID)
