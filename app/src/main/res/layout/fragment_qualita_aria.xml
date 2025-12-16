@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".NebbiaFragment">
+    tools:context=".QualitaAriaFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,38 +15,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="NEBBIA"
+            android:text="QUALITÀ DELL'ARIA"
             android:textSize="24sp"
             android:textStyle="bold" />
-
-        <!-- Livello Giallo -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/rounded_corner_yellow"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="GIALLO (Allerta Moderata - Visibilità ridotta)"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nFoschia o nebbia moderata, visibilità tra 500m e 1km.\nIstruzioni:\nIn auto: Accendere le luci anabbaglianti e i fendinebbia" />
-        </LinearLayout>
 
         <!-- Livello Arancione -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:background="@drawable/rounded_corner_orange"
             android:orientation="vertical"
             android:padding="16dp">
@@ -54,7 +31,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ARANCIONE (Allerta Elevata - Visibilità pericolosa)"
+                android:text="QUALITÀ SCARSA (Colore: Arancione)"
                 android:textStyle="bold" />
 
             <TextView
@@ -62,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nNebbia fitta, visibilità tra 100m e 500m. Banchi di nebbia improvvisi su strade e autostrade.\nIstruzioni:\nRidurre drasticamente la velocità. Se la visibilità è troppo scarsa, fermarsi in area di servizio o piazzola sicura con le luci di posizione accese." />
+                android:text="Range: PM2.5 da 25 a 49 µg/m³\nDescrizione: Inquinamento moderato. Possibili effetti sulla salute di gruppi sensibili" />
         </LinearLayout>
 
         <!-- Livello Rosso -->
@@ -77,16 +54,63 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ROSSO (Allerta Massima - Visibilità quasi nulla)"
+                android:text="QUALITÀ MOLTO SCARSA (Colore: Rosso)"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:paddingBottom="16dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nNebbia densissima, visibilità inferiore ai 100m. Condizioni di &#34;cecità&#34; alla guida.\nIstruzioni:\nNON mettersi in viaggio. Rinviare la partenza.\nSe già in strada e impossibilitati a raggiungere un\'area sicura: accendere le 4 frecce, procedere a velocità minima e uscire alla prima uscita possibile o fermarsi in piazzola." />
+                android:text="Range: PM2.5 da 50 a 74 µg/m³\nDescrizione: Inquinamento elevato. Effetti sulla salute per tutti. Possibili sintomi respiratori anche in persone sane." />
+        </LinearLayout>
+
+        <!-- Livello Viola -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_corner_purple"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="QUALITÀ NOCIVA (Colore: Viola)"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Range: PM2.5 superiore a 75 µg/m³\nDescrizione: Inquinamento molto elevato. Emergenza sanitaria. Rischio di gravi effetti sulla salute anche con esposizioni brevi." />
+        </LinearLayout>
+
+        <!-- Nota Tecnica -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_corner_white"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📌 NOTA TECNICA:"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:lineSpacingExtra="4dp"
+                android:paddingBottom="16dp"
+                android:text="PM2.5 = Particulate Matter 2.5 (particolato fine con diametro ≤ 2,5 micron)\nValori misurati in microgrammi per metro cubo (µg/m³) - media 24h\nPer confronto: L'OMS raccomanda valori inferiori a 5 µg/m³ (media annuale)\nL'inquinamento peggiora con condizioni meteo stabili (alta pressione, assenza di vento)\nLe ore peggiori sono generalmente la mattina presto (7-9) e la sera (18-20)" />
         </LinearLayout>
 
     </LinearLayout>

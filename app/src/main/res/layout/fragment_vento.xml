@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".NebbiaFragment">
+    tools:context=".VentoFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="NEBBIA"
+            android:text="VENTO"
             android:textSize="24sp"
             android:textStyle="bold" />
 
@@ -31,7 +31,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="GIALLO (Allerta Moderata - Visibilità ridotta)"
+                android:text="LIVELLO 1 - GIALLO (Allerta Moderata)"
                 android:textStyle="bold" />
 
             <TextView
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nFoschia o nebbia moderata, visibilità tra 500m e 1km.\nIstruzioni:\nIn auto: Accendere le luci anabbaglianti e i fendinebbia" />
+                android:text="Intensità:\nVenti da 30 a 44 km/h - Vento moderato/sostenuto\nDescrizione:\nRischio di rami spezzati, oggetti leggeri spostati. Fastidio per pedoni e ciclisti. Possibili difficoltà per mezzi alti (furgoni, camper)." />
         </LinearLayout>
 
         <!-- Livello Arancione -->
@@ -54,7 +54,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ARANCIONE (Allerta Elevata - Visibilità pericolosa)"
+                android:text="LIVELLO 2 - ARANCIONE (Allerta Elevata)"
                 android:textStyle="bold" />
 
             <TextView
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nNebbia fitta, visibilità tra 100m e 500m. Banchi di nebbia improvvisi su strade e autostrade.\nIstruzioni:\nRidurre drasticamente la velocità. Se la visibilità è troppo scarsa, fermarsi in area di servizio o piazzola sicura con le luci di posizione accese." />
+                android:text="Intensità:\nVenti da 45 a 69 km/h - Burrasca forte\nDescrizione:\nPossibili danni a tegole, insegne, pensiline. Rami di media grandezza possono cadere. Possibili interruzioni di corrente localizzate." />
         </LinearLayout>
 
         <!-- Livello Rosso -->
@@ -77,7 +77,30 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ROSSO (Allerta Massima - Visibilità quasi nulla)"
+                android:text="LIVELLO 3 - ROSSO (Allerta Massima)"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Intensità:\nVenti da 70 a 149 km/h - Tempesta/forte burrasca\nDescrizione:\nDanni diffusi (tetti scoperchiati, alberi sradicati, linee elettriche interrotte). Pericolo per l'incolumità delle persone all'aperto. Trasporti fortemente compromessi. Rischio di mareggiate sulle coste." />
+        </LinearLayout>
+
+        <!-- Livello Viola -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_corner_purple"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="LIVELLO 4 - VIOLA (Pericolo Estremo - Condizioni Uragano)"
                 android:textStyle="bold" />
 
             <TextView
@@ -86,7 +109,7 @@
                 android:layout_marginTop="8dp"
                 android:paddingBottom="16dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nNebbia densissima, visibilità inferiore ai 100m. Condizioni di &#34;cecità&#34; alla guida.\nIstruzioni:\nNON mettersi in viaggio. Rinviare la partenza.\nSe già in strada e impossibilitati a raggiungere un\'area sicura: accendere le 4 frecce, procedere a velocità minima e uscire alla prima uscita possibile o fermarsi in piazzola." />
+                android:text="Intensità:\nVenti superiori a 150 km/h - Uragano/tempesta violenta\nDescrizione:\nCondizioni estreme e distruttive. Danni strutturali molto gravi. Pericolo di vita reale per chiunque si trovi all'esterno. Fenomeni rari in Italia, possibili durante cicloni mediterranei (medicane) o tempeste eccezionali." />
         </LinearLayout>
 
     </LinearLayout>

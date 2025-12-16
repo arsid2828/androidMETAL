@@ -31,6 +31,18 @@
         <action
             android:id="@+id/action_AllerteFragment_to_NebbiaFragment"
             app:destination="@id/NebbiaFragment" />
+        <action
+            android:id="@+id/action_AllerteFragment_to_PioggiaFragment"
+            app:destination="@id/PioggiaFragment" />
+        <action
+            android:id="@+id/action_AllerteFragment_to_VentoFragment"
+            app:destination="@id/VentoFragment" />
+        <action
+            android:id="@+id/action_AllerteFragment_to_TemperaturaFragment"
+            app:destination="@id/TemperaturaFragment" />
+        <action
+            android:id="@+id/action_AllerteFragment_to_QualitaAriaFragment"
+            app:destination="@id/QualitaAriaFragment" />
     </fragment>
 
     <fragment
@@ -50,6 +62,30 @@
         android:name="com.example.prova1.NebbiaFragment"
         android:label="Nebbia"
         tools:layout="@layout/fragment_nebbia" />
+
+    <fragment
+        android:id="@+id/PioggiaFragment"
+        android:name="com.example.prova1.PioggiaFragment"
+        android:label="Pioggia"
+        tools:layout="@layout/fragment_pioggia" />
+
+    <fragment
+        android:id="@+id/VentoFragment"
+        android:name="com.example.prova1.VentoFragment"
+        android:label="Vento"
+        tools:layout="@layout/fragment_vento" />
+
+    <fragment
+        android:id="@+id/TemperaturaFragment"
+        android:name="com.example.prova1.TemperaturaFragment"
+        android:label="Temperatura"
+        tools:layout="@layout/fragment_temperatura" />
+
+    <fragment
+        android:id="@+id/QualitaAriaFragment"
+        android:name="com.example.prova1.QualitaAriaFragment"
+        android:label="Qualità dell\'aria"
+        tools:layout="@layout/fragment_qualita_aria" />
 
     <fragment
         android:id="@+id/ImpostazioniFragment"

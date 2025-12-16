@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".NebbiaFragment">
+    tools:context=".PioggiaFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="NEBBIA"
+            android:text="PIOGGIA"
             android:textSize="24sp"
             android:textStyle="bold" />
 
@@ -31,7 +31,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="GIALLO (Allerta Moderata - Visibilità ridotta)"
+                android:text="GIALLO (Allerta Moderata - Possibili disagi)"
                 android:textStyle="bold" />
 
             <TextView
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nFoschia o nebbia moderata, visibilità tra 500m e 1km.\nIstruzioni:\nIn auto: Accendere le luci anabbaglianti e i fendinebbia" />
+                android:text="Condizioni:\nPioggia persistente e moderata. Precipitazioni che possono causare allagamenti localizzati in zone basse o con scarichi inefficienti.\nIstruzioni:\nIn auto: Guidare con prudenza, aumentare la distanza di sicurezza per rischio di aquaplaning su asfalto bagnato.\nIn zone a rischio: Monitorare piccoli corsi d'acqua e fossi." />
         </LinearLayout>
 
         <!-- Livello Arancione -->
@@ -54,7 +54,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ARANCIONE (Allerta Elevata - Visibilità pericolosa)"
+                android:text="ARANCIONE (Allerta Elevata - Fenomeni intensi)"
                 android:textStyle="bold" />
 
             <TextView
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nNebbia fitta, visibilità tra 100m e 500m. Banchi di nebbia improvvisi su strade e autostrade.\nIstruzioni:\nRidurre drasticamente la velocità. Se la visibilità è troppo scarsa, fermarsi in area di servizio o piazzola sicura con le luci di posizione accese." />
+                android:text="Condizioni:\nPiogge intense e/o prolungate. Nubifragi localizzati che possono causare rapidi rigonfiamenti di torrenti.\nIstruzioni:\nIn auto: EVITARE di transitare in sottopassi, strade allagate o vicino agli argini di fossi e torrenti in piena." />
         </LinearLayout>
 
         <!-- Livello Rosso -->
@@ -77,7 +77,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ROSSO (Allerta Massima - Visibilità quasi nulla)"
+                android:text="ROSSO (Allerta Massima - Emergenza per piogge eccezionali/alluvione)"
                 android:textStyle="bold" />
 
             <TextView
@@ -86,7 +86,7 @@
                 android:layout_marginTop="8dp"
                 android:paddingBottom="16dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nNebbia densissima, visibilità inferiore ai 100m. Condizioni di &#34;cecità&#34; alla guida.\nIstruzioni:\nNON mettersi in viaggio. Rinviare la partenza.\nSe già in strada e impossibilitati a raggiungere un\'area sicura: accendere le 4 frecce, procedere a velocità minima e uscire alla prima uscita possibile o fermarsi in piazzola." />
+                android:text="Condizioni:\nPiogge torrenziali, persistenti e diffuse su ampia area. Nubifragi estremi con altissimo rischio di alluvioni lampo.\nIstruzioni:\nNON METTERSI IN VIAGGIO PER NESSUN MOTIVO. Restare in casa ai piani più alti, lontani da seminterrati e cantine.\nSe ci si trova all'aperto, cercare immediatamente rifugio in un'area rialzata e sicura. NON tentare di tornare a casa o raggiungere la macchina se le acque stanno salendo rapidamente.\nSeguire immediatamente le indicazioni delle autorità (Protezione Civile, Vigili del Fuoco, Comune) che potrebbero ordinare l'evacuazione dell'area." />
         </LinearLayout>
 
     </LinearLayout>

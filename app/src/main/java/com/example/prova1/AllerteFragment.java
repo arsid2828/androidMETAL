@@ -37,14 +37,22 @@ public class AllerteFragment extends Fragment {
             Navigation.findNavController(v).navigate(R.id.action_AllerteFragment_to_NebbiaFragment);
         });
 
-        view.findViewById(R.id.normativa_pioggia).setOnClickListener(v -> showDetails("Pioggia"));
-        view.findViewById(R.id.normativa_vento).setOnClickListener(v -> showDetails("Vento"));
-        view.findViewById(R.id.normativa_temperatura).setOnClickListener(v -> showDetails("Temperatura"));
-        view.findViewById(R.id.normativa_qualita_aria).setOnClickListener(v -> showDetails("Qualità dell'aria"));
+        view.findViewById(R.id.normativa_pioggia).setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_AllerteFragment_to_PioggiaFragment);
+        });
+
+        view.findViewById(R.id.normativa_vento).setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_AllerteFragment_to_VentoFragment);
+        });
+
+        view.findViewById(R.id.normativa_temperatura).setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_AllerteFragment_to_TemperaturaFragment);
+        });
+
+        view.findViewById(R.id.normativa_qualita_aria).setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_AllerteFragment_to_QualitaAriaFragment);
+        });
     }
 
-    private void showDetails(String item) {
-        // Per ora, mostriamo un messaggio. In futuro, navigheremo verso un nuovo fragment.
-        Snackbar.make(requireView(), "Dettagli per: " + item, Snackbar.LENGTH_SHORT).show();
-    }
+
 }
