@@ -264,9 +264,8 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                                 }
 
                                 double currentTemp = data.getCurrent().getTemperature2m();
-                                if (currentTemp >= 34 || currentTemp <= 2) {
-                                    sendTemperatureNotification(currentTemp, locationData);
-                                }
+                                // CORREZIONE: Chiamiamo sempre la funzione, che verificherà internamente se la temperatura è estrema
+                                sendTemperatureNotification(currentTemp, locationData);
                             }
                         } else {
                             locationData.setWeatherInfo("Dati meteo non disponibili");
@@ -462,7 +461,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         } else if (temperature <= -5) {
             titleSuffix = "Gelo";
             color = Color.BLUE;
-        } else if (temperature <= 4) {
+        } else if (temperature <= 2) { // Soglia richiesta originariamente
             titleSuffix = "Freddo";
             color = Color.CYAN;
         } else {
@@ -474,7 +473,6 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         String contentText = String.format("Temperatura attuale: %.1f°C", temperature);
         WindAlert newAlert = new WindAlert(System.currentTimeMillis(), locationData.getName(), notificationTitle, contentText, color);
 
-        // Uso ID univoco per evitare sovrascritture e problemi con isNotificationActive
         int notificationId = (int) System.currentTimeMillis();
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), TEMP_CHANNEL_ID)
