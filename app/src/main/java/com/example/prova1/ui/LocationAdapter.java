@@ -91,7 +91,18 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
 
         public void bind(LocationData location) {
             locationText.setText(location.getName());
-            weatherDescription.setText(location.getWeatherInfo());
+
+            String weatherInfo = location.getWeatherInfo();
+            String airQualityInfo = location.getAirQualityInfo();
+
+            StringBuilder displayText = new StringBuilder(weatherInfo);
+            if (airQualityInfo != null && !airQualityInfo.isEmpty()) {
+                if (displayText.length() > 0 && !displayText.toString().equals("Caricamento...")) {
+                    displayText.append(", ");
+                }
+                displayText.append(airQualityInfo);
+            }
+            weatherDescription.setText(displayText.toString());
 
             if (location.isFavorite()) {
                 favoriteButton.setImageResource(R.drawable.ic_heart_filled);
