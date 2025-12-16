@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TEMPERATURA"
+            android:text="🌡️ TEMPERATURA"
             android:textSize="24sp"
             android:textStyle="bold" />
 
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Range: Temperatura inferiore a -5°C\nDescrizione: Freddo intenso, ghiaccio su strade e marciapiedi. Rischio di congelamento e ipotermia in pochi minuti all\'aperto." />
+                android:text="Range: Temperatura inferiore a -5°C\nDescrizione: Freddo intenso, ghiaccio su strade e marciapiedi. Rischio di congelamento e ipotermia in pochi minuti all'aperto." />
         </LinearLayout>
 
         <!-- Livello Ciano -->

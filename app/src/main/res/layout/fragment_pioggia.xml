@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PIOGGIA"
+            android:text="🌧️ PIOGGIA"
             android:textSize="24sp"
             android:textStyle="bold" />
 
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nPioggia persistente e moderata. Precipitazioni che possono causare allagamenti localizzati in zone basse o con scarichi inefficienti.\nIstruzioni:\nIn auto: Guidare con prudenza, aumentare la distanza di sicurezza per rischio di aquaplaning su asfalto bagnato.\nIn zone a rischio: Monitorare piccoli corsi d'acqua e fossi." />
+                android:text="Condizioni:\nPioggia persistente e moderata. Precipitazioni che possono causare allagamenti localizzati in zone basse o con scarichi inefficienti.\nIstruzioni:\nIn auto: Guidare con prudenza, aumentare la distanza di sicurezza per rischio di aquaplaning su asfalto bagnato.\nIn zones a rischio: Monitorare piccoli corsi d'acqua e fossi." />
         </LinearLayout>
 
         <!-- Livello Arancione -->
