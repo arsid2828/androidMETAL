@@ -246,15 +246,16 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
 
     private void fetchOpenMeteoData(final LocationData locationData) {
         WeatherApiClient.getClient().create(WeatherApiService.class)
-                .getForecast(locationData.getLatitude(), locationData.getLongitude(), "temperature_2m,precipitation,wind_speed_10m")
+                .getForecast(locationData.getLatitude(), locationData.getLongitude(), "temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m")
                 .enqueue(new Callback<OpenMeteoResponse>() {
                     @Override
                     public void onResponse(@NonNull Call<OpenMeteoResponse> call, @NonNull Response<OpenMeteoResponse> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             OpenMeteoResponse data = response.body();
                             if (data.getCurrent() != null) {
-                                String desc = String.format("Temp: %.1f%s, Vento: %.1f%s, Precip: %.1f%s",
+                                String desc = String.format("Temp: %.1f%s, Umidità: %d%s, Vento: %.1f%s, Precip: %.1f%s",
                                         data.getCurrent().getTemperature2m(), data.getCurrentUnits().getTemperature2m(),
+                                        data.getCurrent().getRelativeHumidity2m(), data.getCurrentUnits().getRelativeHumidity2m(),
                                         data.getCurrent().getWindSpeed10m(), data.getCurrentUnits().getWindSpeed10m(),
                                         data.getCurrent().getPrecipitation(), data.getCurrentUnits().getPrecipitation());
                                 locationData.setWeatherInfo(desc);
@@ -264,7 +265,6 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                                 }
 
                                 double currentTemp = data.getCurrent().getTemperature2m();
-                                // CORREZIONE: Chiamiamo sempre la funzione, che verificherà internamente se la temperatura è estrema
                                 sendTemperatureNotification(currentTemp, locationData);
                             }
                         } else {
@@ -405,37 +405,33 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
     }
 
     @SuppressLint({"MissingPermission", "NewApi"})
-    private void sendWindNotification(double windSpeed, LocationData locationData) {
+    private void sendWindNotification(double windSpeed, LocationData location) {
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
 
         String title;
         int color;
-        if (windSpeed >= 120) {
-            title = "In questo momento a " + locationData.getName() + " Pericolo Uragani";
+        if (windSpeed >= 90) {
+            title = "Pericolo Uragani";
             color = Color.MAGENTA;
-        } else if (windSpeed >= 70) {
-            title = "In questo momento a " + locationData.getName() + " Vento Molto Forte";
+        } else if (windSpeed >= 60) {
+            title = "Vento Molto Forte";
             color = Color.RED;
-        } else if (windSpeed >= 45) {
-            title = "In questo momento a " + locationData.getName() + " Vento Forte";
+        } else if (windSpeed >= 40) {
+            title = "Vento Forte";
             color = Color.rgb(255, 165, 0);
         } else {
-            title = "In questo momento a " + locationData.getName() + " Vento Moderato";
+            title = "Vento Moderato";
             color = Color.YELLOW;
         }
 
-        String notificationTitle = title;
-        if (isNotificationActive(WIND_NOTIFICATION_ID, notificationTitle)) {
-            Log.d("WIND_NOTIFICATION", "Skipping duplicate notification.");
-            return;
-        }
+        if (isNotificationActive(WIND_NOTIFICATION_ID, title)) return;
 
-        String contentText = String.format("Velocità del vento: %.1f km/h", windSpeed);
-        WindAlert newAlert = new WindAlert(System.currentTimeMillis(), locationData.getName(), title, contentText, color);
+        String contentText = String.format("Vento a %.1f km/h a %s", windSpeed, location.getName());
+        WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), title, contentText, color);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), WIND_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentTitle(notificationTitle)
+                .setContentTitle(title)
                 .setContentText(contentText)
                 .setColor(color)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -446,62 +442,16 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
     }
 
     @SuppressLint({"MissingPermission", "NewApi"})
-    private void sendTemperatureNotification(double temperature, LocationData locationData) {
+    private void sendFeedNotification(String title, String summary, String durationText, int color, LocationData location) {
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
 
-        String titleSuffix;
-        int color;
+        if (isNotificationActive(FEED_NOTIFICATION_ID, title)) return;
 
-        if (temperature >= 38) {
-            titleSuffix = "Caldo Estremo";
-            color = Color.RED;
-        } else if (temperature >= 34) {
-            titleSuffix = "Caldo";
-            color = Color.rgb(255, 165, 0);
-        } else if (temperature <= -5) {
-            titleSuffix = "Gelo";
-            color = Color.BLUE;
-        } else if (temperature <= 2) { // Soglia richiesta originariamente
-            titleSuffix = "Freddo";
-            color = Color.CYAN;
-        } else {
-            return;
-        }
-
-        String notificationTitle = "In questo momento a " + locationData.getName() + " " + titleSuffix;
-
-        String contentText = String.format("Temperatura attuale: %.1f°C", temperature);
-        WindAlert newAlert = new WindAlert(System.currentTimeMillis(), locationData.getName(), notificationTitle, contentText, color);
-
-        int notificationId = (int) System.currentTimeMillis();
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), TEMP_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentTitle(notificationTitle)
-                .setContentText(contentText)
-                .setColor(color)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setOnlyAlertOnce(true);
-
-        NotificationManagerCompat.from(requireContext()).notify(notificationId, builder.build());
-        alertViewModel.addWindAlert(newAlert);
-    }
-
-    @SuppressLint({"MissingPermission", "NewApi"})
-    private void sendFeedNotification(String title, String summary, String durationText, int color, LocationData locationData) {
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
-
-        String notificationTitle = title + " (" + locationData.getName() + ")";
-        if (isNotificationActive(FEED_NOTIFICATION_ID, notificationTitle)) {
-            Log.d("FEED_NOTIFICATION", "Skipping duplicate notification.");
-            return;
-        }
-
-        WindAlert newAlert = new WindAlert(System.currentTimeMillis(), locationData.getName(), title, summary, color);
+        WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), title, summary, color);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), FEED_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentTitle(notificationTitle)
+                .setContentTitle(title)
                 .setContentText(durationText)
                 .setColor(color)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(summary))
@@ -512,6 +462,39 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         alertViewModel.addWindAlert(newAlert);
     }
 
+    @SuppressLint({"MissingPermission", "NewApi"})
+    private void sendTemperatureNotification(double temp, LocationData location) {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
+
+        String title = null;
+        int color = 0;
+        if (temp >= 35) {
+            title = "Caldo Intenso";
+            color = Color.RED;
+        } else if (temp <= 0) {
+            title = "Gelo Intenso";
+            color = Color.CYAN;
+        }
+
+        if (title == null) return;
+
+        if (isNotificationActive(location.getName().hashCode(), title)) return;
+
+        String contentText = String.format("Temperatura: %.1f°C a %s", temp, location.getName());
+        WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), title, contentText, color);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), TEMP_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle(title)
+                .setContentText(contentText)
+                .setColor(color)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setOnlyAlertOnce(true);
+
+        NotificationManagerCompat.from(requireContext()).notify(location.getName().hashCode(), builder.build());
+        alertViewModel.addWindAlert(newAlert);
+    }
+
     @SuppressLint("NewApi")
     private boolean isNotificationActive(int notificationId, String title) {
         NotificationManager notificationManager = (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
@@ -519,7 +502,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         for (StatusBarNotification sbn : activeNotifications) {
             if (sbn.getId() == notificationId) {
                 String existingTitle = sbn.getNotification().extras.getString(Notification.EXTRA_TITLE);
-                if (title.equals(existingTitle) || (existingTitle != null && existingTitle.equals(title))) {
+                if (title.equals(existingTitle)) {
                     return true;
                 }
             }

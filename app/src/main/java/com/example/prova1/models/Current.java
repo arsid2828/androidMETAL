@@ -12,6 +12,9 @@ public class Current {
     @SerializedName("temperature_2m")
     private double temperature2m;
 
+    @SerializedName("relative_humidity_2m")
+    private int relativeHumidity2m;
+
     @SerializedName("precipitation")
     private double precipitation;
 
@@ -21,6 +24,7 @@ public class Current {
     public String getTime() { return time; }
     public int getInterval() { return interval; }
     public double getTemperature2m() { return temperature2m; }
+    public int getRelativeHumidity2m() { return relativeHumidity2m; }
     public double getPrecipitation() { return precipitation; }
     public double getWindSpeed10m() { return windSpeed10m; }
 }
