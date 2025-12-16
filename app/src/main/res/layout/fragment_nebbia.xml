@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".GhiaccioNeveFragment">
+    tools:context=".NebbiaFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="GHIACCIO e NEVE"
+            android:text="NEBBIA"
             android:textSize="24sp"
             android:textStyle="bold" />
 
@@ -31,7 +31,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="GIALLO (Allerta Moderata - Attenzione)"
+                android:text="GIALLO (Allerta Moderata - Visibilità ridotta)"
                 android:textStyle="bold" />
 
             <TextView
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nFormazione di ghiaccio o inizio di nevicata su strade secondarie. Strade fredde e umide con rischio di lastre di ghiaccio..\nIstruzioni:\nIn auto: Ridurre la velocità, aumentare la distanza di sicurezza, evitare manovre brusche.\nA piedi: Camminare con cautela, preferire superfici ruvide o ghiaiose." />
+                android:text="Condizioni:\nFoschia o nebbia moderata, visibilità tra 500m e 1km.\n\nIstruzioni:\nIn auto: Accendere le luci anabbaglianti e i fendinebbia" />
         </LinearLayout>
 
         <!-- Livello Arancione -->
@@ -54,7 +54,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ARANCIONE (Allerta Elevata - Massima Precauzione)"
+                android:text="ARANCIONE (Allerta Elevata - Visibilità pericolosa)"
                 android:textStyle="bold" />
 
             <TextView
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nNeve che persiste e si accumula su tutte le strade. Formazione diffusa di ghiaccio. Temperature ampiamente sotto lo zero.\nIstruzioni:\nIn auto: Viaggiare SOLO se strettamente necessario. Montare catene o pneumatici invernali omologati.\nA piedi: Evitare di uscire se possibile, soprattutto anziani e persone con difficoltà motorie." />
+                android:text="Condizioni:\nNebbia fitta, visibilità tra 100m e 500m. Banchi di nebbia improvvisi su strade e autostrade.\n\nIstruzioni:\nRidurre drasticamente la velocità. Se la visibilità è troppo scarsa, fermarsi in area di servizio o piazzola sicura con le luci di posizione accese." />
         </LinearLayout>
 
         <!-- Livello Rosso -->
@@ -77,7 +77,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ROSSO (Allerta Massima - Emergenza)"
+                android:text="ROSSO (Allerta Massima - Visibilità quasi nulla)"
                 android:textStyle="bold" />
 
             <TextView
@@ -86,7 +86,7 @@
                 android:layout_marginTop="8dp"
                 android:paddingBottom="16dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nForti bufere di neve, tempeste di ghiaccio, accumuli molto elevati che bloccano le strade e isolano paesi.\nIstruzioni:\nNON METTERSI IN VIAGGIO. Restare a casa o in un luogo sicuro.\nSeguire le istruzioni delle autorità (Protezione Civile, Vigili del Fuoco)." />
+                android:text="Condizioni:\nNebbia densissima, visibilità inferiore ai 100m. Condizioni di &#34;cecità&#34; alla guida.\n\nIstruzioni:\nNON mettersi in viaggio. Rinviare la partenza.\nSe già in strada e impossibilitati a raggiungere un\'area sicura: accendere le 4 frecce, procedere a velocità minima e uscire alla prima uscita possibile o fermarsi in piazzola." />
         </LinearLayout>
 
     </LinearLayout>

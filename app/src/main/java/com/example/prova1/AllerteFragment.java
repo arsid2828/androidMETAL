@@ -29,8 +29,14 @@ public class AllerteFragment extends Fragment {
             Navigation.findNavController(v).navigate(R.id.action_AllerteFragment_to_GhiaccioNeveFragment);
         });
 
-        view.findViewById(R.id.normativa_temporali).setOnClickListener(v -> showDetails("Temporali"));
-        view.findViewById(R.id.normativa_nebbia).setOnClickListener(v -> showDetails("Nebbia"));
+        view.findViewById(R.id.normativa_temporali).setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_AllerteFragment_to_TemporaliFragment);
+        });
+
+        view.findViewById(R.id.normativa_nebbia).setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_AllerteFragment_to_NebbiaFragment);
+        });
+
         view.findViewById(R.id.normativa_pioggia).setOnClickListener(v -> showDetails("Pioggia"));
         view.findViewById(R.id.normativa_vento).setOnClickListener(v -> showDetails("Vento"));
         view.findViewById(R.id.normativa_temperatura).setOnClickListener(v -> showDetails("Temperatura"));

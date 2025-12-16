@@ -25,6 +25,12 @@
         <action
             android:id="@+id/action_AllerteFragment_to_GhiaccioNeveFragment"
             app:destination="@id/GhiaccioNeveFragment" />
+        <action
+            android:id="@+id/action_AllerteFragment_to_TemporaliFragment"
+            app:destination="@id/TemporaliFragment" />
+        <action
+            android:id="@+id/action_AllerteFragment_to_NebbiaFragment"
+            app:destination="@id/NebbiaFragment" />
     </fragment>
 
     <fragment
@@ -32,6 +38,18 @@
         android:name="com.example.prova1.GhiaccioNeveFragment"
         android:label="Ghiaccio e Neve"
         tools:layout="@layout/fragment_ghiaccio_neve" />
+
+    <fragment
+        android:id="@+id/TemporaliFragment"
+        android:name="com.example.prova1.TemporaliFragment"
+        android:label="Temporali"
+        tools:layout="@layout/fragment_temporali" />
+
+    <fragment
+        android:id="@+id/NebbiaFragment"
+        android:name="com.example.prova1.NebbiaFragment"
+        android:label="Nebbia"
+        tools:layout="@layout/fragment_nebbia" />
 
     <fragment
         android:id="@+id/ImpostazioniFragment"
