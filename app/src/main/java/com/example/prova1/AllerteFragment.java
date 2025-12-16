@@ -5,7 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+
+import com.google.android.material.snackbar.Snackbar;
 
 public class AllerteFragment extends Fragment {
 
@@ -14,5 +19,26 @@ public class AllerteFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_allerte, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        view.findViewById(R.id.normativa_ghiaccio_neve).setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_AllerteFragment_to_GhiaccioNeveFragment);
+        });
+
+        view.findViewById(R.id.normativa_temporali).setOnClickListener(v -> showDetails("Temporali"));
+        view.findViewById(R.id.normativa_nebbia).setOnClickListener(v -> showDetails("Nebbia"));
+        view.findViewById(R.id.normativa_pioggia).setOnClickListener(v -> showDetails("Pioggia"));
+        view.findViewById(R.id.normativa_vento).setOnClickListener(v -> showDetails("Vento"));
+        view.findViewById(R.id.normativa_temperatura).setOnClickListener(v -> showDetails("Temperatura"));
+        view.findViewById(R.id.normativa_qualita_aria).setOnClickListener(v -> showDetails("Qualità dell'aria"));
+    }
+
+    private void showDetails(String item) {
+        // Per ora, mostriamo un messaggio. In futuro, navigheremo verso un nuovo fragment.
+        Snackbar.make(requireView(), "Dettagli per: " + item, Snackbar.LENGTH_SHORT).show();
     }
 }

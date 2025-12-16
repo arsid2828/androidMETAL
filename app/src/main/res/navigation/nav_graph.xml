@@ -21,7 +21,17 @@
         android:id="@+id/AllerteFragment"
         android:name="com.example.prova1.AllerteFragment"
         android:label="Allerte"
-        tools:layout="@layout/fragment_allerte" />
+        tools:layout="@layout/fragment_allerte">
+        <action
+            android:id="@+id/action_AllerteFragment_to_GhiaccioNeveFragment"
+            app:destination="@id/GhiaccioNeveFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/GhiaccioNeveFragment"
+        android:name="com.example.prova1.GhiaccioNeveFragment"
+        android:label="Ghiaccio e Neve"
+        tools:layout="@layout/fragment_ghiaccio_neve" />
 
     <fragment
         android:id="@+id/ImpostazioniFragment"
