@@ -401,21 +401,21 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
 
         String title;
         int color;
-        if (windSpeed >= 90) {
-            title = "Pericolo Uragani";
+        if (windSpeed >= 120) {
+            title = "In questo momento a " + locationData.getName() + " Pericolo Uragani";
             color = Color.MAGENTA;
-        } else if (windSpeed >= 60) {
-            title = "Vento Molto Forte";
+        } else if (windSpeed >= 70) {
+            title = "In questo momento a " + locationData.getName() + " Vento Molto Forte";
             color = Color.RED;
-        } else if (windSpeed >= 40) {
-            title = "Vento Forte";
+        } else if (windSpeed >= 45) {
+            title = "In questo momento a " + locationData.getName() + " Vento Forte";
             color = Color.rgb(255, 165, 0);
         } else {
-            title = "Vento Moderato";
+            title = "In questo momento a " + locationData.getName() + " Vento Moderato";
             color = Color.YELLOW;
         }
 
-        String notificationTitle = title + " a " + locationData.getName();
+        String notificationTitle = title; // Il nome della località è già nel titolo
         if (isNotificationActive(WIND_NOTIFICATION_ID, notificationTitle)) {
             Log.d("WIND_NOTIFICATION", "Skipping duplicate notification.");
             return;
