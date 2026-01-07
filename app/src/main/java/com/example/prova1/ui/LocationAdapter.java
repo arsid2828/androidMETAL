@@ -4,10 +4,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.Group;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prova1.R;
@@ -57,18 +59,32 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         private final TextView locationText;
         private final TextView weatherDescription;
         private final TextView alertDescription;
-        private final Group alertGroup;
         private final ImageView deleteButton;
         private final ImageView favoriteButton;
+        private final TableLayout weatherDataLayout;
+        private final TextView temperatureText;
+        private final TextView humidityText;
+        private final TextView windText;
+        private final TextView precipitationText;
+        private final LinearLayout pm25Layout;
+        private final TextView pm25Text;
+        private final ConstraintLayout alertSectionLayout;
 
         public LocationViewHolder(@NonNull View itemView, final OnItemInteractionListener listener) {
             super(itemView);
             locationText = itemView.findViewById(R.id.location_text);
             weatherDescription = itemView.findViewById(R.id.weather_description);
             alertDescription = itemView.findViewById(R.id.alert_description);
-            alertGroup = itemView.findViewById(R.id.alert_group);
             deleteButton = itemView.findViewById(R.id.delete_button);
             favoriteButton = itemView.findViewById(R.id.favorite_button);
+            weatherDataLayout = itemView.findViewById(R.id.weather_data_layout);
+            temperatureText = itemView.findViewById(R.id.temperature_text);
+            humidityText = itemView.findViewById(R.id.humidity_text);
+            windText = itemView.findViewById(R.id.wind_text);
+            precipitationText = itemView.findViewById(R.id.precipitation_text);
+            pm25Layout = itemView.findViewById(R.id.pm25_layout);
+            pm25Text = itemView.findViewById(R.id.pm25_text);
+            alertSectionLayout = itemView.findViewById(R.id.alert_section_layout);
 
             deleteButton.setOnClickListener(v -> {
                 if (listener != null) {
@@ -92,17 +108,29 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         public void bind(LocationData location) {
             locationText.setText(location.getName());
 
-            String weatherInfo = location.getWeatherInfo();
-            String airQualityInfo = location.getAirQualityInfo();
+            boolean hasWeather = location.getWeatherInfo() != null && location.getWeatherInfo().isEmpty();
+            boolean hasAirQuality = location.getAirQualityInfo() != null && location.getAirQualityInfo().isEmpty();
 
-            StringBuilder displayText = new StringBuilder(weatherInfo);
-            if (airQualityInfo != null && !airQualityInfo.isEmpty()) {
-                if (displayText.length() > 0 && !displayText.toString().equals("Caricamento...")) {
-                    displayText.append(", ");
-                }
-                displayText.append(airQualityInfo);
+            if (hasWeather) {
+                weatherDataLayout.setVisibility(View.VISIBLE);
+                weatherDescription.setVisibility(View.GONE);
+                temperatureText.setText(String.format("%.1f °C", location.getTemperature()));
+                humidityText.setText(String.format("%d%%", location.getHumidity()));
+                windText.setText(String.format("%.1f km/h", location.getWindSpeed()));
+                precipitationText.setText(String.format("%.1f mm", location.getPrecipitation()));
+            } else {
+                weatherDataLayout.setVisibility(View.GONE);
+                weatherDescription.setVisibility(View.VISIBLE);
+                weatherDescription.setText(location.getWeatherInfo());
             }
-            weatherDescription.setText(displayText.toString());
+
+            if (hasAirQuality) {
+                pm25Layout.setVisibility(View.VISIBLE);
+                pm25Text.setText(String.format("%.1f μg/m³", location.getPm25()));
+            } else {
+                pm25Layout.setVisibility(View.GONE);
+            }
+
 
             if (location.isFavorite()) {
                 favoriteButton.setImageResource(R.drawable.ic_heart_filled);
@@ -112,9 +140,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
 
             if (location.getAlertInfo() != null && !location.getAlertInfo().isEmpty()) {
                 alertDescription.setText(location.getAlertInfo());
-                alertGroup.setVisibility(View.VISIBLE);
+                alertSectionLayout.setVisibility(View.VISIBLE);
             } else {
-                alertGroup.setVisibility(View.GONE);
+                alertSectionLayout.setVisibility(View.GONE);
             }
         }
     }

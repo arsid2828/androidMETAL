@@ -6,9 +6,15 @@ public class LocationData {
     private double longitude;
     private String weatherInfo = "Caricamento...";
     private String alertInfo = "";
-    private String airQualityInfo = ""; // Campo dedicato per la qualità dell'aria
+    private String airQualityInfo = "";
     private boolean isFavorite = false;
     private boolean isCurrentLocation = false;
+
+    private double temperature;
+    private int humidity;
+    private double windSpeed;
+    private double precipitation;
+    private double pm25;
 
     public LocationData(String name, double latitude, double longitude) {
         this.name = name;
@@ -17,60 +23,30 @@ public class LocationData {
     }
 
     // Getters
-    public String getName() {
-        return name;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public String getWeatherInfo() {
-        return weatherInfo;
-    }
-
-    public String getAlertInfo() {
-        return alertInfo;
-    }
-
-    public String getAirQualityInfo() {
-        return airQualityInfo;
-    }
-
-    public boolean isFavorite() {
-        return isFavorite;
-    }
-
-    public boolean isCurrentLocation() {
-        return isCurrentLocation;
-    }
+    public String getName() { return name; }
+    public double getLatitude() { return latitude; }
+    public double getLongitude() { return longitude; }
+    public String getWeatherInfo() { return weatherInfo; }
+    public String getAlertInfo() { return alertInfo; }
+    public String getAirQualityInfo() { return airQualityInfo; }
+    public boolean isFavorite() { return isFavorite; }
+    public boolean isCurrentLocation() { return isCurrentLocation; }
+    public double getTemperature() { return temperature; }
+    public int getHumidity() { return humidity; }
+    public double getWindSpeed() { return windSpeed; }
+    public double getPrecipitation() { return precipitation; }
+    public double getPm25() { return pm25; }
 
     // Setters
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setWeatherInfo(String weatherInfo) {
-        this.weatherInfo = weatherInfo;
-    }
-
-    public void setAlertInfo(String alertInfo) {
-        this.alertInfo = alertInfo;
-    }
-
-    public void setAirQualityInfo(String airQualityInfo) {
-        this.airQualityInfo = airQualityInfo;
-    }
-
-    public void setFavorite(boolean favorite) {
-        isFavorite = favorite;
-    }
-
-    public void setCurrentLocation(boolean currentLocation) {
-        isCurrentLocation = currentLocation;
-    }
+    public void setName(String name) { this.name = name; }
+    public void setWeatherInfo(String weatherInfo) { this.weatherInfo = weatherInfo; }
+    public void setAlertInfo(String alertInfo) { this.alertInfo = alertInfo; }
+    public void setAirQualityInfo(String airQualityInfo) { this.airQualityInfo = airQualityInfo; }
+    public void setFavorite(boolean favorite) { isFavorite = favorite; }
+    public void setCurrentLocation(boolean currentLocation) { isCurrentLocation = currentLocation; }
+    public void setTemperature(double temperature) { this.temperature = temperature; }
+    public void setHumidity(int humidity) { this.humidity = humidity; }
+    public void setWindSpeed(double windSpeed) { this.windSpeed = windSpeed; }
+    public void setPrecipitation(double precipitation) { this.precipitation = precipitation; }
+    public void setPm25(double pm25) { this.pm25 = pm25; }
 }

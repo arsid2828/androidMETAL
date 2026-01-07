@@ -54,44 +54,226 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             tools:text="Venezia, IT"
-            android:textAppearance="?attr/textAppearanceSubtitle1"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/location_icon"
             app:layout_constraintTop_toTopOf="@+id/location_icon"
             app:layout_constraintBottom_toBottomOf="@+id/location_icon"
             app:layout_constraintEnd_toStartOf="@+id/favorite_button" />
 
-        <!-- Weather Section -->
-        <ImageView
-            android:id="@+id/weather_icon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="16dp"
-            android:src="@drawable/ic_weather_cloud"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/location_icon"
-            app:tint="?attr/colorPrimary" />
-
-        <TextView
-            android:id="@+id/weather_title"
+        <!-- Weather Data Grid -->
+        <TableLayout
+            android:id="@+id/weather_data_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Meteo Attuale"
-            android:textAppearance="?attr/textAppearanceHeadline6"
-            app:layout_constraintStart_toEndOf="@+id/weather_icon"
-            app:layout_constraintTop_toTopOf="@+id/weather_icon"
-            app:layout_constraintBottom_toTopOf="@+id/weather_description" />
+            android:layout_marginTop="16dp"
+            android:stretchColumns="*"
+            app:layout_constraintTop_toBottomOf="@+id/location_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Row 1: Temperature, Humidity -->
+            <TableRow>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="8dp"
+                    android:background="@drawable/temperature_background">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_temp"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Temperatura"
+                            android:textAppearance="?attr/textAppearanceCaption" />
+
+                        <TextView
+                            android:id="@+id/temperature_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?attr/textAppearanceBody1"
+                            android:textStyle="bold"
+                            tools:text="-2.0 °C" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:layout_marginStart="8dp"
+                    android:padding="8dp"
+                    android:background="@drawable/humidity_background">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_humidity"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Umidità"
+                            android:textAppearance="?attr/textAppearanceCaption" />
+
+                        <TextView
+                            android:id="@+id/humidity_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?attr/textAppearanceBody1"
+                            android:textStyle="bold"
+                            tools:text="90%" />
+                    </LinearLayout>
+                </LinearLayout>
+            </TableRow>
+
+            <!-- Row 2: Wind, Precipitation -->
+            <TableRow android:layout_marginTop="8dp">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="8dp"
+                    android:background="@drawable/wind_background">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_wind"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Vento"
+                            android:textAppearance="?attr/textAppearanceCaption" />
+
+                        <TextView
+                            android:id="@+id/wind_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?attr/textAppearanceBody1"
+                            android:textStyle="bold"
+                            tools:text="6.1 km/h" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:layout_marginStart="8dp"
+                    android:padding="8dp"
+                    android:background="@drawable/precipitation_background">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_precipitation"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Precipitazioni"
+                            android:textAppearance="?attr/textAppearanceCaption" />
+
+                        <TextView
+                            android:id="@+id/precipitation_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?attr/textAppearanceBody1"
+                            android:textStyle="bold"
+                            tools:text="0.0 mm" />
+                    </LinearLayout>
+                </LinearLayout>
+            </TableRow>
+
+            <!-- Row 3: PM2.5 -->
+            <TableRow android:layout_marginTop="8dp">
+                <LinearLayout
+                    android:id="@+id/pm25_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="8dp"
+                    android:background="@drawable/pm25_background">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_pm25" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="PM2.5"
+                            android:textAppearance="?attr/textAppearanceCaption" />
+
+                        <TextView
+                            android:id="@+id/pm25_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?attr/textAppearanceBody1"
+                            android:textStyle="bold"
+                            tools:text="12.7 µg/m³" />
+                    </LinearLayout>
+                </LinearLayout>
+            </TableRow>
+        </TableLayout>
 
         <TextView
             android:id="@+id/weather_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            tools:text="Temp: 15.0°C, Vento: 10.0km/h, Precip: 0.0mm"
-            android:textAppearance="?attr/textAppearanceBody2"
-            app:layout_constraintStart_toStartOf="@+id/weather_title"
-            app:layout_constraintTop_toBottomOf="@+id/weather_title"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            android:layout_marginTop="16dp"
+            android:textAppearance="?attr/textAppearanceBody1"
+            app:layout_constraintTop_toBottomOf="@+id/location_text"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Caricamento..."/>
 
         <!-- Divider -->
         <View
@@ -100,51 +282,55 @@
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
             android:background="?android:attr/listDivider"
-            app:layout_constraintTop_toBottomOf="@+id/weather_description"
+            app:layout_constraintTop_toBottomOf="@+id/weather_data_layout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Alert Section -->
-        <ImageView
-            android:id="@+id/alert_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/alert_section_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:src="@drawable/ic_alert"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider"
-            app:tint="?attr/colorError" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-        <TextView
-            android:id="@+id/alert_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Feed Allarmi"
-            android:textStyle="bold"
-            android:textAppearance="?attr/textAppearanceSubtitle1"
-            app:layout_constraintStart_toEndOf="@+id/alert_icon"
-            app:layout_constraintTop_toTopOf="@+id/alert_icon"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            <ImageView
+                android:id="@+id/alert_icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_alert"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/alert_description"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            tools:text="Yellow Fog Warning issued for Italy - Veneto"
-            android:textAppearance="?attr/textAppearanceBody2"
-            app:layout_constraintStart_toStartOf="@+id/alert_title"
-            app:layout_constraintTop_toBottomOf="@+id/alert_title"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            <TextView
+                android:id="@+id/alert_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Feed Allarmi"
+                android:textStyle="bold"
+                android:textAppearance="?attr/textAppearanceSubtitle1"
+                app:layout_constraintStart_toEndOf="@+id/alert_icon"
+                app:layout_constraintTop_toTopOf="@+id/alert_icon"
+                app:layout_constraintBottom_toTopOf="@+id/alert_description"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/alert_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            tools:visibility="visible"
-            app:constraint_referenced_ids="divider,alert_icon,alert_title,alert_description" />
+            <TextView
+                android:id="@+id/alert_description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:minLines="2"
+                android:gravity="center_vertical"
+                tools:text="Nessuna allerta attiva per la tua regione."
+                android:textAppearance="?attr/textAppearanceBody2"
+                app:layout_constraintStart_toStartOf="@+id/alert_title"
+                app:layout_constraintTop_toBottomOf="@+id/alert_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/alert_icon"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

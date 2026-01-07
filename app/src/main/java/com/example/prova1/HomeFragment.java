@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
@@ -262,12 +261,11 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                         if (response.isSuccessful() && response.body() != null) {
                             OpenMeteoResponse data = response.body();
                             if (data.getCurrent() != null) {
-                                String desc = String.format("Temperatura: %.1f%s\nUmidità: %d%s\nVento: %.1f%s\nPrecipitazioni: %.1f%s",
-                                        data.getCurrent().getTemperature2m(), data.getCurrentUnits().getTemperature2m(),
-                                        data.getCurrent().getRelativeHumidity2m(), data.getCurrentUnits().getRelativeHumidity2m(),
-                                        data.getCurrent().getWindSpeed10m(), data.getCurrentUnits().getWindSpeed10m(),
-                                        data.getCurrent().getPrecipitation(), data.getCurrentUnits().getPrecipitation());
-                                locationData.setWeatherInfo(desc);
+                                locationData.setTemperature(data.getCurrent().getTemperature2m());
+                                locationData.setHumidity(data.getCurrent().getRelativeHumidity2m());
+                                locationData.setWindSpeed(data.getCurrent().getWindSpeed10m());
+                                locationData.setPrecipitation(data.getCurrent().getPrecipitation());
+                                locationData.setWeatherInfo(""); // Clear old weather info
 
                                 if (data.getCurrent().getWindSpeed10m() >= WIND_SPEED_THRESHOLD) {
                                     sendWindNotification(data.getCurrent().getWindSpeed10m(), locationData);
@@ -301,8 +299,8 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                         if (response.isSuccessful() && response.body() != null) {
                             OpenMeteoResponse data = response.body();
                             if (data.getCurrent() != null && data.getCurrent().getPm25() > 0) {
-                                String airQualityInfo = String.format("Qualità dell'aria in PM2.5: %.1f%s", data.getCurrent().getPm25(), data.getCurrentUnits().getPm25());
-                                locationData.setAirQualityInfo(airQualityInfo);
+                                locationData.setPm25(data.getCurrent().getPm25());
+                                locationData.setAirQualityInfo(""); // Clear old air quality info
 
                                 if (data.getCurrent().getPm25() >= PM25_THRESHOLD) {
                                     sendAirQualityNotification(data.getCurrent().getPm25(), locationData);
