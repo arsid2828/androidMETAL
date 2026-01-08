@@ -53,9 +53,12 @@ import com.google.android.gms.location.LocationServices;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -382,21 +385,35 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         }
     }
 
+    private static class MeteoAlarmAlert {
+        String type;
+        int severity;
+        String title;
+        String summary;
+        String durationText;
+        int color;
+
+        MeteoAlarmAlert(String type, int severity, String title, String summary, String durationText, int color) {
+            this.type = type;
+            this.severity = severity;
+            this.title = title;
+            this.summary = summary;
+            this.durationText = durationText;
+            this.color = color;
+        }
+    }
+
     private void findAlertForRegion(AtomFeed feed, String region, LocationData locationData) {
         if (feed == null || feed.getEntries() == null || region == null) {
             locationData.setAlertInfo("✅ Nessuna allerta attiva.");
             return;
         }
 
-        List<String> activeAlerts = new ArrayList<>();
-        boolean alertFound = false;
-
+        List<MeteoAlarmAlert> allAlerts = new ArrayList<>();
         for (AtomEntry entry : feed.getEntries()) {
             if (entry.getTitle() != null && entry.getTitle().toLowerCase().contains(region.toLowerCase())) {
-                alertFound = true;
                 String title = entry.getTitle();
                 String summary = entry.getSummary() != null ? entry.getSummary() : title;
-                activeAlerts.add("⚠️ " + summary);
 
                 String durationText = title;
                 String[] sentences = summary.split("\\. ");
@@ -407,33 +424,77 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                     }
                 }
 
+                int severity = 0;
                 int color = Color.GRAY;
                 if (title.toLowerCase().contains("red")) {
+                    severity = 3;
                     color = Color.RED;
                 } else if (title.toLowerCase().contains("orange")) {
+                    severity = 2;
                     color = Color.rgb(255, 165, 0);
                 } else if (title.toLowerCase().contains("yellow")) {
+                    severity = 1;
                     color = Color.YELLOW;
                 }
 
-                int notificationId = (locationData.getName() + title + summary).hashCode();
-                sendFeedNotification(title, summary, durationText, color, locationData, notificationId);
+                String alertType = extractAlertType(summary);
+                allAlerts.add(new MeteoAlarmAlert(alertType, severity, title, summary, durationText, color));
             }
         }
 
-        if (alertFound) {
-            StringBuilder alertsBuilder = new StringBuilder();
-            for (int i = 0; i < activeAlerts.size(); i++) {
-                alertsBuilder.append(activeAlerts.get(i));
-                if (i < activeAlerts.size() - 1) {
-                    alertsBuilder.append("\n");
-                }
-            }
-            locationData.setAlertInfo(alertsBuilder.toString());
-        } else {
+        if (allAlerts.isEmpty()) {
             locationData.setAlertInfo("✅ Nessuna allerta attiva per la tua regione.");
+            return;
         }
+
+        Map<String, MeteoAlarmAlert> mostSevereAlerts = new HashMap<>();
+        for (MeteoAlarmAlert alert : allAlerts) {
+            if (!mostSevereAlerts.containsKey(alert.type) || alert.severity > mostSevereAlerts.get(alert.type).severity) {
+                mostSevereAlerts.put(alert.type, alert);
+            }
+        }
+
+        StringBuilder alertsBuilder = new StringBuilder();
+        for (MeteoAlarmAlert alert : mostSevereAlerts.values()) {
+            alertsBuilder.append("⚠️ ").append(alert.summary).append("\n");
+            int notificationId = (locationData.getName() + alert.title + alert.summary).hashCode();
+            sendFeedNotification(alert.title, alert.summary, alert.durationText, alert.color, locationData, notificationId);
+        }
+
+        locationData.setAlertInfo(alertsBuilder.toString().trim());
     }
+
+    private String extractAlertType(String summary) {
+        if (summary == null) {
+            return "Unknown";
+        }
+        if (summary.toLowerCase().contains("wind")) {
+            return "Wind";
+        }
+        if (summary.toLowerCase().contains("rain")) {
+            return "Rain";
+        }
+        if (summary.toLowerCase().contains("snow") || summary.toLowerCase().contains("ice")) {
+            return "Snow/Ice";
+        }
+        if (summary.toLowerCase().contains("thunderstorms")) {
+            return "Thunderstorms";
+        }
+        if (summary.toLowerCase().contains("fog")) {
+            return "Fog";
+        }
+        if (summary.toLowerCase().contains("temperature")) {
+            return "Temperature";
+        }
+        if (summary.toLowerCase().contains("coastal") || summary.toLowerCase().contains("sea")) {
+            return "Coastal Event";
+        }
+        if (summary.toLowerCase().contains("forest fire")) {
+            return "Forest Fire";
+        }
+        return "Other";
+    }
+
 
     private void createNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
