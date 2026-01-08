@@ -4,19 +4,19 @@ public class LocationData {
     private String name;
     private double latitude;
     private double longitude;
-    private String weatherInfo = "Caricamento...";
-    private String alertInfo = "";
-    private int alertSeverity = 0; // 0: None, 1: Yellow, 2: Orange, 3: Red
-    private String airQualityInfo = "";
+    private transient String weatherInfo = "Caricamento...";
+    private transient String alertInfo = "";
+    private transient int alertSeverity = 0; // 0: None, 1: Yellow, 2: Orange, 3: Red
+    private transient String airQualityInfo = "";
     private boolean isFavorite = false;
     private boolean isCurrentLocation = false;
 
-    private double temperature;
-    private int humidity;
-    private double windSpeed;
-    private double precipitation;
-    private double pm25;
-    private int cloudCover;
+    private transient double temperature;
+    private transient int humidity;
+    private transient double windSpeed;
+    private transient double precipitation;
+    private transient double pm25;
+    private transient int cloudCover;
 
     public LocationData(String name, double latitude, double longitude) {
         this.name = name;
@@ -25,13 +25,13 @@ public class LocationData {
     }
 
     // Getters
-    public String getName() { return name; }
+    public String getName() { return name != null ? name : ""; }
     public double getLatitude() { return latitude; }
     public double getLongitude() { return longitude; }
-    public String getWeatherInfo() { return weatherInfo; }
-    public String getAlertInfo() { return alertInfo; }
+    public String getWeatherInfo() { return weatherInfo != null ? weatherInfo : ""; }
+    public String getAlertInfo() { return alertInfo != null ? alertInfo : ""; }
     public int getAlertSeverity() { return alertSeverity; }
-    public String getAirQualityInfo() { return airQualityInfo; }
+    public String getAirQualityInfo() { return airQualityInfo != null ? airQualityInfo : ""; }
     public boolean isFavorite() { return isFavorite; }
     public boolean isCurrentLocation() { return isCurrentLocation; }
     public double getTemperature() { return temperature; }

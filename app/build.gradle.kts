@@ -59,4 +59,7 @@ dependencies {
     // Librerie per parsing XML (ATOM feeds)
     implementation("com.squareup.retrofit2:converter-simplexml:2.9.0")
     implementation("org.simpleframework:simple-xml:2.7.1") // <-- LIBRERIA MANCANTE
+
+    // WorkManager
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
 }
