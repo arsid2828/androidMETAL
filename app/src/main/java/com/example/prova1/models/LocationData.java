@@ -15,6 +15,7 @@ public class LocationData {
     private double windSpeed;
     private double precipitation;
     private double pm25;
+    private int cloudCover;
 
     public LocationData(String name, double latitude, double longitude) {
         this.name = name;
@@ -36,6 +37,7 @@ public class LocationData {
     public double getWindSpeed() { return windSpeed; }
     public double getPrecipitation() { return precipitation; }
     public double getPm25() { return pm25; }
+    public int getCloudCover() { return cloudCover; }
 
     // Setters
     public void setName(String name) { this.name = name; }
@@ -49,4 +51,5 @@ public class LocationData {
     public void setWindSpeed(double windSpeed) { this.windSpeed = windSpeed; }
     public void setPrecipitation(double precipitation) { this.precipitation = precipitation; }
     public void setPm25(double pm25) { this.pm25 = pm25; }
+    public void setCloudCover(int cloudCover) { this.cloudCover = cloudCover; }
 }

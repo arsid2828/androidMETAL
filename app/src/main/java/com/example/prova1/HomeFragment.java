@@ -254,7 +254,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
 
     private void fetchOpenMeteoData(final LocationData locationData) {
         WeatherApiClient.getClient().create(WeatherApiService.class)
-                .getForecast(locationData.getLatitude(), locationData.getLongitude(), "temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m")
+                .getForecast(locationData.getLatitude(), locationData.getLongitude(), "temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,cloud_cover")
                 .enqueue(new Callback<OpenMeteoResponse>() {
                     @Override
                     public void onResponse(@NonNull Call<OpenMeteoResponse> call, @NonNull Response<OpenMeteoResponse> response) {
@@ -265,6 +265,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                                 locationData.setHumidity(data.getCurrent().getRelativeHumidity2m());
                                 locationData.setWindSpeed(data.getCurrent().getWindSpeed10m());
                                 locationData.setPrecipitation(data.getCurrent().getPrecipitation());
+                                locationData.setCloudCover(data.getCurrent().getCloudCover());
                                 locationData.setWeatherInfo(""); // Clear old weather info
 
                                 if (data.getCurrent().getWindSpeed10m() >= WIND_SPEED_THRESHOLD) {

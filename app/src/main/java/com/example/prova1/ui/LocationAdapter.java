@@ -74,6 +74,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         private final TextView precipitationText;
         private final LinearLayout pm25Layout;
         private final TextView pm25Text;
+        private final LinearLayout cloudCoverLayout;
+        private final TextView cloudCoverText;
         private final ConstraintLayout alertSectionLayout;
         private final ImageView alertIcon;
         private final TextView yourLocationLabel;
@@ -93,6 +95,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             precipitationText = itemView.findViewById(R.id.precipitation_text);
             pm25Layout = itemView.findViewById(R.id.pm25_layout);
             pm25Text = itemView.findViewById(R.id.pm25_text);
+            cloudCoverLayout = itemView.findViewById(R.id.cloud_cover_layout);
+            cloudCoverText = itemView.findViewById(R.id.cloud_cover_text);
             alertSectionLayout = itemView.findViewById(R.id.alert_section_layout);
             alertIcon = itemView.findViewById(R.id.alert_icon);
             yourLocationLabel = itemView.findViewById(R.id.your_location_label);
@@ -130,10 +134,13 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
                 humidityText.setText(String.format("%d%%", location.getHumidity()));
                 windText.setText(String.format("%.1f km/h", location.getWindSpeed()));
                 precipitationText.setText(String.format("%.1f mm", location.getPrecipitation()));
+                cloudCoverText.setText(String.format("%d%%", location.getCloudCover()));
+                cloudCoverLayout.setVisibility(View.VISIBLE);
             } else {
                 weatherDataLayout.setVisibility(View.GONE);
                 weatherDescription.setVisibility(View.VISIBLE);
                 weatherDescription.setText(location.getWeatherInfo());
+                cloudCoverLayout.setVisibility(View.GONE);
             }
 
             if (hasAirQuality) {
