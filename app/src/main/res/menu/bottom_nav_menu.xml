@@ -12,8 +12,4 @@
         android:id="@+id/navigation_alerts"
         android:icon="@drawable/ic_alert"
         android:title="Alerts" />
-    <item
-        android:id="@+id/navigation_settings"
-        android:icon="@drawable/ic_settings"
-        android:title="Settings" />
 </menu>

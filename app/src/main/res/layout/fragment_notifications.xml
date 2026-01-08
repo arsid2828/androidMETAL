@@ -19,6 +19,6 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:contentDescription="@string/delete_all_notifications"
-        app:srcCompat="@android:drawable/ic_dialog_alert" />
+        app:srcCompat="@drawable/ic_delete" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
         topLevelDestinations.add(R.id.HomeFragment);
         topLevelDestinations.add(R.id.NotificationsFragment);
         topLevelDestinations.add(R.id.AllerteFragment);
-        topLevelDestinations.add(R.id.ImpostazioniFragment);
         appBarConfiguration = new AppBarConfiguration.Builder(topLevelDestinations).build();
 
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
@@ -83,8 +82,6 @@ public class MainActivity extends AppCompatActivity {
                 toolbar.setNavigationIcon(R.drawable.ic_notifications);
             } else if (destinationId == R.id.AllerteFragment) {
                 toolbar.setNavigationIcon(R.drawable.ic_alert);
-            } else if (destinationId == R.id.ImpostazioniFragment) {
-                toolbar.setNavigationIcon(R.drawable.ic_settings);
             }
 
             invalidateOptionsMenu();
@@ -100,9 +97,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             } else if (itemId == R.id.navigation_alerts) {
                 navController.navigate(R.id.AllerteFragment);
-                return true;
-            } else if (itemId == R.id.navigation_settings) {
-                navController.navigate(R.id.ImpostazioniFragment);
                 return true;
             }
             return false;
@@ -135,13 +129,18 @@ public class MainActivity extends AppCompatActivity {
             if (addItem != null) {
                 addItem.setVisible(currentDestination.getId() == R.id.HomeFragment);
             }
+            MenuItem settingsItem = menu.findItem(R.id.action_settings);
+            if (settingsItem != null) {
+                settingsItem.setVisible(currentDestination.getId() == R.id.NotificationsFragment);
+            }
         }
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_add_location) {
+        int id = item.getItemId();
+        if (id == R.id.action_add_location) {
             Fragment navHostFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
             if (navHostFragment != null) {
                 Fragment currentFragment = navHostFragment.getChildFragmentManager().getPrimaryNavigationFragment();
@@ -149,6 +148,9 @@ public class MainActivity extends AppCompatActivity {
                     ((HomeFragment) currentFragment).showAddLocationDialog();
                 }
             }
+            return true;
+        } else if (id == R.id.action_settings) {
+            Navigation.findNavController(this, R.id.nav_host_fragment_content_main).navigate(R.id.ImpostazioniFragment);
             return true;
         }
         return super.onOptionsItemSelected(item);

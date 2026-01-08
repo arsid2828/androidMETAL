@@ -10,4 +10,11 @@
         android:orderInCategory="1"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/ic_settings"
+        android:title="Impostazioni"
+        android:orderInCategory="2"
+        app:showAsAction="always" />
+
 </menu>
