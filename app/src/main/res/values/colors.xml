@@ -28,13 +28,13 @@
     <color name="alert_blue">#2196F3</color>
     <color name="alert_cyan">#00BCD4</color>
 
-    <!-- Backgrounds for Alerts -->
-    <color name="alert_yellow_bg">#FFFDE7</color>
-    <color name="alert_yellow_stroke">#FFF9C4</color>
-    <color name="alert_orange_bg">#FFF3E0</color>
-    <color name="alert_orange_stroke">#FFE0B2</color>
-    <color name="alert_red_bg">#FFEBEE</color>
-    <color name="alert_red_stroke">#FFCDD2</color>
-    <color name="alert_green_bg">#E8F5E9</color>
-    <color name="alert_green_stroke">#C8E6C9</color>
+    <!-- Backgrounds for Alerts (Subtle Saturation) -->
+    <color name="alert_yellow_bg">#FFF9C4</color>
+    <color name="alert_yellow_stroke">#FFF176</color>
+    <color name="alert_orange_bg">#FFE0B2</color>
+    <color name="alert_orange_stroke">#FFCC80</color>
+    <color name="alert_red_bg">#FFCDD2</color>
+    <color name="alert_red_stroke">#EF9A9A</color>
+    <color name="alert_green_bg">#C8E6C9</color>
+    <color name="alert_green_stroke">#A5D6A7</color>
 </resources>
