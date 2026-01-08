@@ -6,6 +6,7 @@ public class LocationData {
     private double longitude;
     private String weatherInfo = "Caricamento...";
     private String alertInfo = "";
+    private int alertSeverity = 0; // 0: None, 1: Yellow, 2: Orange, 3: Red
     private String airQualityInfo = "";
     private boolean isFavorite = false;
     private boolean isCurrentLocation = false;
@@ -29,6 +30,7 @@ public class LocationData {
     public double getLongitude() { return longitude; }
     public String getWeatherInfo() { return weatherInfo; }
     public String getAlertInfo() { return alertInfo; }
+    public int getAlertSeverity() { return alertSeverity; }
     public String getAirQualityInfo() { return airQualityInfo; }
     public boolean isFavorite() { return isFavorite; }
     public boolean isCurrentLocation() { return isCurrentLocation; }
@@ -43,6 +45,7 @@ public class LocationData {
     public void setName(String name) { this.name = name; }
     public void setWeatherInfo(String weatherInfo) { this.weatherInfo = weatherInfo; }
     public void setAlertInfo(String alertInfo) { this.alertInfo = alertInfo; }
+    public void setAlertSeverity(int alertSeverity) { this.alertSeverity = alertSeverity; }
     public void setAirQualityInfo(String airQualityInfo) { this.airQualityInfo = airQualityInfo; }
     public void setFavorite(boolean favorite) { isFavorite = favorite; }
     public void setCurrentLocation(boolean currentLocation) { isCurrentLocation = currentLocation; }

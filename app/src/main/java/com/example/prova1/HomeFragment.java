@@ -330,6 +330,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
             List<Address> addresses = geocoder.getFromLocation(locationData.getLatitude(), locationData.getLongitude(), 1);
             if (addresses == null || addresses.isEmpty()) {
                 locationData.setAlertInfo("");
+                locationData.setAlertSeverity(0);
                 locationAdapter.notifyDataSetChanged();
                 swipeRefreshLayout.setRefreshing(false);
                 return;
@@ -352,6 +353,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                 feedUrl = "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-spain";
             } else {
                 locationData.setAlertInfo("");
+                locationData.setAlertSeverity(0);
                 locationAdapter.notifyDataSetChanged();
                 swipeRefreshLayout.setRefreshing(false);
                 return;
@@ -366,6 +368,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                                 findAlertForRegion(feed, region, locationData);
                             } else {
                                 locationData.setAlertInfo("");
+                                locationData.setAlertSeverity(0);
                             }
                             locationAdapter.notifyDataSetChanged();
                             swipeRefreshLayout.setRefreshing(false);
@@ -375,6 +378,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                         public void onFailure(@NonNull Call<AtomFeed> call, @NonNull Throwable t) {
                             Log.e("FEED_ERROR", "Errore di rete feed", t);
                             locationData.setAlertInfo("");
+                            locationData.setAlertSeverity(0);
                             locationAdapter.notifyDataSetChanged();
                             swipeRefreshLayout.setRefreshing(false);
                         }
@@ -406,6 +410,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
     private void findAlertForRegion(AtomFeed feed, String region, LocationData locationData) {
         if (feed == null || feed.getEntries() == null || region == null) {
             locationData.setAlertInfo("✅ Nessuna allerta attiva.");
+            locationData.setAlertSeverity(0);
             return;
         }
 
@@ -444,24 +449,34 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
 
         if (allAlerts.isEmpty()) {
             locationData.setAlertInfo("✅ Nessuna allerta attiva per la tua regione.");
+            locationData.setAlertSeverity(0);
             return;
         }
 
         Map<String, MeteoAlarmAlert> mostSevereAlerts = new HashMap<>();
+        int maxSeverity = 0;
         for (MeteoAlarmAlert alert : allAlerts) {
             if (!mostSevereAlerts.containsKey(alert.type) || alert.severity > mostSevereAlerts.get(alert.type).severity) {
                 mostSevereAlerts.put(alert.type, alert);
+            }
+            if (alert.severity > maxSeverity) {
+                maxSeverity = alert.severity;
             }
         }
 
         StringBuilder alertsBuilder = new StringBuilder();
         for (MeteoAlarmAlert alert : mostSevereAlerts.values()) {
-            alertsBuilder.append("⚠️ ").append(alert.summary).append("\n");
+            alertsBuilder.append("⚠️ ").append(alert.summary).append(" | ");
             int notificationId = (locationData.getName() + alert.title + alert.summary).hashCode();
             sendFeedNotification(alert.title, alert.summary, alert.durationText, alert.color, locationData, notificationId);
         }
 
-        locationData.setAlertInfo(alertsBuilder.toString().trim());
+        String finalAlertInfo = alertsBuilder.toString().trim();
+        if (finalAlertInfo.endsWith("|")) {
+            finalAlertInfo = finalAlertInfo.substring(0, finalAlertInfo.length() - 2);
+        }
+        locationData.setAlertInfo(finalAlertInfo);
+        locationData.setAlertSeverity(maxSeverity);
     }
 
     private String extractAlertType(String summary) {

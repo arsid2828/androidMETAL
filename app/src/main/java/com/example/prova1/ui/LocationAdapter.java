@@ -159,8 +159,24 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
 
             if (location.getAlertInfo() != null && !location.getAlertInfo().isEmpty()) {
                 alertDescription.setText(location.getAlertInfo());
-                boolean hasRealAlert = !location.getAlertInfo().contains("Nessuna allerta");
+                alertDescription.setSelected(true); // Start marquee
+                
+                int severity = location.getAlertSeverity();
+                boolean hasRealAlert = severity > 0;
+                
                 alertIcon.setImageResource(hasRealAlert ? R.drawable.ic_alert : R.drawable.ic_shield_check);
+                
+                // Set background based on severity
+                if (severity == 3) {
+                    alertSectionLayout.setBackgroundResource(R.drawable.alert_red_background);
+                } else if (severity == 2) {
+                    alertSectionLayout.setBackgroundResource(R.drawable.alert_orange_background);
+                } else if (severity == 1) {
+                    alertSectionLayout.setBackgroundResource(R.drawable.alert_yellow_background);
+                } else {
+                    alertSectionLayout.setBackgroundResource(R.drawable.alert_green_background);
+                }
+                
                 alertSectionLayout.setVisibility(View.VISIBLE);
             } else {
                 alertSectionLayout.setVisibility(View.GONE);
