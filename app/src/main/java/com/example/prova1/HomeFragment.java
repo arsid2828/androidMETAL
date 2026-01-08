@@ -75,7 +75,6 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
     private static final String TEMP_CHANNEL_ID = "temp_notification_channel";
     private static final String AIR_QUALITY_CHANNEL_ID = "air_quality_notification_channel";
     private static final int WIND_NOTIFICATION_ID = 1;
-    private static final int FEED_NOTIFICATION_ID = 2;
     private static final int AIR_QUALITY_NOTIFICATION_ID = 3;
     private static final double WIND_SPEED_THRESHOLD = 30.0;
     private static final double PM25_THRESHOLD = 25.0;
@@ -389,10 +388,15 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
             return;
         }
 
+        List<String> activeAlerts = new ArrayList<>();
+        boolean alertFound = false;
+
         for (AtomEntry entry : feed.getEntries()) {
             if (entry.getTitle() != null && entry.getTitle().toLowerCase().contains(region.toLowerCase())) {
+                alertFound = true;
                 String title = entry.getTitle();
                 String summary = entry.getSummary() != null ? entry.getSummary() : title;
+                activeAlerts.add("⚠️ " + summary);
 
                 String durationText = title;
                 String[] sentences = summary.split("\\. ");
@@ -412,12 +416,23 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                     color = Color.YELLOW;
                 }
 
-                locationData.setAlertInfo("⚠️ " + summary);
-                sendFeedNotification(title, summary, durationText, color, locationData);
-                return;
+                int notificationId = (locationData.getName() + title + summary).hashCode();
+                sendFeedNotification(title, summary, durationText, color, locationData, notificationId);
             }
         }
-        locationData.setAlertInfo("✅ Nessuna allerta attiva per la tua regione.");
+
+        if (alertFound) {
+            StringBuilder alertsBuilder = new StringBuilder();
+            for (int i = 0; i < activeAlerts.size(); i++) {
+                alertsBuilder.append(activeAlerts.get(i));
+                if (i < activeAlerts.size() - 1) {
+                    alertsBuilder.append("\n");
+                }
+            }
+            locationData.setAlertInfo(alertsBuilder.toString());
+        } else {
+            locationData.setAlertInfo("✅ Nessuna allerta attiva per la tua regione.");
+        }
     }
 
     private void createNotificationChannels() {
@@ -476,10 +491,10 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
     }
 
     @SuppressLint({"MissingPermission", "NewApi"})
-    private void sendFeedNotification(String title, String summary, String durationText, int color, LocationData location) {
+    private void sendFeedNotification(String title, String summary, String durationText, int color, LocationData location, int notificationId) {
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
 
-        if (isNotificationActive(FEED_NOTIFICATION_ID, title)) return;
+        if (isNotificationActive(notificationId, title)) return;
 
         WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), title, summary, color);
 
@@ -492,7 +507,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setOnlyAlertOnce(true);
 
-        NotificationManagerCompat.from(requireContext()).notify(FEED_NOTIFICATION_ID, builder.build());
+        NotificationManagerCompat.from(requireContext()).notify(notificationId, builder.build());
         alertViewModel.addWindAlert(newAlert);
     }
 
@@ -589,5 +604,3 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         return false;
     }
 }
-
-//.
