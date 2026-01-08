@@ -16,6 +16,7 @@ import com.example.prova1.R;
 import com.example.prova1.models.LocationData;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.LocationViewHolder> {
@@ -29,6 +30,11 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     private OnItemInteractionListener listener;
 
     public void setLocations(List<LocationData> locations) {
+        Collections.sort(locations, (o1, o2) -> {
+            if (o1.isCurrentLocation()) return -1;
+            if (o2.isCurrentLocation()) return 1;
+            return Boolean.compare(o2.isFavorite(), o1.isFavorite());
+        });
         this.locations = locations;
         notifyDataSetChanged();
     }
@@ -69,6 +75,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         private final LinearLayout pm25Layout;
         private final TextView pm25Text;
         private final ConstraintLayout alertSectionLayout;
+        private final ImageView alertIcon;
+        private final TextView yourLocationLabel;
+
 
         public LocationViewHolder(@NonNull View itemView, final OnItemInteractionListener listener) {
             super(itemView);
@@ -85,6 +94,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             pm25Layout = itemView.findViewById(R.id.pm25_layout);
             pm25Text = itemView.findViewById(R.id.pm25_text);
             alertSectionLayout = itemView.findViewById(R.id.alert_section_layout);
+            alertIcon = itemView.findViewById(R.id.alert_icon);
+            yourLocationLabel = itemView.findViewById(R.id.your_location_label);
 
             deleteButton.setOnClickListener(v -> {
                 if (listener != null) {
@@ -107,6 +118,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
 
         public void bind(LocationData location) {
             locationText.setText(location.getName());
+            yourLocationLabel.setVisibility(location.isCurrentLocation() ? View.VISIBLE : View.GONE);
 
             boolean hasWeather = location.getWeatherInfo() != null && location.getWeatherInfo().isEmpty();
             boolean hasAirQuality = location.getAirQualityInfo() != null && location.getAirQualityInfo().isEmpty();
@@ -140,6 +152,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
 
             if (location.getAlertInfo() != null && !location.getAlertInfo().isEmpty()) {
                 alertDescription.setText(location.getAlertInfo());
+                boolean hasRealAlert = !location.getAlertInfo().contains("Nessuna allerta");
+                alertIcon.setImageResource(hasRealAlert ? R.drawable.ic_alert : R.drawable.ic_shield_check);
                 alertSectionLayout.setVisibility(View.VISIBLE);
             } else {
                 alertSectionLayout.setVisibility(View.GONE);

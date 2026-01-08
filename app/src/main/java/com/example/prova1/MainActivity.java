@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -68,12 +70,12 @@ public class MainActivity extends AppCompatActivity {
         topLevelDestinations.add(R.id.AllerteFragment);
         topLevelDestinations.add(R.id.ImpostazioniFragment);
         appBarConfiguration = new AppBarConfiguration.Builder(topLevelDestinations).build();
-        
+
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             toolbarTitle.setText(destination.getLabel());
-            
+
             int destinationId = destination.getId();
             if (destinationId == R.id.HomeFragment) {
                 toolbar.setNavigationIcon(R.drawable.ic_home);
