@@ -53,6 +53,8 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -60,6 +62,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.StringJoiner;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -315,8 +318,34 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
     }
 
     private void fetchOpenMeteoData(final LocationData locationData) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        StringJoiner currentJoiner = new StringJoiner(",");
+        currentJoiner.add("temperature_2m");
+        currentJoiner.add("relative_humidity_2m");
+        currentJoiner.add("precipitation");
+        currentJoiner.add("wind_speed_10m");
+
+        if (prefs.getBoolean("cloud_cover", false)) {
+            currentJoiner.add("cloud_cover");
+        }
+        if (prefs.getBoolean("apparent_temperature", false)) {
+            currentJoiner.add("apparent_temperature");
+        }
+        if (prefs.getBoolean("uv_index", false)) {
+            currentJoiner.add("uv_index");
+        }
+        if (prefs.getBoolean("snowfall", false)) {
+            currentJoiner.add("snowfall");
+        }
+
+        String current = currentJoiner.toString();
+        String daily = "";
+        if (prefs.getBoolean("sunrise_sunset", false)) {
+            daily = "sunrise,sunset";
+        }
+
         WeatherApiClient.getClient().create(WeatherApiService.class)
-                .getForecast(locationData.getLatitude(), locationData.getLongitude(), "temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,cloud_cover,apparent_temperature,uv_index")
+                .getForecast(locationData.getLatitude(), locationData.getLongitude(), current, daily)
                 .enqueue(new Callback<OpenMeteoResponse>() {
                     @Override
                     public void onResponse(@NonNull Call<OpenMeteoResponse> call, @NonNull Response<OpenMeteoResponse> response) {
@@ -327,9 +356,19 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                                 locationData.setHumidity(data.getCurrent().getRelativeHumidity2m());
                                 locationData.setWindSpeed(data.getCurrent().getWindSpeed10m());
                                 locationData.setPrecipitation(data.getCurrent().getPrecipitation());
-                                locationData.setCloudCover(data.getCurrent().getCloudCover());
-                                locationData.setApparentTemperature(data.getCurrent().getApparentTemperature());
-                                locationData.setUvIndex(data.getCurrent().getUvIndex());
+                                if (prefs.getBoolean("cloud_cover", false)) {
+                                    locationData.setCloudCover(data.getCurrent().getCloudCover());
+                                }
+                                if (prefs.getBoolean("apparent_temperature", false)) {
+                                    locationData.setApparentTemperature(data.getCurrent().getApparentTemperature());
+                                }
+                                if (prefs.getBoolean("uv_index", false)) {
+                                    locationData.setUvIndex(data.getCurrent().getUvIndex());
+                                }
+                                if (prefs.getBoolean("snowfall", false)) {
+                                    locationData.setSnowfall(data.getCurrent().getSnowfall());
+                                }
+
                                 locationData.setWeatherInfo(""); // Clear old weather info
 
                                 if (data.getCurrent().getWindSpeed10m() >= WIND_SPEED_THRESHOLD) {
@@ -338,6 +377,10 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
 
                                 double currentTemp = data.getCurrent().getTemperature2m();
                                 sendTemperatureNotification(currentTemp, locationData);
+                            }
+                            if (data.getDaily() != null && prefs.getBoolean("sunrise_sunset", false)) {
+                                locationData.setSunrise(data.getDaily().getSunrise().get(0));
+                                locationData.setSunset(data.getDaily().getSunset().get(0));
                             }
                         } else {
                             locationData.setWeatherInfo("Dati meteo non disponibili");

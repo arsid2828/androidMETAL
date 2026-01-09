@@ -30,6 +30,9 @@ public class OpenMeteoResponse {
     @SerializedName("current")
     private Current current;
 
+    @SerializedName("daily")
+    private Daily daily;
+
     public double getLatitude() { return latitude; }
     public double getLongitude() { return longitude; }
     public double getGenerationtimeMs() { return generationtimeMs; }
@@ -39,4 +42,5 @@ public class OpenMeteoResponse {
     public double getElevation() { return elevation; }
     public CurrentUnits getCurrentUnits() { return currentUnits; }
     public Current getCurrent() { return current; }
+    public Daily getDaily() { return daily; }
 }
