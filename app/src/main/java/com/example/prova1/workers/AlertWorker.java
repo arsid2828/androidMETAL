@@ -109,7 +109,7 @@ public class AlertWorker extends Worker {
     private void checkOpenMeteoAlerts(LocationData locationData) {
         try {
             Response<OpenMeteoResponse> response = WeatherApiClient.getClient().create(WeatherApiService.class)
-                    .getForecast(locationData.getLatitude(), locationData.getLongitude(), "temperature_2m,wind_speed_10m", "")
+                    .getForecast(locationData.getLatitude(), locationData.getLongitude(), "temperature_2m", "wind_speed_10m", "visibility")
                     .execute();
             if (response.isSuccessful() && response.body() != null) {
                 OpenMeteoResponse data = response.body();
@@ -121,6 +121,10 @@ public class AlertWorker extends Worker {
                     double temperature = data.getCurrent().getTemperature2m();
                     int tempSeverity = getTempSeverity(temperature);
                     compareAndNotify(locationData, "temp", tempSeverity, String.format(Locale.getDefault(), "Temperatura di %.1f°C", temperature), MainApplication.TEMP_CHANNEL_ID);
+
+                    double visibility = data.getCurrent().getVisibility();
+                    int visibilitySeverity = getVisibilitySeverity(visibility);
+                    compareAndNotify(locationData, "visibility", visibilitySeverity, String.format(Locale.getDefault(), "Visibilità di %.1f km", visibility / 1000), MainApplication.VISIBILITY_CHANNEL_ID);
                 }
             }
         } catch (Exception e) {
@@ -201,6 +205,8 @@ public class AlertWorker extends Worker {
             readableAlertType = "Vento";
         } else if (alertType.equals("temp")) {
             readableAlertType = "Temperatura";
+        } else if (alertType.equals("visibility")) {
+            readableAlertType = "Visibilità";
         } else if (alertType.startsWith("feed_")) {
             String feedType = alertType.substring(5);
             if (feedType.equals("Altro") || feedType.equals("Sconosciuto")) {
@@ -243,6 +249,14 @@ public class AlertWorker extends Worker {
         if (temp <= -5) return 2;
         if (temp <= 2) return 1;
         return 0;
+    }
+
+    private int getVisibilitySeverity(double visibilityInMeters) {
+        if (visibilityInMeters < 100) return 4; // Dense fog, very dangerous
+        if (visibilityInMeters < 500) return 3; // Thick fog
+        if (visibilityInMeters < 1000) return 2; // Moderate fog
+        if (visibilityInMeters < 5000) return 1; // Mist or poor visibility
+        return 0; // Good visibility
     }
 
     private int getFeedSeverity(String title) {

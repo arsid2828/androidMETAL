@@ -16,8 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.prova1.R;
 import com.example.prova1.models.LocationData;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -82,11 +80,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         private final TextView apparentTemperatureText;
         private final LinearLayout uvIndexLayout;
         private final TextView uvIndexText;
-        private final LinearLayout snowfallLayout;
-        private final TextView snowfallText;
-        private final LinearLayout sunriseSunsetLayout;
-        private final TextView sunriseSunsetText;
-        private final TextView sunriseSunsetLabel;
+        private final LinearLayout visibilityLayout;
+        private final TextView visibilityText;
         private final ConstraintLayout alertSectionLayout;
         private final ImageView alertIcon;
         private final TextView yourLocationLabel;
@@ -111,11 +106,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             apparentTemperatureText = itemView.findViewById(R.id.apparent_temperature_text);
             uvIndexLayout = itemView.findViewById(R.id.uv_index_layout);
             uvIndexText = itemView.findViewById(R.id.uv_index_text);
-            snowfallLayout = itemView.findViewById(R.id.snowfall_layout);
-            snowfallText = itemView.findViewById(R.id.snowfall_text);
-            sunriseSunsetLayout = itemView.findViewById(R.id.sunrise_sunset_layout);
-            sunriseSunsetText = itemView.findViewById(R.id.sunrise_sunset_text);
-            sunriseSunsetLabel = itemView.findViewById(R.id.sunrise_sunset_label);
+            visibilityLayout = itemView.findViewById(R.id.visibility_layout);
+            visibilityText = itemView.findViewById(R.id.visibility_text);
             alertSectionLayout = itemView.findViewById(R.id.alert_section_layout);
             alertIcon = itemView.findViewById(R.id.alert_icon);
             yourLocationLabel = itemView.findViewById(R.id.your_location_label);
@@ -162,12 +154,11 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             boolean showCloudCover = prefs.getBoolean("cloud_cover", false) && hasWeather;
             boolean showApparentTemp = prefs.getBoolean("apparent_temperature", false) && hasWeather;
             boolean showUvIndex = prefs.getBoolean("uv_index", false) && hasWeather;
-            boolean showSnowfall = prefs.getBoolean("snowfall", false) && hasWeather;
-            boolean showSunriseSunset = prefs.getBoolean("sunrise_sunset", false) && hasWeather;
+            boolean showVisibility = prefs.getBoolean("visibility", false) && hasWeather;
 
             pm25Layout.setVisibility(showPm25 ? View.VISIBLE : View.GONE);
             if(showPm25) {
-                pm25Text.setText(String.format("%.1f µg/m³", location.getPm25()));
+                pm25Text.setText(String.format("%.1f μg/m³", location.getPm25()));
             }
             cloudCoverLayout.setVisibility(showCloudCover ? View.VISIBLE : View.GONE);
             if (showCloudCover) {
@@ -181,27 +172,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             if (showUvIndex) {
                 uvIndexText.setText(String.format("%.1f", location.getUvIndex()));
             }
-            snowfallLayout.setVisibility(showSnowfall ? View.VISIBLE : View.GONE);
-            if (showSnowfall) {
-                snowfallText.setText(String.format("%.1f cm", location.getSnowfall()));
-            }
-            sunriseSunsetLayout.setVisibility(showSunriseSunset ? View.VISIBLE : View.GONE);
-            if (showSunriseSunset) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-                LocalDateTime sunriseTime = LocalDateTime.parse(location.getSunrise(), formatter);
-                LocalDateTime sunsetTime = LocalDateTime.parse(location.getSunset(), formatter);
-                LocalDateTime now = LocalDateTime.now();
-
-                if (now.isBefore(sunriseTime)) {
-                    sunriseSunsetLabel.setText("Alba");
-                    sunriseSunsetText.setText(sunriseTime.format(DateTimeFormatter.ofPattern("HH:mm")));
-                } else if (now.isBefore(sunsetTime)) {
-                    sunriseSunsetLabel.setText("Tramonto");
-                    sunriseSunsetText.setText(sunsetTime.format(DateTimeFormatter.ofPattern("HH:mm")));
-                } else {
-                    sunriseSunsetLabel.setText("Alba (domani)");
-                    sunriseSunsetText.setText(sunriseTime.format(DateTimeFormatter.ofPattern("HH:mm")));
-                }
+            visibilityLayout.setVisibility(showVisibility ? View.VISIBLE : View.GONE);
+            if (showVisibility) {
+                visibilityText.setText(String.format("%.1f km", location.getVisibility() / 1000));
             }
 
             if (location.isFavorite()) {

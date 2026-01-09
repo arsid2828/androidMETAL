@@ -11,7 +11,6 @@ public interface WeatherApiService {
     Call<OpenMeteoResponse> getForecast(
             @Query("latitude") double latitude,
             @Query("longitude") double longitude,
-            @Query("current") String current,
-            @Query("daily") String daily
+            @Query("current") String... current
     );
 }

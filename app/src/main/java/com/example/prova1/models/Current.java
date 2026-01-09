@@ -21,6 +21,9 @@ public class Current {
     @SerializedName("wind_speed_10m")
     private double windSpeed10m;
 
+    @SerializedName("visibility")
+    private double visibility;
+
     @SerializedName("pm2_5")
     private double pm25;
 
@@ -42,6 +45,7 @@ public class Current {
     public int getRelativeHumidity2m() { return relativeHumidity2m; }
     public double getPrecipitation() { return precipitation; }
     public double getWindSpeed10m() { return windSpeed10m; }
+    public double getVisibility() { return visibility; }
     public double getPm25() { return pm25; }
     public int getCloudCover() { return cloudCover; }
     public double getApparentTemperature() { return apparentTemperature; }

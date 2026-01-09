@@ -23,13 +23,8 @@
             app:defaultValue="false" />
 
         <SwitchPreferenceCompat
-            app:key="snowfall"
-            app:title="Altezza neve"
-            app:defaultValue="false" />
-
-        <SwitchPreferenceCompat
-            app:key="sunrise_sunset"
-            app:title="Alba e Tramonto"
+            app:key="visibility"
+            app:title="Visibilità"
             app:defaultValue="false" />
 
     </PreferenceCategory>

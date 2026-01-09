@@ -25,9 +25,7 @@ public class LocationData implements Parcelable {
     private transient int cloudCover;
     private transient double apparentTemperature;
     private transient double uvIndex;
-    private transient double snowfall;
-    private transient String sunrise;
-    private transient String sunset;
+    private transient double visibility;
 
     // This field is now initialized at declaration and is not transient.
     // This ensures it's handled by both Gson and Parcelable.
@@ -101,9 +99,7 @@ public class LocationData implements Parcelable {
     public int getCloudCover() { return cloudCover; }
     public double getApparentTemperature() { return apparentTemperature; }
     public double getUvIndex() { return uvIndex; }
-    public double getSnowfall() { return snowfall; }
-    public String getSunrise() { return sunrise; }
-    public String getSunset() { return sunset; }
+    public double getVisibility() { return visibility; }
     
     // Defensive getter for the alert severity map
     public Map<String, Integer> getAlertTypeSeverity() { 
@@ -129,8 +125,6 @@ public class LocationData implements Parcelable {
     public void setCloudCover(int cloudCover) { this.cloudCover = cloudCover; }
     public void setApparentTemperature(double apparentTemperature) { this.apparentTemperature = apparentTemperature; }
     public void setUvIndex(double uvIndex) { this.uvIndex = uvIndex; }
-    public void setSnowfall(double snowfall) { this.snowfall = snowfall; }
-    public void setSunrise(String sunrise) { this.sunrise = sunrise; }
-    public void setSunset(String sunset) { this.sunset = sunset; }
+    public void setVisibility(double visibility) { this.visibility = visibility; }
     public void setAlertTypeSeverity(Map<String, Integer> alertTypeSeverity) { this.alertTypeSeverity = alertTypeSeverity; }
 }
