@@ -76,6 +76,10 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         private final TextView pm25Text;
         private final LinearLayout cloudCoverLayout;
         private final TextView cloudCoverText;
+        private final LinearLayout apparentTemperatureLayout;
+        private final TextView apparentTemperatureText;
+        private final LinearLayout uvIndexLayout;
+        private final TextView uvIndexText;
         private final ConstraintLayout alertSectionLayout;
         private final ImageView alertIcon;
         private final TextView yourLocationLabel;
@@ -97,6 +101,10 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             pm25Text = itemView.findViewById(R.id.pm25_text);
             cloudCoverLayout = itemView.findViewById(R.id.cloud_cover_layout);
             cloudCoverText = itemView.findViewById(R.id.cloud_cover_text);
+            apparentTemperatureLayout = itemView.findViewById(R.id.apparent_temperature_layout);
+            apparentTemperatureText = itemView.findViewById(R.id.apparent_temperature_text);
+            uvIndexLayout = itemView.findViewById(R.id.uv_index_layout);
+            uvIndexText = itemView.findViewById(R.id.uv_index_text);
             alertSectionLayout = itemView.findViewById(R.id.alert_section_layout);
             alertIcon = itemView.findViewById(R.id.alert_icon);
             yourLocationLabel = itemView.findViewById(R.id.your_location_label);
@@ -135,12 +143,18 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
                 windText.setText(String.format("%.1f km/h", location.getWindSpeed()));
                 precipitationText.setText(String.format("%.1f mm", location.getPrecipitation()));
                 cloudCoverText.setText(String.format("%d%%", location.getCloudCover()));
+                apparentTemperatureText.setText(String.format("%.1f °C", location.getApparentTemperature()));
+                uvIndexText.setText(String.format("%.1f", location.getUvIndex()));
                 cloudCoverLayout.setVisibility(View.VISIBLE);
+                apparentTemperatureLayout.setVisibility(View.VISIBLE);
+                uvIndexLayout.setVisibility(View.VISIBLE);
             } else {
                 weatherDataLayout.setVisibility(View.GONE);
                 weatherDescription.setVisibility(View.VISIBLE);
                 weatherDescription.setText(location.getWeatherInfo());
                 cloudCoverLayout.setVisibility(View.GONE);
+                apparentTemperatureLayout.setVisibility(View.GONE);
+                uvIndexLayout.setVisibility(View.GONE);
             }
 
             if (hasAirQuality) {
@@ -160,12 +174,12 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             if (location.getAlertInfo() != null && !location.getAlertInfo().isEmpty()) {
                 alertDescription.setText(location.getAlertInfo());
                 alertDescription.setSelected(true); // Start marquee
-                
+
                 int severity = location.getAlertSeverity();
                 boolean hasRealAlert = severity > 0;
-                
+
                 alertIcon.setImageResource(hasRealAlert ? R.drawable.ic_alert : R.drawable.ic_shield_check);
-                
+
                 // Set background based on severity
                 if (severity == 3) {
                     alertSectionLayout.setBackgroundResource(R.drawable.alert_red_background);
@@ -176,7 +190,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
                 } else {
                     alertSectionLayout.setBackgroundResource(R.drawable.alert_green_background);
                 }
-                
+
                 alertSectionLayout.setVisibility(View.VISIBLE);
             } else {
                 alertSectionLayout.setVisibility(View.GONE);
