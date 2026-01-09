@@ -82,7 +82,10 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                 if (isGranted) {
                     requestBackgroundLocationPermission();
                 } else {
-                    Toast.makeText(getContext(), "Permesso GPS negato.", Toast.LENGTH_LONG).show();
+                    Context context = getContext();
+                    if (context != null) {
+                        Toast.makeText(context, "Permesso GPS negato.", Toast.LENGTH_LONG).show();
+                    }
                 }
             });
 
@@ -98,7 +101,10 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
     private final ActivityResultLauncher<String> requestNotificationPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (!isGranted) {
-                    Toast.makeText(getContext(), "Permesso notifiche negato.", Toast.LENGTH_SHORT).show();
+                    Context context = getContext();
+                    if (context != null) {
+                        Toast.makeText(context, "Permesso notifiche negato.", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 
@@ -137,6 +143,9 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
     }
 
     private void refreshData() {
+        Context context = getContext();
+        if (context == null) return;
+
         if (!swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(true);
 
         boolean isCurrentLocationFavorite = false;
@@ -154,20 +163,23 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
             fetchAllDataForLocation(location);
         }
 
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
         } else {
             getCurrentLocationAndFetchData(isCurrentLocationFavorite);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
         }
     }
 
     private void requestBackgroundLocationPermission() {
+        Context context = getContext();
+        if (context == null) return;
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 requestBackgroundLocationLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
             } else {
                 getCurrentLocationAndFetchData();
@@ -178,7 +190,10 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
     }
 
     private void showBackgroundLocationDialog() {
-        new AlertDialog.Builder(getContext())
+        Context context = getContext();
+        if (context == null) return;
+
+        new AlertDialog.Builder(context)
                 .setTitle("Permesso di Posizione in Background")
                 .setMessage("Per ricevere notifiche di allerte meteo anche quando l'app è chiusa, è necessario concedere il permesso di accedere alla posizione in background. Si prega di selezionare 'Consenti sempre' nelle impostazioni.")
                 .setPositiveButton("Apri Impostazioni", (dialog, which) -> {
@@ -202,19 +217,23 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
     private void getCurrentLocationAndFetchData(boolean isFavorite) {
         fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(requireActivity(), location -> {
+                    Context context = getContext();
                     if (location != null) {
                         LocationData currentLocation = new LocationData("Posizione Attuale", location.getLatitude(), location.getLongitude());
                         currentLocation.setCurrentLocation(true);
                         currentLocation.setFavorite(isFavorite);
                         startDataFetch(currentLocation);
-                    } else {
-                        Toast.makeText(getContext(), "Posizione non trovata.", Toast.LENGTH_SHORT).show();
+                    } else if (context != null) {
+                        Toast.makeText(context, "Posizione non trovata.", Toast.LENGTH_SHORT).show();
                         sortAndDisplayLocations();
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(getContext(), "Errore GPS.", Toast.LENGTH_SHORT).show();
+                    Context context = getContext();
+                    if (context != null) {
+                        Toast.makeText(context, "Errore GPS.", Toast.LENGTH_SHORT).show();
+                    }
                     sortAndDisplayLocations();
                     swipeRefreshLayout.setRefreshing(false);
                 });
@@ -249,7 +268,10 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
 
     @Override
     public void onDialogPositiveClick(String cityName) {
-        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+        Context context = getContext();
+        if (context == null) return;
+
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         try {
             List<Address> addresses = geocoder.getFromLocationName(cityName, 1);
             if (addresses != null && !addresses.isEmpty()) {
@@ -257,10 +279,10 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                 LocationData newLocation = new LocationData(address.getLocality(), address.getLatitude(), address.getLongitude());
                 startDataFetch(newLocation);
             } else {
-                Toast.makeText(getContext(), "Città non trovata.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Città non trovata.", Toast.LENGTH_SHORT).show();
             }
         } catch (IOException e) {
-            Toast.makeText(getContext(), "Errore di rete. Impossibile aggiungere la città.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Errore di rete. Impossibile aggiungere la città.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -355,7 +377,10 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
     }
 
     private void fetchFeedData(final LocationData locationData) {
-        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+        Context context = getContext();
+        if (context == null) return;
+
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         try {
             List<Address> addresses = geocoder.getFromLocation(locationData.getLatitude(), locationData.getLongitude(), 1);
             if (addresses == null || addresses.isEmpty()) {
@@ -549,7 +574,9 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
 
     @SuppressLint({"MissingPermission", "NewApi"})
     private void sendWindNotification(double windSpeed, LocationData location) {
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
+        Context context = getContext();
+        if (context == null) return;
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
 
         String title;
         int color;
@@ -570,7 +597,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         String contentText = String.format("Vento a %.1f km/h a %s", windSpeed, location.getName());
         WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), title, contentText, color);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), MainApplication.WIND_CHANNEL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, MainApplication.WIND_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle(title)
                 .setContentText(contentText)
@@ -578,17 +605,19 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setOnlyAlertOnce(true);
 
-        NotificationManagerCompat.from(requireContext()).notify(WIND_NOTIFICATION_ID, builder.build());
+        NotificationManagerCompat.from(context).notify(WIND_NOTIFICATION_ID, builder.build());
         alertViewModel.addWindAlert(newAlert);
     }
 
     @SuppressLint({"MissingPermission", "NewApi"})
     private void sendFeedNotification(String title, String summary, String durationText, int color, LocationData location, int notificationId) {
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
+        Context context = getContext();
+        if (context == null) return;
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
 
         WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), title, summary, color);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), MainApplication.FEED_CHANNEL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, MainApplication.FEED_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle(title)
                 .setContentText(durationText)
@@ -597,13 +626,15 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setOnlyAlertOnce(true);
 
-        NotificationManagerCompat.from(requireContext()).notify(notificationId, builder.build());
+        NotificationManagerCompat.from(context).notify(notificationId, builder.build());
         alertViewModel.addWindAlert(newAlert);
     }
 
     @SuppressLint({"MissingPermission", "NewApi"})
     private void sendTemperatureNotification(double temp, LocationData location) {
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
+        Context context = getContext();
+        if (context == null) return;
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
 
         String titleSuffix = null;
         int color = 0;
@@ -629,7 +660,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         String contentText = String.format("Temperatura: %.1f°C a %s", temp, location.getName());
         WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), notificationTitle, contentText, color);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), MainApplication.TEMP_CHANNEL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, MainApplication.TEMP_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle(notificationTitle)
                 .setContentText(contentText)
@@ -637,13 +668,15 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setOnlyAlertOnce(true);
 
-        NotificationManagerCompat.from(requireContext()).notify(location.getName().hashCode(), builder.build());
+        NotificationManagerCompat.from(context).notify(location.getName().hashCode(), builder.build());
         alertViewModel.addWindAlert(newAlert);
     }
 
     @SuppressLint({"MissingPermission", "NewApi"})
     private void sendAirQualityNotification(double pm25, LocationData location) {
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
+        Context context = getContext();
+        if (context == null) return;
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
 
         String title;
         int color;
@@ -663,7 +696,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         String contentText = String.format("Qualità dell'aria in PM2.5: %.1f µg/m³ a %s", pm25, location.getName());
         WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), title, contentText, color);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), MainApplication.AIR_QUALITY_CHANNEL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, MainApplication.AIR_QUALITY_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle(title)
                 .setContentText(contentText)
@@ -671,13 +704,16 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setOnlyAlertOnce(true);
 
-        NotificationManagerCompat.from(requireContext()).notify(AIR_QUALITY_NOTIFICATION_ID, builder.build());
+        NotificationManagerCompat.from(context).notify(AIR_QUALITY_NOTIFICATION_ID, builder.build());
         alertViewModel.addWindAlert(newAlert);
     }
 
     @SuppressLint("NewApi")
     private boolean isNotificationActive(int notificationId, String title) {
-        android.app.NotificationManager notificationManager = (android.app.NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        Context context = getContext();
+        if (context == null) return false;
+
+        android.app.NotificationManager notificationManager = (android.app.NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         android.service.notification.StatusBarNotification[] activeNotifications = notificationManager.getActiveNotifications();
         for (android.service.notification.StatusBarNotification sbn : activeNotifications) {
             if (sbn.getId() == notificationId) {
