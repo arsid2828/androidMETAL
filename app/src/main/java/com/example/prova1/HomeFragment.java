@@ -525,6 +525,12 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         StringBuilder alertsBuilder = new StringBuilder();
         for (MeteoAlarmAlert alert : mostSevereAlerts.values()) {
             alertsBuilder.append("⚠️ ").append(alert.summary).append(" | ");
+            
+            // Salviamo SEMPRE l'allerta nel ViewModel per la sezione notifiche
+            WindAlert newAlert = new WindAlert(System.currentTimeMillis(), locationData.getName(), alert.title, alert.summary, alert.color);
+            alertViewModel.addWindAlert(newAlert);
+
+            // Invia la notifica di sistema SOLO se è nuova o più grave
             Integer previousSeverity = previousAlertTypeSeverity.get(alert.type);
             if (previousSeverity == null || alert.severity > previousSeverity) {
                 int notificationId = (locationData.getName() + alert.title + alert.summary).hashCode();
@@ -574,10 +580,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
 
     @SuppressLint({"MissingPermission", "NewApi"})
     private void sendWindNotification(double windSpeed, LocationData location) {
-        Context context = getContext();
-        if (context == null) return;
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
-
+        // Salvataggio nel ViewModel (Sezione Notifiche) - Fuori dal controllo Context
         String title;
         int color;
         if (windSpeed >= 150) {
@@ -593,9 +596,14 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
             title = "In questo momento a " + location.getName() + " Vento Moderato";
             color = Color.YELLOW;
         }
-
         String contentText = String.format("Vento a %.1f km/h a %s", windSpeed, location.getName());
         WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), title, contentText, color);
+        alertViewModel.addWindAlert(newAlert);
+
+        // Notifica di Sistema - Richiede Context
+        Context context = getContext();
+        if (context == null) return;
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, MainApplication.WIND_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
@@ -606,16 +614,14 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                 .setOnlyAlertOnce(true);
 
         NotificationManagerCompat.from(context).notify(WIND_NOTIFICATION_ID, builder.build());
-        alertViewModel.addWindAlert(newAlert);
     }
 
     @SuppressLint({"MissingPermission", "NewApi"})
     private void sendFeedNotification(String title, String summary, String durationText, int color, LocationData location, int notificationId) {
+        // Notifica di Sistema - Richiede Context
         Context context = getContext();
         if (context == null) return;
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
-
-        WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), title, summary, color);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, MainApplication.FEED_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
@@ -627,18 +633,13 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                 .setOnlyAlertOnce(true);
 
         NotificationManagerCompat.from(context).notify(notificationId, builder.build());
-        alertViewModel.addWindAlert(newAlert);
     }
 
     @SuppressLint({"MissingPermission", "NewApi"})
     private void sendTemperatureNotification(double temp, LocationData location) {
-        Context context = getContext();
-        if (context == null) return;
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
-
+        // Logica colori e salvataggio ViewModel
         String titleSuffix = null;
         int color = 0;
-
         if (temp >= 38) {
             titleSuffix = "Caldo Estremo";
             color = Color.RED;
@@ -654,11 +655,15 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         } else {
             return;
         }
-
         String notificationTitle = "In questo momento a " + location.getName() + " " + titleSuffix;
-
         String contentText = String.format("Temperatura: %.1f°C a %s", temp, location.getName());
         WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), notificationTitle, contentText, color);
+        alertViewModel.addWindAlert(newAlert);
+
+        // Notifica di Sistema
+        Context context = getContext();
+        if (context == null) return;
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, MainApplication.TEMP_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
@@ -669,15 +674,11 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                 .setOnlyAlertOnce(true);
 
         NotificationManagerCompat.from(context).notify(location.getName().hashCode(), builder.build());
-        alertViewModel.addWindAlert(newAlert);
     }
 
     @SuppressLint({"MissingPermission", "NewApi"})
     private void sendAirQualityNotification(double pm25, LocationData location) {
-        Context context = getContext();
-        if (context == null) return;
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
-
+        // Logica colori e salvataggio ViewModel
         String title;
         int color;
         if (pm25 > 75) {
@@ -692,9 +693,14 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         } else {
             return;
         }
-
         String contentText = String.format("Qualità dell'aria in PM2.5: %.1f µg/m³ a %s", pm25, location.getName());
         WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), title, contentText, color);
+        alertViewModel.addWindAlert(newAlert);
+
+        // Notifica di Sistema
+        Context context = getContext();
+        if (context == null) return;
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, MainApplication.AIR_QUALITY_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
@@ -705,7 +711,6 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                 .setOnlyAlertOnce(true);
 
         NotificationManagerCompat.from(context).notify(AIR_QUALITY_NOTIFICATION_ID, builder.build());
-        alertViewModel.addWindAlert(newAlert);
     }
 
     @SuppressLint("NewApi")
