@@ -3,13 +3,16 @@ package com.example.prova1.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class LocationData implements Parcelable {
     private String name;
     private double latitude;
     private double longitude;
     private transient String weatherInfo = "Caricamento...";
     private transient String alertInfo = "";
-    private transient int alertSeverity = 0; // 0: None, 1: Yellow, 2: Orange, 3: Red
+    private transient int alertSeverity = 0;
     private transient String airQualityInfo = "";
     private boolean isFavorite = false;
     private boolean isCurrentLocation = false;
@@ -20,6 +23,10 @@ public class LocationData implements Parcelable {
     private transient double precipitation;
     private transient double pm25;
     private transient int cloudCover;
+
+    // This field is now initialized at declaration and is not transient.
+    // This ensures it's handled by both Gson and Parcelable.
+    private Map<String, Integer> alertTypeSeverity = new HashMap<>();
 
     public LocationData(String name, double latitude, double longitude) {
         this.name = name;
@@ -34,6 +41,12 @@ public class LocationData implements Parcelable {
         longitude = in.readDouble();
         isFavorite = in.readByte() != 0;
         isCurrentLocation = in.readByte() != 0;
+        
+        // Use readSerializable for the map; it's safer than readMap for complex data.
+        alertTypeSeverity = (Map<String, Integer>) in.readSerializable();
+        if (alertTypeSeverity == null) {
+            alertTypeSeverity = new HashMap<>();
+        }
     }
 
     @Override
@@ -43,6 +56,9 @@ public class LocationData implements Parcelable {
         dest.writeDouble(longitude);
         dest.writeByte((byte) (isFavorite ? 1 : 0));
         dest.writeByte((byte) (isCurrentLocation ? 1 : 0));
+        
+        // Use writeSerializable for the map. We create a new HashMap to ensure it's serializable.
+        dest.writeSerializable(new HashMap<>(getAlertTypeSeverity()));
     }
 
     @Override
@@ -78,6 +94,14 @@ public class LocationData implements Parcelable {
     public double getPrecipitation() { return precipitation; }
     public double getPm25() { return pm25; }
     public int getCloudCover() { return cloudCover; }
+    
+    // Defensive getter for the alert severity map
+    public Map<String, Integer> getAlertTypeSeverity() { 
+        if (alertTypeSeverity == null) {
+            alertTypeSeverity = new HashMap<>();
+        }
+        return alertTypeSeverity; 
+    }
 
     // Setters
     public void setName(String name) { this.name = name; }
@@ -93,4 +117,5 @@ public class LocationData implements Parcelable {
     public void setPrecipitation(double precipitation) { this.precipitation = precipitation; }
     public void setPm25(double pm25) { this.pm25 = pm25; }
     public void setCloudCover(int cloudCover) { this.cloudCover = cloudCover; }
+    public void setAlertTypeSeverity(Map<String, Integer> alertTypeSeverity) { this.alertTypeSeverity = alertTypeSeverity; }
 }

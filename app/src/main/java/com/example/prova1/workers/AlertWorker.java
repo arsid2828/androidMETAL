@@ -202,7 +202,11 @@ public class AlertWorker extends Worker {
         } else if (alertType.equals("temp")) {
             readableAlertType = "Temperatura";
         } else if (alertType.startsWith("feed_")) {
-            readableAlertType = "Allarme Meteo (" + alertType.substring(5) + ")";
+            String feedType = alertType.substring(5);
+            if (feedType.equals("Altro") || feedType.equals("Sconosciuto")) {
+                return "Nuova allerta meteo per " + locationData.getName();
+            }
+            readableAlertType = "Allarme Meteo (" + feedType + ")";
         } else {
             readableAlertType = "Nuova";
         }

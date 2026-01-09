@@ -9,6 +9,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class LocationRepository {
@@ -41,6 +42,18 @@ public class LocationRepository {
             return new ArrayList<>();
         }
         Type type = new TypeToken<ArrayList<LocationData>>() {}.getType();
-        return gson.fromJson(json, type);
+        List<LocationData> locations = gson.fromJson(json, type);
+
+        if (locations != null) {
+            for (LocationData location : locations) {
+                if (location.getAlertTypeSeverity() == null) {
+                    location.setAlertTypeSeverity(new HashMap<>());
+                }
+            }
+        } else {
+            return new ArrayList<>();
+        }
+
+        return locations;
     }
 }

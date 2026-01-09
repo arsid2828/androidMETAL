@@ -444,6 +444,9 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
             return;
         }
 
+        Map<String, Integer> previousAlertTypeSeverity = new HashMap<>(locationData.getAlertTypeSeverity());
+        locationData.getAlertTypeSeverity().clear();
+
         List<MeteoAlarmAlert> allAlerts = new ArrayList<>();
         for (AtomEntry entry : feed.getEntries()) {
             if (entry.getTitle() != null && entry.getTitle().toLowerCase().contains(region.toLowerCase())) {
@@ -497,8 +500,12 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         StringBuilder alertsBuilder = new StringBuilder();
         for (MeteoAlarmAlert alert : mostSevereAlerts.values()) {
             alertsBuilder.append("⚠️ ").append(alert.summary).append(" | ");
-            int notificationId = (locationData.getName() + alert.title + alert.summary).hashCode();
-            sendFeedNotification(alert.title, alert.summary, alert.durationText, alert.color, locationData, notificationId);
+            Integer previousSeverity = previousAlertTypeSeverity.get(alert.type);
+            if (previousSeverity == null || alert.severity > previousSeverity) {
+                int notificationId = (locationData.getName() + alert.title + alert.summary).hashCode();
+                sendFeedNotification(alert.title, alert.summary, alert.durationText, alert.color, locationData, notificationId);
+            }
+            locationData.getAlertTypeSeverity().put(alert.type, alert.severity);
         }
 
         String finalAlertInfo = alertsBuilder.toString().trim();
