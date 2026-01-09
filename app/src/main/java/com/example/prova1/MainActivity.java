@@ -129,10 +129,6 @@ public class MainActivity extends AppCompatActivity {
             if (addItem != null) {
                 addItem.setVisible(currentDestination.getId() == R.id.HomeFragment);
             }
-            MenuItem settingsItem = menu.findItem(R.id.action_settings);
-            if (settingsItem != null) {
-                settingsItem.setVisible(currentDestination.getId() == R.id.NotificationsFragment);
-            }
         }
         return super.onPrepareOptionsMenu(menu);
     }
@@ -150,7 +146,8 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         } else if (id == R.id.action_settings) {
-            Navigation.findNavController(this, R.id.nav_host_fragment_content_main).navigate(R.id.ImpostazioniFragment);
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+            navController.navigate(R.id.SettingsFragment);
             return true;
         }
         return super.onOptionsItemSelected(item);

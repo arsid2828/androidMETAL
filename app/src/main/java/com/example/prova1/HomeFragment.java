@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
@@ -28,6 +29,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -130,6 +132,12 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         refreshData();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        refreshData();
+    }
+
     private void setupUI(View view) {
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         RecyclerView recyclerView = view.findViewById(R.id.locations_recycler_view);
@@ -142,7 +150,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         swipeRefreshLayout.setOnRefreshListener(this::refreshData);
     }
 
-    private void refreshData() {
+    public void refreshData() {
         Context context = getContext();
         if (context == null) return;
 
@@ -348,6 +356,12 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
     }
 
     private void fetchAirQualityData(final LocationData locationData) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        if (!prefs.getBoolean("pm25", false)) {
+            locationData.setAirQualityInfo("disabled");
+            locationAdapter.notifyDataSetChanged();
+            return;
+        }
         AirQualityApiClient.getClient().create(AirQualityApiService.class)
                 .getAirQuality(locationData.getLatitude(), locationData.getLongitude(), "pm2_5")
                 .enqueue(new Callback<OpenMeteoResponse>() {

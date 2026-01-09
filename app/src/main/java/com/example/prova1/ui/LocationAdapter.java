@@ -1,15 +1,16 @@
 package com.example.prova1.ui;
 
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prova1.R;
@@ -67,7 +68,6 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         private final TextView alertDescription;
         private final ImageView deleteButton;
         private final ImageView favoriteButton;
-        private final TableLayout weatherDataLayout;
         private final TextView temperatureText;
         private final TextView humidityText;
         private final TextView windText;
@@ -92,7 +92,6 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             alertDescription = itemView.findViewById(R.id.alert_description);
             deleteButton = itemView.findViewById(R.id.delete_button);
             favoriteButton = itemView.findViewById(R.id.favorite_button);
-            weatherDataLayout = itemView.findViewById(R.id.weather_data_layout);
             temperatureText = itemView.findViewById(R.id.temperature_text);
             humidityText = itemView.findViewById(R.id.humidity_text);
             windText = itemView.findViewById(R.id.wind_text);
@@ -136,34 +135,38 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             boolean hasAirQuality = location.getAirQualityInfo() != null && location.getAirQualityInfo().isEmpty();
 
             if (hasWeather) {
-                weatherDataLayout.setVisibility(View.VISIBLE);
                 weatherDescription.setVisibility(View.GONE);
                 temperatureText.setText(String.format("%.1f °C", location.getTemperature()));
                 humidityText.setText(String.format("%d%%", location.getHumidity()));
                 windText.setText(String.format("%.1f km/h", location.getWindSpeed()));
                 precipitationText.setText(String.format("%.1f mm", location.getPrecipitation()));
-                cloudCoverText.setText(String.format("%d%%", location.getCloudCover()));
-                apparentTemperatureText.setText(String.format("%.1f °C", location.getApparentTemperature()));
-                uvIndexText.setText(String.format("%.1f", location.getUvIndex()));
-                cloudCoverLayout.setVisibility(View.VISIBLE);
-                apparentTemperatureLayout.setVisibility(View.VISIBLE);
-                uvIndexLayout.setVisibility(View.VISIBLE);
             } else {
-                weatherDataLayout.setVisibility(View.GONE);
                 weatherDescription.setVisibility(View.VISIBLE);
                 weatherDescription.setText(location.getWeatherInfo());
-                cloudCoverLayout.setVisibility(View.GONE);
-                apparentTemperatureLayout.setVisibility(View.GONE);
-                uvIndexLayout.setVisibility(View.GONE);
             }
 
-            if (hasAirQuality) {
-                pm25Layout.setVisibility(View.VISIBLE);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(itemView.getContext());
+            boolean showPm25 = prefs.getBoolean("pm25", false) && hasAirQuality;
+            boolean showCloudCover = prefs.getBoolean("cloud_cover", false) && hasWeather;
+            boolean showApparentTemp = prefs.getBoolean("apparent_temperature", false) && hasWeather;
+            boolean showUvIndex = prefs.getBoolean("uv_index", false) && hasWeather;
+
+            pm25Layout.setVisibility(showPm25 ? View.VISIBLE : View.GONE);
+            if(showPm25) {
                 pm25Text.setText(String.format("%.1f μg/m³", location.getPm25()));
-            } else {
-                pm25Layout.setVisibility(View.GONE);
             }
-
+            cloudCoverLayout.setVisibility(showCloudCover ? View.VISIBLE : View.GONE);
+            if (showCloudCover) {
+                cloudCoverText.setText(String.format("%d%%", location.getCloudCover()));
+            }
+            apparentTemperatureLayout.setVisibility(showApparentTemp ? View.VISIBLE : View.GONE);
+            if (showApparentTemp) {
+                apparentTemperatureText.setText(String.format("%.1f °C", location.getApparentTemperature()));
+            }
+            uvIndexLayout.setVisibility(showUvIndex ? View.VISIBLE : View.GONE);
+            if (showUvIndex) {
+                uvIndexText.setText(String.format("%.1f", location.getUvIndex()));
+            }
 
             if (location.isFavorite()) {
                 favoriteButton.setImageResource(R.drawable.ic_heart_filled);
