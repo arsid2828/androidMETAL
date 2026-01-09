@@ -79,6 +79,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
 
     private static final int WIND_NOTIFICATION_ID = 1;
     private static final int AIR_QUALITY_NOTIFICATION_ID = 3;
+    private static final int VISIBILITY_NOTIFICATION_ID = 5;
     private static final double WIND_SPEED_THRESHOLD = 30.0;
     private static final double PM25_THRESHOLD = 25.0;
 
@@ -334,18 +335,14 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         if (prefs.getBoolean("uv_index", false)) {
             currentJoiner.add("uv_index");
         }
-        if (prefs.getBoolean("snowfall", false)) {
-            currentJoiner.add("snowfall");
+        if (prefs.getBoolean("visibility", false)) {
+            currentJoiner.add("visibility");
         }
 
         String current = currentJoiner.toString();
-        String daily = "";
-        if (prefs.getBoolean("sunrise_sunset", false)) {
-            daily = "sunrise,sunset";
-        }
 
         WeatherApiClient.getClient().create(WeatherApiService.class)
-                .getForecast(locationData.getLatitude(), locationData.getLongitude(), current, daily)
+                .getForecast(locationData.getLatitude(), locationData.getLongitude(), current)
                 .enqueue(new Callback<OpenMeteoResponse>() {
                     @Override
                     public void onResponse(@NonNull Call<OpenMeteoResponse> call, @NonNull Response<OpenMeteoResponse> response) {
@@ -365,8 +362,8 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                                 if (prefs.getBoolean("uv_index", false)) {
                                     locationData.setUvIndex(data.getCurrent().getUvIndex());
                                 }
-                                if (prefs.getBoolean("snowfall", false)) {
-                                    locationData.setSnowfall(data.getCurrent().getSnowfall());
+                                if (prefs.getBoolean("visibility", false)) {
+                                    locationData.setVisibility(data.getCurrent().getVisibility());
                                 }
 
                                 locationData.setWeatherInfo(""); // Clear old weather info
@@ -377,10 +374,11 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
 
                                 double currentTemp = data.getCurrent().getTemperature2m();
                                 sendTemperatureNotification(currentTemp, locationData);
-                            }
-                            if (data.getDaily() != null && prefs.getBoolean("sunrise_sunset", false)) {
-                                locationData.setSunrise(data.getDaily().getSunrise().get(0));
-                                locationData.setSunset(data.getDaily().getSunset().get(0));
+
+                                if (prefs.getBoolean("visibility", false)) {
+                                    double currentVisibility = data.getCurrent().getVisibility();
+                                    sendVisibilityNotification(currentVisibility, locationData);
+                                }
                             }
                         } else {
                             locationData.setWeatherInfo("Dati meteo non disponibili");
@@ -734,6 +732,43 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
 
         NotificationManagerCompat.from(context).notify(location.getName().hashCode(), builder.build());
     }
+
+    @SuppressLint({"MissingPermission", "NewApi"})
+    private void sendVisibilityNotification(double visibility, LocationData location) {
+        String titleSuffix = null;
+        int color = 0;
+        if (visibility < 100) {
+            titleSuffix = "Visibilità Molto Bassa";
+            color = Color.RED;
+        } else if (visibility < 500) {
+            titleSuffix = "Visibilità Bassa";
+            color = Color.rgb(255, 165, 0);
+        } else if (visibility < 1000) {
+            titleSuffix = "Visibilità Ridotta";
+            color = Color.YELLOW;
+        } else {
+            return;
+        }
+        String notificationTitle = "In questo momento a " + location.getName() + " " + titleSuffix;
+        String contentText = String.format("Visibilità: %.1f km a %s", visibility / 1000, location.getName());
+        WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), notificationTitle, contentText, color);
+        alertViewModel.addWindAlert(newAlert);
+
+        Context context = getContext();
+        if (context == null) return;
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, MainApplication.VISIBILITY_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle(notificationTitle)
+                .setContentText(contentText)
+                .setColor(color)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setOnlyAlertOnce(true);
+
+        NotificationManagerCompat.from(context).notify(VISIBILITY_NOTIFICATION_ID, builder.build());
+    }
+
 
     @SuppressLint({"MissingPermission", "NewApi"})
     private void sendAirQualityNotification(double pm25, LocationData location) {
