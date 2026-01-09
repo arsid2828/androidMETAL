@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.prova1.R;
 import com.example.prova1.models.LocationData;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -82,6 +84,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         private final TextView uvIndexText;
         private final LinearLayout visibilityLayout;
         private final TextView visibilityText;
+        private final LinearLayout sunriseSunsetLayout;
+        private final TextView sunriseSunsetText;
+        private final TextView sunriseSunsetLabel;
         private final ConstraintLayout alertSectionLayout;
         private final ImageView alertIcon;
         private final TextView yourLocationLabel;
@@ -108,6 +113,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             uvIndexText = itemView.findViewById(R.id.uv_index_text);
             visibilityLayout = itemView.findViewById(R.id.visibility_layout);
             visibilityText = itemView.findViewById(R.id.visibility_text);
+            sunriseSunsetLayout = itemView.findViewById(R.id.sunrise_sunset_layout);
+            sunriseSunsetText = itemView.findViewById(R.id.sunrise_sunset_text);
+            sunriseSunsetLabel = itemView.findViewById(R.id.sunrise_sunset_label);
             alertSectionLayout = itemView.findViewById(R.id.alert_section_layout);
             alertIcon = itemView.findViewById(R.id.alert_icon);
             yourLocationLabel = itemView.findViewById(R.id.your_location_label);
@@ -155,6 +163,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             boolean showApparentTemp = prefs.getBoolean("apparent_temperature", false) && hasWeather;
             boolean showUvIndex = prefs.getBoolean("uv_index", false) && hasWeather;
             boolean showVisibility = prefs.getBoolean("visibility", false) && hasWeather;
+            boolean showSunriseSunset = prefs.getBoolean("sunrise_sunset", false) && location.getSunrise() != null && location.getSunset() != null;
 
             pm25Layout.setVisibility(showPm25 ? View.VISIBLE : View.GONE);
             if(showPm25) {
@@ -175,6 +184,26 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             visibilityLayout.setVisibility(showVisibility ? View.VISIBLE : View.GONE);
             if (showVisibility) {
                 visibilityText.setText(String.format("%.1f km", location.getVisibility() / 1000));
+            }
+
+            sunriseSunsetLayout.setVisibility(showSunriseSunset ? View.VISIBLE : View.GONE);
+            if (showSunriseSunset) {
+                LocalDateTime now = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+                LocalDateTime sunrise = LocalDateTime.parse(location.getSunrise(), formatter);
+                LocalDateTime sunset = LocalDateTime.parse(location.getSunset(), formatter);
+
+                if (now.isBefore(sunrise)) {
+                    sunriseSunsetLabel.setText("Alba");
+                    sunriseSunsetText.setText(sunrise.format(DateTimeFormatter.ofPattern("HH:mm")));
+                } else if (now.isBefore(sunset)) {
+                    sunriseSunsetLabel.setText("Tramonto");
+                    sunriseSunsetText.setText(sunset.format(DateTimeFormatter.ofPattern("HH:mm")));
+                } else {
+                    // After sunset, show tomorrow's sunrise
+                    sunriseSunsetLabel.setText("Alba (domani)");
+                    sunriseSunsetText.setText(sunrise.format(DateTimeFormatter.ofPattern("HH:mm")));
+                }
             }
 
             if (location.isFavorite()) {

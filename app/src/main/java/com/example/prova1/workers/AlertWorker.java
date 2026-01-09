@@ -108,8 +108,9 @@ public class AlertWorker extends Worker {
 
     private void checkOpenMeteoAlerts(LocationData locationData) {
         try {
+            String currentParams = "temperature_2m,wind_speed_10m,visibility";
             Response<OpenMeteoResponse> response = WeatherApiClient.getClient().create(WeatherApiService.class)
-                    .getForecast(locationData.getLatitude(), locationData.getLongitude(), "temperature_2m", "wind_speed_10m", "visibility")
+                    .getForecast(locationData.getLatitude(), locationData.getLongitude(), currentParams, "", "auto")
                     .execute();
             if (response.isSuccessful() && response.body() != null) {
                 OpenMeteoResponse data = response.body();

@@ -340,9 +340,10 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         }
 
         String current = currentJoiner.toString();
+        String daily = "sunrise,sunset";
 
         WeatherApiClient.getClient().create(WeatherApiService.class)
-                .getForecast(locationData.getLatitude(), locationData.getLongitude(), current)
+                .getForecast(locationData.getLatitude(), locationData.getLongitude(), current, daily, "auto")
                 .enqueue(new Callback<OpenMeteoResponse>() {
                     @Override
                     public void onResponse(@NonNull Call<OpenMeteoResponse> call, @NonNull Response<OpenMeteoResponse> response) {
@@ -379,6 +380,10 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                                     double currentVisibility = data.getCurrent().getVisibility();
                                     sendVisibilityNotification(currentVisibility, locationData);
                                 }
+                            }
+                            if (data.getDaily() != null) {
+                                locationData.setSunrise(data.getDaily().getSunrise().get(0));
+                                locationData.setSunset(data.getDaily().getSunset().get(0));
                             }
                         } else {
                             locationData.setWeatherInfo("Dati meteo non disponibili");

@@ -27,6 +27,11 @@
             app:title="Visibilità"
             app:defaultValue="false" />
 
+        <SwitchPreferenceCompat
+            app:key="sunrise_sunset"
+            app:title="Alba e Tramonto"
+            app:defaultValue="false" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

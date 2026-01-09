@@ -5,7 +5,6 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class Daily {
-
     @SerializedName("time")
     private List<String> time;
 
@@ -15,15 +14,7 @@ public class Daily {
     @SerializedName("sunset")
     private List<String> sunset;
 
-    public List<String> getTime() {
-        return time;
-    }
-
-    public List<String> getSunrise() {
-        return sunrise;
-    }
-
-    public List<String> getSunset() {
-        return sunset;
-    }
+    public List<String> getTime() { return time; }
+    public List<String> getSunrise() { return sunrise; }
+    public List<String> getSunset() { return sunset; }
 }
