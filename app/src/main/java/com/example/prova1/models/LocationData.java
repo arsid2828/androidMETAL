@@ -1,6 +1,9 @@
 package com.example.prova1.models;
 
-public class LocationData {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class LocationData implements Parcelable {
     private String name;
     private double latitude;
     private double longitude;
@@ -23,6 +26,41 @@ public class LocationData {
         this.latitude = latitude;
         this.longitude = longitude;
     }
+
+    // Parcelable implementation
+    protected LocationData(Parcel in) {
+        name = in.readString();
+        latitude = in.readDouble();
+        longitude = in.readDouble();
+        isFavorite = in.readByte() != 0;
+        isCurrentLocation = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeDouble(latitude);
+        dest.writeDouble(longitude);
+        dest.writeByte((byte) (isFavorite ? 1 : 0));
+        dest.writeByte((byte) (isCurrentLocation ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<LocationData> CREATOR = new Creator<LocationData>() {
+        @Override
+        public LocationData createFromParcel(Parcel in) {
+            return new LocationData(in);
+        }
+
+        @Override
+        public LocationData[] newArray(int size) {
+            return new LocationData[size];
+        }
+    };
 
     // Getters
     public String getName() { return name != null ? name : ""; }
