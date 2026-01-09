@@ -377,7 +377,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_cloud" />
+                android:src="@drawable/ic_visibility" />
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -411,7 +411,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_weather_cloud" />
+                android:src="@drawable/ic_sunrise_sunset" />
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

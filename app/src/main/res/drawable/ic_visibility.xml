@@ -1,0 +1,18 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Fog Line 1 -->
+    <path
+        android:fillColor="#90A4AE"
+        android:pathData="M18,10.5H6c-0.83,0 -1.5,-0.67 -1.5,-1.5s0.67,-1.5 1.5,-1.5h12c0.83,0 1.5,0.67 1.5,1.5S18.83,10.5 18,10.5z"/>
+    <!-- Fog Line 2 -->
+    <path
+        android:fillColor="#90A4AE"
+        android:pathData="M20,15.5H4c-0.83,0 -1.5,-0.67 -1.5,-1.5s0.67,-1.5 1.5,-1.5h16c0.83,0 1.5,0.67 1.5,1.5S20.83,15.5 20,15.5z"/>
+    <!-- Fog Line 3 -->
+    <path
+        android:fillColor="#90A4AE"
+        android:pathData="M18,20.5H6c-0.83,0 -1.5,-0.67 -1.5,-1.5s0.67,-1.5 1.5,-1.5h12c0.83,0 1.5,0.67 1.5,1.5S18.83,20.5 18,20.5z"/>
+</vector>
