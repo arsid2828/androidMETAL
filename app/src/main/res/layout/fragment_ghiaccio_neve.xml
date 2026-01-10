@@ -36,11 +36,33 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:text="Condizioni:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nFormazione di ghiaccio o inizio di nevicata su strade secondarie. Strade fredde e umide con rischio di lastre di ghiaccio..\nIstruzioni:\nIn auto: Ridurre la velocità, aumentare la distanza di sicurezza, evitare manovre brusche.\nA piedi: Camminare con cautela, preferire superfici ruvide o ghiaiose." />
+                android:text="Formazione di ghiaccio o inizio di nevicata su strade secondarie. Strade fredde e umide con rischio di lastre di ghiaccio.." />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Istruzioni:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="4dp"
+                android:text="In auto: Ridurre la velocità, aumentare la distanza di sicurezza, evitare manovre brusche.
+A piedi: Camminare con cautela, preferire superfici ruvide o ghiaiose." />
         </LinearLayout>
 
         <!-- Livello Arancione -->
@@ -60,11 +82,33 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:text="Condizioni:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nNeve che persiste e si accumula su tutte le strade. Formazione diffusa di ghiaccio. Temperature ampiamente sotto lo zero.\nIstruzioni:\nIn auto: Viaggiare SOLO se strettamente necessario. Montare catene o pneumatici invernali omologati.\nA piedi: Evitare di uscire se possibile, soprattutto anziani e persone con difficoltà motorie." />
+                android:text="Neve che persiste e si accumula su tutte le strade. Formazione diffusa di ghiaccio. Temperature ampiamente sotto lo zero." />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Istruzioni:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="4dp"
+                android:text="In auto: Viaggiare SOLO se strettamente necessario. Montare catene o pneumatici invernali omologati.
+A piedi: Evitare di uscire se possibile, soprattutto anziani e persone con difficoltà motorie." />
         </LinearLayout>
 
         <!-- Livello Rosso -->
@@ -84,12 +128,34 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:text="Condizioni:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Forti bufere di neve, tempeste di ghiaccio, accumuli molto elevati che bloccano le strade e isolano paesi." />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Istruzioni:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:paddingBottom="16dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nForti bufere di neve, tempeste di ghiaccio, accumuli molto elevati che bloccano le strade e isolano paesi.\nIstruzioni:\nNON METTERSI IN VIAGGIO. Restare a casa o in un luogo sicuro.\nSeguire le istruzioni delle autorità (Protezione Civile, Vigili del Fuoco)." />
+                android:text="NON METTERSI IN VIAGGIO. Restare a casa o in un luogo sicuro.
+Seguire le istruzioni delle autorità (Protezione Civile, Vigili del Fuoco)." />
         </LinearLayout>
 
     </LinearLayout>
