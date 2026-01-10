@@ -102,4 +102,26 @@
         android:focusable="true"
         android:background="?attr/selectableItemBackground"/>
 
+    <TextView
+        android:id="@+id/normativa_inondazioni"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="🌊 Inondazioni"
+        android:textSize="20sp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"/>
+
+    <TextView
+        android:id="@+id/normativa_inondazione_pioggia"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="🌧️ Inondazione da Pioggia"
+        android:textSize="20sp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"/>
+
 </LinearLayout>

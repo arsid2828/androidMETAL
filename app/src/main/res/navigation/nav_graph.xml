@@ -46,6 +46,12 @@
         <action
             android:id="@+id/action_AllerteFragment_to_RaggiUvFragment"
             app:destination="@id/RaggiUvFragment" />
+        <action
+            android:id="@+id/action_AllerteFragment_to_InondazioneFragment"
+            app:destination="@id/InondazioneFragment" />
+        <action
+            android:id="@+id/action_AllerteFragment_to_InondazionePioggiaFragment"
+            app:destination="@id/InondazionePioggiaFragment" />
     </fragment>
 
     <fragment
@@ -95,6 +101,18 @@
         android:name="com.example.prova1.RaggiUvFragment"
         android:label="Raggi UV"
         tools:layout="@layout/fragment_raggi_uv" />
+
+    <fragment
+        android:id="@+id/InondazioneFragment"
+        android:name="com.example.prova1.InondazioneFragment"
+        android:label="Inondazioni"
+        tools:layout="@layout/fragment_inondazione" />
+
+    <fragment
+        android:id="@+id/InondazionePioggiaFragment"
+        android:name="com.example.prova1.InondazionePioggiaFragment"
+        android:label="Inondazione da Pioggia"
+        tools:layout="@layout/fragment_inondazione_pioggia" />
 
     <fragment
         android:id="@+id/ImpostazioniFragment"

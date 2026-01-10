@@ -56,6 +56,14 @@ public class AllerteFragment extends Fragment {
         view.findViewById(R.id.normativa_raggi_uv).setOnClickListener(v -> {
             Navigation.findNavController(v).navigate(R.id.action_AllerteFragment_to_RaggiUvFragment);
         });
+
+        view.findViewById(R.id.normativa_inondazioni).setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_AllerteFragment_to_InondazioneFragment);
+        });
+
+        view.findViewById(R.id.normativa_inondazione_pioggia).setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_AllerteFragment_to_InondazionePioggiaFragment);
+        });
     }
 
 }
