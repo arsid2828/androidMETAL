@@ -80,6 +80,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
     private static final int WIND_NOTIFICATION_ID = 1;
     private static final int AIR_QUALITY_NOTIFICATION_ID = 3;
     private static final int VISIBILITY_NOTIFICATION_ID = 5;
+    private static final int UV_INDEX_NOTIFICATION_ID = 6;
     private static final double WIND_SPEED_THRESHOLD = 30.0;
     private static final double PM25_THRESHOLD = 25.0;
 
@@ -362,6 +363,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                                 }
                                 if (prefs.getBoolean("uv_index", false)) {
                                     locationData.setUvIndex(data.getCurrent().getUvIndex());
+                                    sendUvIndexNotification(data.getCurrent().getUvIndex(), locationData);
                                 }
                                 if (prefs.getBoolean("visibility", false)) {
                                     locationData.setVisibility(data.getCurrent().getVisibility());
@@ -737,6 +739,50 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
 
         NotificationManagerCompat.from(context).notify(location.getName().hashCode(), builder.build());
     }
+    
+    @SuppressLint({"MissingPermission", "NewApi"})
+    private void sendUvIndexNotification(double uvIndex, LocationData location) {
+        String title;
+        String contentText;
+        int color;
+
+        if (uvIndex >= 11) {
+            title = "Indice UV Estremo a " + location.getName();
+            contentText = String.format("Indice UV: %.1f. Evitare l'esposizione al sole.", uvIndex);
+            color = Color.MAGENTA;
+        } else if (uvIndex >= 8) {
+            title = "Indice UV Molto Alto a " + location.getName();
+            contentText = String.format("Indice UV: %.1f. Protezione solare molto alta richiesta.", uvIndex);
+            color = Color.RED;
+        } else if (uvIndex >= 6) {
+            title = "Indice UV Alto a " + location.getName();
+            contentText = String.format("Indice UV: %.1f. Usare protezione solare.", uvIndex);
+            color = Color.rgb(255, 165, 0); // Orange
+        } else if (uvIndex >= 3) {
+            title = "Indice UV Moderato a " + location.getName();
+            contentText = String.format("Indice UV: %.1f. Consigliata protezione solare.", uvIndex);
+            color = Color.YELLOW;
+        } else {
+            return; // No notification for low UV index
+        }
+
+        WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), title, contentText, color);
+        alertViewModel.addWindAlert(newAlert);
+
+        Context context = getContext();
+        if (context == null) return;
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, MainApplication.UV_INDEX_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle(title)
+                .setContentText(contentText)
+                .setColor(color)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setOnlyAlertOnce(true);
+
+        NotificationManagerCompat.from(context).notify(UV_INDEX_NOTIFICATION_ID, builder.build());
+    }
 
     @SuppressLint({"MissingPermission", "NewApi"})
     private void sendVisibilityNotification(double visibility, LocationData location) {
@@ -808,6 +854,8 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                 .setColor(color)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setOnlyAlertOnce(true);
+
+
 
         NotificationManagerCompat.from(context).notify(AIR_QUALITY_NOTIFICATION_ID, builder.build());
     }

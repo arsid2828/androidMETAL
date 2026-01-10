@@ -60,7 +60,7 @@
             android:clickable="true"
             android:focusable="true"
             android:padding="16dp"
-            android:text="🌫️ Nebbia"
+            android:text="🌫️ Nebbia e Visibilità"
             android:textSize="20sp"
             android:elevation="1dp" />
 

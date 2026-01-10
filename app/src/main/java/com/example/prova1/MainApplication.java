@@ -19,6 +19,7 @@ public class MainApplication extends Application {
     public static final String TEMP_CHANNEL_ID = "temp_notification_channel";
     public static final String AIR_QUALITY_CHANNEL_ID = "air_quality_notification_channel";
     public static final String VISIBILITY_CHANNEL_ID = "visibility_notification_channel";
+    public static final String UV_INDEX_CHANNEL_ID = "uv_index_notification_channel";
 
     @Override
     public void onCreate() {
@@ -67,6 +68,12 @@ public class MainApplication extends Application {
                     NotificationManager.IMPORTANCE_DEFAULT);
             visibilityChannel.setDescription("Canale per notifiche relative alla visibilità.");
 
+            NotificationChannel uvIndexChannel = new NotificationChannel(
+                    UV_INDEX_CHANNEL_ID,
+                    "Notifiche Indice UV",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            uvIndexChannel.setDescription("Canale per notifiche relative all'indice UV.");
+
 
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(windChannel);
@@ -74,6 +81,7 @@ public class MainApplication extends Application {
             manager.createNotificationChannel(tempChannel);
             manager.createNotificationChannel(airQualityChannel);
             manager.createNotificationChannel(visibilityChannel);
+            manager.createNotificationChannel(uvIndexChannel);
         }
     }
 }
