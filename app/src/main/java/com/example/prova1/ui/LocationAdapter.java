@@ -217,10 +217,15 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
                 pressureText.setText(String.format("%.1f hPa", location.getPressureMsl()));
             }
 
-            if (location.isFavorite()) {
-                favoriteButton.setImageResource(R.drawable.ic_heart_filled);
+            if (location.isCurrentLocation()) {
+                favoriteButton.setVisibility(View.GONE);
             } else {
-                favoriteButton.setImageResource(R.drawable.ic_heart_empty);
+                favoriteButton.setVisibility(View.VISIBLE);
+                if (location.isFavorite()) {
+                    favoriteButton.setImageResource(R.drawable.ic_heart_filled);
+                } else {
+                    favoriteButton.setImageResource(R.drawable.ic_heart_empty);
+                }
             }
 
             if (location.getAlertInfo() != null && !location.getAlertInfo().isEmpty()) {
