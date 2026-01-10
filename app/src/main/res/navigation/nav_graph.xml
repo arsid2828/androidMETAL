@@ -3,165 +3,96 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/HomeFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
-        android:id="@+id/HomeFragment"
+        android:id="@+id/homeFragment"
         android:name="com.example.prova1.HomeFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_home" />
+        android:label="Home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
 
     <fragment
-        android:id="@+id/NotificationsFragment"
+        android:id="@+id/settingsFragment"
+        android:name="com.example.prova1.SettingsFragment"
+        android:label="Impostazioni"
+        tools:layout="@xml/preferences" />
+
+    <fragment
+        android:id="@+id/notificationsFragment"
         android:name="com.example.prova1.NotificationsFragment"
         android:label="Notifiche"
         tools:layout="@layout/fragment_notifications" />
 
     <fragment
-        android:id="@+id/AllerteFragment"
+        android:id="@+id/allerteFragment"
         android:name="com.example.prova1.AllerteFragment"
         android:label="Allerte"
         tools:layout="@layout/fragment_allerte">
         <action
             android:id="@+id/action_AllerteFragment_to_GhiaccioNeveFragment"
-            app:destination="@id/GhiaccioNeveFragment" />
+            app:destination="@id/ghiaccioNeveFragment" />
         <action
             android:id="@+id/action_AllerteFragment_to_TemporaliFragment"
-            app:destination="@id/TemporaliFragment" />
+            app:destination="@id/temporaliFragment" />
         <action
             android:id="@+id/action_AllerteFragment_to_NebbiaFragment"
-            app:destination="@id/NebbiaFragment" />
+            app:destination="@id/nebbiaFragment" />
         <action
             android:id="@+id/action_AllerteFragment_to_PioggiaFragment"
-            app:destination="@id/PioggiaFragment" />
+            app:destination="@id/pioggiaFragment" />
         <action
             android:id="@+id/action_AllerteFragment_to_VentoFragment"
-            app:destination="@id/VentoFragment" />
+            app:destination="@id/ventoFragment" />
         <action
             android:id="@+id/action_AllerteFragment_to_TemperaturaFragment"
-            app:destination="@id/TemperaturaFragment" />
+            app:destination="@id/temperaturaFragment" />
         <action
             android:id="@+id/action_AllerteFragment_to_QualitaAriaFragment"
-            app:destination="@id/QualitaAriaFragment" />
+            app:destination="@id/qualitaAriaFragment" />
         <action
             android:id="@+id/action_AllerteFragment_to_RaggiUvFragment"
-            app:destination="@id/RaggiUvFragment" />
+            app:destination="@id/raggiUvFragment" />
         <action
             android:id="@+id/action_AllerteFragment_to_InondazioneFragment"
-            app:destination="@id/InondazioneFragment" />
+            app:destination="@id/inondazioneFragment" />
         <action
             android:id="@+id/action_AllerteFragment_to_InondazionePioggiaFragment"
-            app:destination="@id/InondazionePioggiaFragment" />
+            app:destination="@id/inondazionePioggiaFragment" />
         <action
             android:id="@+id/action_AllerteFragment_to_SiccitaFragment"
-            app:destination="@id/SiccitaFragment" />
+            app:destination="@id/siccitaFragment" />
         <action
             android:id="@+id/action_AllerteFragment_to_EventoCostieroFragment"
-            app:destination="@id/EventoCostieroFragment" />
+            app:destination="@id/eventoCostieroFragment" />
         <action
             android:id="@+id/action_AllerteFragment_to_IncendioFragment"
-            app:destination="@id/IncendioFragment" />
+            app:destination="@id/incendioFragment" />
         <action
             android:id="@+id/action_AllerteFragment_to_ValangaFragment"
-            app:destination="@id/ValangaFragment" />
+            app:destination="@id/valangaFragment" />
         <action
             android:id="@+id/action_AllerteFragment_to_PericoloMarinoFragment"
-            app:destination="@id/PericoloMarinoFragment" />
+            app:destination="@id/pericoloMarinoFragment" />
     </fragment>
 
-    <fragment
-        android:id="@+id/GhiaccioNeveFragment"
-        android:name="com.example.prova1.GhiaccioNeveFragment"
-        android:label="Ghiaccio e Neve"
-        tools:layout="@layout/fragment_ghiaccio_neve" />
+    <fragment android:id="@+id/ghiaccioNeveFragment" android:name="com.example.prova1.GhiaccioNeveFragment" android:label="Ghiaccio e Neve"/>
+    <fragment android:id="@+id/temporaliFragment" android:name="com.example.prova1.TemporaliFragment" android:label="Temporali"/>
+    <fragment android:id="@+id/nebbiaFragment" android:name="com.example.prova1.NebbiaFragment" android:label="Nebbia"/>
+    <fragment android:id="@+id/pioggiaFragment" android:name="com.example.prova1.PioggiaFragment" android:label="Pioggia"/>
+    <fragment android:id="@+id/ventoFragment" android:name="com.example.prova1.VentoFragment" android:label="Vento"/>
+    <fragment android:id="@+id/temperaturaFragment" android:name="com.example.prova1.TemperaturaFragment" android:label="Temperatura"/>
+    <fragment android:id="@+id/qualitaAriaFragment" android:name="com.example.prova1.QualitaAriaFragment" android:label="Qualità dell'Aria"/>
+    <fragment android:id="@+id/raggiUvFragment" android:name="com.example.prova1.RaggiUvFragment" android:label="Raggi UV"/>
+    <fragment android:id="@+id/inondazioneFragment" android:name="com.example.prova1.InondazioneFragment" android:label="Inondazione"/>
+    <fragment android:id="@+id/inondazionePioggiaFragment" android:name="com.example.prova1.InondazionePioggiaFragment" android:label="Inondazione e Pioggia"/>
+    <fragment android:id="@+id/siccitaFragment" android:name="com.example.prova1.SiccitaFragment" android:label="Siccità"/>
+    <fragment android:id="@+id/eventoCostieroFragment" android:name="com.example.prova1.EventoCostieroFragment" android:label="Evento Costiero"/>
+    <fragment android:id="@+id/incendioFragment" android:name="com.example.prova1.IncendioFragment" android:label="Incendio"/>
+    <fragment android:id="@+id/valangaFragment" android:name="com.example.prova1.ValangaFragment" android:label="Valanga"/>
+    <fragment android:id="@+id/pericoloMarinoFragment" android:name="com.example.prova1.PericoloMarinoFragment" android:label="Pericolo Marino"/>
 
-    <fragment
-        android:id="@+id/TemporaliFragment"
-        android:name="com.example.prova1.TemporaliFragment"
-        android:label="Temporali"
-        tools:layout="@layout/fragment_temporali" />
-
-    <fragment
-        android:id="@+id/NebbiaFragment"
-        android:name="com.example.prova1.NebbiaFragment"
-        android:label="Nebbia"
-        tools:layout="@layout/fragment_nebbia" />
-
-    <fragment
-        android:id="@+id/PioggiaFragment"
-        android:name="com.example.prova1.PioggiaFragment"
-        android:label="Pioggia"
-        tools:layout="@layout/fragment_pioggia" />
-
-    <fragment
-        android:id="@+id/VentoFragment"
-        android:name="com.example.prova1.VentoFragment"
-        android:label="Vento"
-        tools:layout="@layout/fragment_vento" />
-
-    <fragment
-        android:id="@+id/TemperaturaFragment"
-        android:name="com.example.prova1.TemperaturaFragment"
-        android:label="Temperatura"
-        tools:layout="@layout/fragment_temperatura" />
-
-    <fragment
-        android:id="@+id/QualitaAriaFragment"
-        android:name="com.example.prova1.QualitaAriaFragment"
-        android:label="Qualità dell\'aria"
-        tools:layout="@layout/fragment_qualita_aria" />
-
-    <fragment
-        android:id="@+id/RaggiUvFragment"
-        android:name="com.example.prova1.RaggiUvFragment"
-        android:label="Raggi UV"
-        tools:layout="@layout/fragment_raggi_uv" />
-
-    <fragment
-        android:id="@+id/InondazioneFragment"
-        android:name="com.example.prova1.InondazioneFragment"
-        android:label="Inondazioni"
-        tools:layout="@layout/fragment_inondazione" />
-
-    <fragment
-        android:id="@+id/InondazionePioggiaFragment"
-        android:name="com.example.prova1.InondazionePioggiaFragment"
-        android:label="Inondazione da Pioggia"
-        tools:layout="@layout/fragment_inondazione_pioggia" />
-
-    <fragment
-        android:id="@+id/SiccitaFragment"
-        android:name="com.example.prova1.SiccitaFragment"
-        android:label="Siccità"
-        tools:layout="@layout/fragment_siccita" />
-
-    <fragment
-        android:id="@+id/EventoCostieroFragment"
-        android:name="com.example.prova1.EventoCostieroFragment"
-        android:label="Evento Costiero"
-        tools:layout="@layout/fragment_evento_costiero" />
-
-    <fragment
-        android:id="@+id/IncendioFragment"
-        android:name="com.example.prova1.IncendioFragment"
-        android:label="Incendio Boschivo"
-        tools:layout="@layout/fragment_incendio" />
-
-    <fragment
-        android:id="@+id/ValangaFragment"
-        android:name="com.example.prova1.ValangaFragment"
-        android:label="Valanga"
-        tools:layout="@layout/fragment_valanga" />
-
-    <fragment
-        android:id="@+id/PericoloMarinoFragment"
-        android:name="com.example.prova1.PericoloMarinoFragment"
-        android:label="Pericolo Marino"
-        tools:layout="@layout/fragment_pericolo_marino" />
-
-    <fragment
-        android:id="@+id/ImpostazioniFragment"
-        android:name="com.example.prova1.ImpostazioniFragment"
-        android:label="Impostazioni"
-        tools:layout="@layout/fragment_impostazioni" />
 </navigation>
