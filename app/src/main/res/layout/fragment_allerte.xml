@@ -91,4 +91,15 @@
         android:focusable="true"
         android:background="?attr/selectableItemBackground"/>
 
+    <TextView
+        android:id="@+id/normativa_raggi_uv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="☀️ Raggi UV"
+        android:textSize="20sp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"/>
+
 </LinearLayout>

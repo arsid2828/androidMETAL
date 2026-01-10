@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.action_settings) {
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.SettingsFragment);
+            navController.navigate(R.id.ImpostazioniFragment);
             return true;
         }
         return super.onOptionsItemSelected(item);

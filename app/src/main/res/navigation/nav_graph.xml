@@ -43,6 +43,9 @@
         <action
             android:id="@+id/action_AllerteFragment_to_QualitaAriaFragment"
             app:destination="@id/QualitaAriaFragment" />
+        <action
+            android:id="@+id/action_AllerteFragment_to_RaggiUvFragment"
+            app:destination="@id/RaggiUvFragment" />
     </fragment>
 
     <fragment
@@ -88,15 +91,14 @@
         tools:layout="@layout/fragment_qualita_aria" />
 
     <fragment
+        android:id="@+id/RaggiUvFragment"
+        android:name="com.example.prova1.RaggiUvFragment"
+        android:label="Raggi UV"
+        tools:layout="@layout/fragment_raggi_uv" />
+
+    <fragment
         android:id="@+id/ImpostazioniFragment"
         android:name="com.example.prova1.ImpostazioniFragment"
         android:label="Impostazioni"
         tools:layout="@layout/fragment_impostazioni" />
-
-    <fragment
-        android:id="@+id/SettingsFragment"
-        android:name="com.example.prova1.SettingsFragment"
-        android:label="Settings"
-        tools:layout="@xml/preferences" />
-
 </navigation>

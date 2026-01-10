@@ -52,7 +52,10 @@ public class AllerteFragment extends Fragment {
         view.findViewById(R.id.normativa_qualita_aria).setOnClickListener(v -> {
             Navigation.findNavController(v).navigate(R.id.action_AllerteFragment_to_QualitaAriaFragment);
         });
-    }
 
+        view.findViewById(R.id.normativa_raggi_uv).setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_AllerteFragment_to_RaggiUvFragment);
+        });
+    }
 
 }

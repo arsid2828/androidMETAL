@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".RaggiUvFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="☀️ RAGGI UV"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <!-- Livello Moderato -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/rounded_corner_yellow"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🟡 MODERATO (Indice 3-5)"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Condizione esterna:\nGiornate parzialmente nuvolose o soleggiate in primavera/autunno, o estate in zone temperate nelle ore non centrali.\n\nCosa fare:\nCerca l'ombra nelle ore centrali (dalle 11:00 alle 16:00). Indossa occhiali da sole." />
+        </LinearLayout>
+
+        <!-- Livello Alto -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_corner_orange"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🟠 ALTO (Indice 6-7)"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Condizione esterna:\nGiornate prevalentemente soleggiate in estate, in montagna, o al mare con cielo sereno.\n\nCosa fare:\nRiduci al minimo l'esposizione tra le 11:00 e le 16:00. Stai all'ombra il più possibile." />
+        </LinearLayout>
+
+        <!-- Livello Molto Alto -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_corner_red"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🔴 MOLTO ALTO (Indice 8-10)"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Condizione esterna:\nGiornate di pieno estate al mare, in alta montagna, o in paesi tropicali/subtropicali. Cielo molto sereno.\n\nCosa fare:\nEvita di stare all'aperto nelle ore centrali (dalle 11:00 alle 17:00). Se devi uscire, cerca assolutamente l'ombra. Maglietta, crema solare e cappello sono OBBLIGATORI." />
+        </LinearLayout>
+
+        <!-- Livello Estremo -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_corner_purple"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⚠️ ESTREMO (Indice 11+)"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Condizione esterna:\nCondizioni eccezionali: altitudini elevate (oltre 2500m), latitudini tropicali a mezzogiorno, superfici riflettenti (neve, sabbia chiara, acqua).\n\nCosa fare:\nRimani in casa nelle ore di picco. Le scottature possono avvenire in meno di 15 minuti." />
+        </LinearLayout>
+
+        <!-- Nota Tecnica -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/rounded_corner_white"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📌 NOTA TECNICA:"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:lineSpacingExtra="4dp"
+                android:paddingBottom="16dp"
+                android:text="L'Indice Ultravioletto (UV) è una misura dell'intensità della radiazione ultravioletta del sole sulla superficie terrestre. I valori vanno da 0 a 11+ e indicano il potenziale rischio di danni alla pelle se esposta senza protezione. Più alto è l'indice, maggiore è il rischio di scottature, danni cutanei a lungo termine e possibili problemi agli occhi." />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
