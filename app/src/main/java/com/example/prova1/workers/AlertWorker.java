@@ -108,7 +108,7 @@ public class AlertWorker extends Worker {
 
     private void checkOpenMeteoAlerts(LocationData locationData) {
         try {
-            String currentParams = "temperature_2m,wind_speed_10m,visibility,uv_index";
+            String currentParams = "temperature_2m,wind_speed_10m,visibility,uv_index,precipitation_probability,precipitation";
             Response<OpenMeteoResponse> response = WeatherApiClient.getClient().create(WeatherApiService.class)
                     .getForecast(locationData.getLatitude(), locationData.getLongitude(), currentParams, "", "auto")
                     .execute();
@@ -130,6 +130,14 @@ public class AlertWorker extends Worker {
                     double uvIndex = data.getCurrent().getUvIndex();
                     int uvSeverity = getUvSeverity(uvIndex);
                     compareAndNotify(locationData, "uv", uvSeverity, String.format(Locale.getDefault(), "Indice UV di %.1f", uvIndex), MainApplication.UV_INDEX_CHANNEL_ID);
+
+                    int precipitationProbability = data.getCurrent().getPrecipitationProbability();
+                    int precipitationProbabilitySeverity = getPrecipitationProbabilitySeverity(precipitationProbability);
+                    compareAndNotify(locationData, "precipitation_probability", precipitationProbabilitySeverity, String.format(Locale.getDefault(), "Probabilità di pioggia del %d%%", precipitationProbability), "precipitation_probability_channel");
+
+                    double precipitation = data.getCurrent().getPrecipitation();
+                    int precipitationSeverity = getPrecipitationSeverity(precipitation);
+                    compareAndNotify(locationData, "precipitation", precipitationSeverity, String.format(Locale.getDefault(), "Precipitazioni di %.1f mm", precipitation), "precipitation_channel");
                 }
             }
         } catch (Exception e) {
@@ -214,6 +222,10 @@ public class AlertWorker extends Worker {
             readableAlertType = "Visibilità";
         } else if (alertType.equals("uv")) {
             readableAlertType = "Raggi UV";
+        } else if (alertType.equals("precipitation_probability")) {
+            readableAlertType = "Prob. Pioggia";
+        } else if (alertType.equals("precipitation")) {
+            readableAlertType = "Precipitazioni";
         } else if (alertType.startsWith("feed_")) {
             String feedType = alertType.substring(5);
             if (feedType.equals("Altro") || feedType.equals("Sconosciuto")) {
@@ -272,6 +284,20 @@ public class AlertWorker extends Worker {
         if (uvIndex >= 6) return 2; // High
         if (uvIndex >= 3) return 1; // Moderate
         return 0; // Low
+    }
+
+    private int getPrecipitationProbabilitySeverity(int probability) {
+        if (probability >= 75) return 3;
+        if (probability >= 50) return 2;
+        if (probability >= 25) return 1;
+        return 0;
+    }
+
+    private int getPrecipitationSeverity(double precipitation) {
+        if (precipitation > 10) return 3; // Heavy rain
+        if (precipitation > 2.5) return 2; // Moderate rain
+        if (precipitation > 0) return 1; // Light rain
+        return 0;
     }
 
     private int getFeedSeverity(String title) {

@@ -18,6 +18,9 @@ public class Current {
     @SerializedName("precipitation")
     private double precipitation;
 
+    @SerializedName("precipitation_probability")
+    private int precipitationProbability;
+
     @SerializedName("wind_speed_10m")
     private double windSpeed10m;
 
@@ -47,6 +50,7 @@ public class Current {
     public double getTemperature2m() { return temperature2m; }
     public int getRelativeHumidity2m() { return relativeHumidity2m; }
     public double getPrecipitation() { return precipitation; }
+    public int getPrecipitationProbability() { return precipitationProbability; }
     public double getWindSpeed10m() { return windSpeed10m; }
     public double getVisibility() { return visibility; }
     public double getPm25() { return pm25; }

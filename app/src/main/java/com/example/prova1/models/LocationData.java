@@ -21,6 +21,7 @@ public class LocationData implements Parcelable {
     private transient int humidity;
     private transient double windSpeed;
     private transient double precipitation;
+    private transient int precipitationProbability;
     private transient double pm25;
     private transient int cloudCover;
     private transient double apparentTemperature;
@@ -98,6 +99,7 @@ public class LocationData implements Parcelable {
     public int getHumidity() { return humidity; }
     public double getWindSpeed() { return windSpeed; }
     public double getPrecipitation() { return precipitation; }
+    public int getPrecipitationProbability() { return precipitationProbability; }
     public double getPm25() { return pm25; }
     public int getCloudCover() { return cloudCover; }
     public double getApparentTemperature() { return apparentTemperature; }
@@ -127,6 +129,7 @@ public class LocationData implements Parcelable {
     public void setHumidity(int humidity) { this.humidity = humidity; }
     public void setWindSpeed(double windSpeed) { this.windSpeed = windSpeed; }
     public void setPrecipitation(double precipitation) { this.precipitation = precipitation; }
+    public void setPrecipitationProbability(int precipitationProbability) { this.precipitationProbability = precipitationProbability; }
     public void setPm25(double pm25) { this.pm25 = pm25; }
     public void setCloudCover(int cloudCover) { this.cloudCover = cloudCover; }
     public void setApparentTemperature(double apparentTemperature) { this.apparentTemperature = apparentTemperature; }

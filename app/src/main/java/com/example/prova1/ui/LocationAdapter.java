@@ -73,6 +73,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         private final TextView temperatureText;
         private final TextView humidityText;
         private final TextView windText;
+        private final TextView precipitationProbabilityText;
+        private final LinearLayout precipitationLayout;
         private final TextView precipitationText;
         private final LinearLayout pressureLayout;
         private final TextView pressureText;
@@ -104,6 +106,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             temperatureText = itemView.findViewById(R.id.temperature_text);
             humidityText = itemView.findViewById(R.id.humidity_text);
             windText = itemView.findViewById(R.id.wind_text);
+            precipitationProbabilityText = itemView.findViewById(R.id.precipitation_probability_text);
+            precipitationLayout = itemView.findViewById(R.id.precipitation_layout);
             precipitationText = itemView.findViewById(R.id.precipitation_text);
             pressureLayout = itemView.findViewById(R.id.pressure_layout);
             pressureText = itemView.findViewById(R.id.pressure_text);
@@ -155,7 +159,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
                 temperatureText.setText(String.format("%.1f °C", location.getTemperature()));
                 humidityText.setText(String.format("%d%%", location.getHumidity()));
                 windText.setText(String.format("%.1f km/h", location.getWindSpeed()));
-                precipitationText.setText(String.format("%.1f mm", location.getPrecipitation()));
+                precipitationProbabilityText.setText(String.format("%d%%", location.getPrecipitationProbability()));
                 pressureText.setText(String.format("%.1f hPa", location.getPressureMsl()));
             } else {
                 weatherDescription.setVisibility(View.VISIBLE);
@@ -163,6 +167,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             }
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(itemView.getContext());
+            boolean showPrecipitation = prefs.getBoolean("precipitation", false) && hasWeather;
             boolean showPm25 = prefs.getBoolean("pm25", false) && hasAirQuality;
             boolean showCloudCover = prefs.getBoolean("cloud_cover", false) && hasWeather;
             boolean showApparentTemp = prefs.getBoolean("apparent_temperature", false) && hasWeather;
@@ -171,6 +176,10 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             boolean showSunriseSunset = prefs.getBoolean("sunrise_sunset", false) && location.getSunrise() != null && location.getSunset() != null;
             boolean showPressure = prefs.getBoolean("pressure", false) && hasWeather;
 
+            precipitationLayout.setVisibility(showPrecipitation ? View.VISIBLE : View.GONE);
+            if (showPrecipitation) {
+                precipitationText.setText(String.format("%.1f mm", location.getPrecipitation()));
+            }
             pm25Layout.setVisibility(showPm25 ? View.VISIBLE : View.GONE);
             if(showPm25) {
                 pm25Text.setText(String.format("%.1f μg/m³", location.getPm25()));

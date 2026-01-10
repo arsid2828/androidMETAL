@@ -24,7 +24,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:background="@drawable/rounded_corner_yellow"
+            android:background="@drawable/glass_background"
+            android:backgroundTint="#FFEB3B"
             android:orientation="vertical"
             android:padding="16dp">
 
@@ -47,7 +48,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:background="@drawable/rounded_corner_orange"
+            android:background="@drawable/glass_background"
+            android:backgroundTint="#FF9800"
             android:orientation="vertical"
             android:padding="16dp">
 
@@ -70,7 +72,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:background="@drawable/rounded_corner_red"
+            android:background="@drawable/glass_background"
+            android:backgroundTint="#F44336"
             android:orientation="vertical"
             android:padding="16dp">
 

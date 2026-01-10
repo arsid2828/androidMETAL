@@ -1,40 +1,61 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory app:title="Dati Meteo Aggiuntivi">
 
         <SwitchPreferenceCompat
             app:key="pm25"
             app:title="Qualità dell'aria (PM2.5)"
+            app:icon="@drawable/ic_pm25"
+            android:layout="@layout/preference_switch_card"
             app:defaultValue="false" />
 
         <SwitchPreferenceCompat
             app:key="cloud_cover"
             app:title="Copertura nuvolosa"
+            app:icon="@drawable/ic_cloud"
+            android:layout="@layout/preference_switch_card"
             app:defaultValue="false" />
 
         <SwitchPreferenceCompat
             app:key="apparent_temperature"
             app:title="Temperatura percepita"
+            app:icon="@drawable/ic_apparent_temperature"
+            android:layout="@layout/preference_switch_card"
             app:defaultValue="false" />
 
         <SwitchPreferenceCompat
             app:key="uv_index"
             app:title="Indice UV"
+            app:icon="@drawable/ic_uv_index"
+            android:layout="@layout/preference_switch_card"
             app:defaultValue="false" />
 
         <SwitchPreferenceCompat
             app:key="visibility"
             app:title="Visibilità"
+            app:icon="@drawable/ic_visibility"
+            android:layout="@layout/preference_switch_card"
             app:defaultValue="false" />
 
         <SwitchPreferenceCompat
             app:key="sunrise_sunset"
             app:title="Alba e Tramonto"
+            app:icon="@drawable/ic_sunrise_sunset"
+            android:layout="@layout/preference_switch_card"
             app:defaultValue="false" />
 
         <SwitchPreferenceCompat
             app:key="pressure"
             app:title="Pressione"
+            app:icon="@drawable/ic_pressure"
+            android:layout="@layout/preference_switch_card"
+            app:defaultValue="false" />
+
+        <SwitchPreferenceCompat
+            app:key="precipitation"
+            app:title="Precipitazioni"
+            app:icon="@drawable/ic_weather_cloud"
+            android:layout="@layout/preference_switch_card"
             app:defaultValue="false" />
 
     </PreferenceCategory>

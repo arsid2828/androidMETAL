@@ -322,10 +322,13 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         StringJoiner currentJoiner = new StringJoiner(",");
         currentJoiner.add("temperature_2m");
         currentJoiner.add("relative_humidity_2m");
-        currentJoiner.add("precipitation");
+        currentJoiner.add("precipitation_probability");
         currentJoiner.add("wind_speed_10m");
         currentJoiner.add("pressure_msl");
 
+        if (prefs.getBoolean("precipitation", false)) {
+            currentJoiner.add("precipitation");
+        }
         if (prefs.getBoolean("cloud_cover", false)) {
             currentJoiner.add("cloud_cover");
         }
@@ -356,8 +359,11 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                                 locationData.setTemperature(data.getCurrent().getTemperature2m());
                                 locationData.setHumidity(data.getCurrent().getRelativeHumidity2m());
                                 locationData.setWindSpeed(data.getCurrent().getWindSpeed10m());
-                                locationData.setPrecipitation(data.getCurrent().getPrecipitation());
+                                locationData.setPrecipitationProbability(data.getCurrent().getPrecipitationProbability());
                                 locationData.setPressureMsl(data.getCurrent().getPressureMsl());
+                                if (prefs.getBoolean("precipitation", false)) {
+                                    locationData.setPrecipitation(data.getCurrent().getPrecipitation());
+                                }
                                 if (prefs.getBoolean("cloud_cover", false)) {
                                     locationData.setCloudCover(data.getCurrent().getCloudCover());
                                 }
