@@ -31,7 +31,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="GIALLO (Allerta Moderata - Visibilità ridotta)"
+                android:text="🟡 GIALLO (Allerta Moderata - Visibilità ridotta)"
                 android:textStyle="bold" />
 
             <TextView
@@ -54,7 +54,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ARANCIONE (Allerta Elevata - Visibilità pericolosa)"
+                android:text="🟠 ARANCIONE (Allerta Elevata - Visibilità pericolosa)"
                 android:textStyle="bold" />
 
             <TextView
@@ -77,7 +77,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ROSSO (Allerta Massima - Visibilità quasi nulla)"
+                android:text="🔴 ROSSO (Allerta Massima - Visibilità quasi nulla)"
                 android:textStyle="bold" />
 
             <TextView

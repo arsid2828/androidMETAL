@@ -31,7 +31,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="LIVELLO 1 - GIALLO (Allerta Moderata)"
+                android:text="🟡 LIVELLO 1 - GIALLO (Allerta Moderata)"
                 android:textStyle="bold" />
 
             <TextView
@@ -54,7 +54,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="LIVELLO 2 - ARANCIONE (Allerta Elevata)"
+                android:text="🟠 LIVELLO 2 - ARANCIONE (Allerta Elevata)"
                 android:textStyle="bold" />
 
             <TextView
@@ -77,7 +77,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="LIVELLO 3 - ROSSO (Allerta Massima)"
+                android:text="🔴 LIVELLO 3 - ROSSO (Allerta Massima)"
                 android:textStyle="bold" />
 
             <TextView
@@ -100,7 +100,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="LIVELLO 4 - VIOLA (Pericolo Estremo - Condizioni Uragano)"
+                android:text="⚠️ LIVELLO 4 - VIOLA (Pericolo Estremo - Condizioni Uragano)"
                 android:textStyle="bold" />
 
             <TextView

@@ -31,7 +31,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="GIALLO (Allerta Moderata - Possibili fenomeni intensi)"
+                android:text="🟡 GIALLO (Allerta Moderata - Possibili fenomeni intensi)"
                 android:textStyle="bold" />
 
             <TextView
@@ -54,7 +54,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ARANCIONE (Allerta Elevata - Fenomeni pericolosi)"
+                android:text="🟠 ARANCIONE (Allerta Elevata - Fenomeni pericolosi)"
                 android:textStyle="bold" />
 
             <TextView
@@ -77,7 +77,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ROSSO (Allerta Massima - Fenomeni violenti)"
+                android:text="🔴 ROSSO (Allerta Massima - Fenomeni violenti)"
                 android:textStyle="bold" />
 
             <TextView

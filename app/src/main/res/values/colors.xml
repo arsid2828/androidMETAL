@@ -19,6 +19,8 @@
     <!-- Colori Standard -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="cream_white">#FFF9F1</color> <!-- Bianco Panna -->
+    <color name="header_red">#D32F2F</color> <!-- Rosso per intestazione -->
 
     <!-- Colori Allerta -->
     <color name="alert_yellow">#FFEB3B</color>
