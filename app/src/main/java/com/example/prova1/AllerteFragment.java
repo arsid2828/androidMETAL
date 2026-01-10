@@ -10,8 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
-import com.google.android.material.snackbar.Snackbar;
-
 public class AllerteFragment extends Fragment {
 
     @Override
@@ -64,6 +62,25 @@ public class AllerteFragment extends Fragment {
         view.findViewById(R.id.normativa_inondazione_pioggia).setOnClickListener(v -> {
             Navigation.findNavController(v).navigate(R.id.action_AllerteFragment_to_InondazionePioggiaFragment);
         });
-    }
 
+        view.findViewById(R.id.normativa_siccita).setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_AllerteFragment_to_SiccitaFragment);
+        });
+
+        view.findViewById(R.id.normativa_evento_costiero).setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_AllerteFragment_to_EventoCostieroFragment);
+        });
+
+        view.findViewById(R.id.normativa_incendio).setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_AllerteFragment_to_IncendioFragment);
+        });
+
+        view.findViewById(R.id.normativa_valanga).setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_AllerteFragment_to_ValangaFragment);
+        });
+
+        view.findViewById(R.id.normativa_pericolo_marino).setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_AllerteFragment_to_PericoloMarinoFragment);
+        });
+    }
 }

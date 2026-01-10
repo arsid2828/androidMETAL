@@ -52,6 +52,21 @@
         <action
             android:id="@+id/action_AllerteFragment_to_InondazionePioggiaFragment"
             app:destination="@id/InondazionePioggiaFragment" />
+        <action
+            android:id="@+id/action_AllerteFragment_to_SiccitaFragment"
+            app:destination="@id/SiccitaFragment" />
+        <action
+            android:id="@+id/action_AllerteFragment_to_EventoCostieroFragment"
+            app:destination="@id/EventoCostieroFragment" />
+        <action
+            android:id="@+id/action_AllerteFragment_to_IncendioFragment"
+            app:destination="@id/IncendioFragment" />
+        <action
+            android:id="@+id/action_AllerteFragment_to_ValangaFragment"
+            app:destination="@id/ValangaFragment" />
+        <action
+            android:id="@+id/action_AllerteFragment_to_PericoloMarinoFragment"
+            app:destination="@id/PericoloMarinoFragment" />
     </fragment>
 
     <fragment
@@ -113,6 +128,36 @@
         android:name="com.example.prova1.InondazionePioggiaFragment"
         android:label="Inondazione da Pioggia"
         tools:layout="@layout/fragment_inondazione_pioggia" />
+
+    <fragment
+        android:id="@+id/SiccitaFragment"
+        android:name="com.example.prova1.SiccitaFragment"
+        android:label="Siccità"
+        tools:layout="@layout/fragment_siccita" />
+
+    <fragment
+        android:id="@+id/EventoCostieroFragment"
+        android:name="com.example.prova1.EventoCostieroFragment"
+        android:label="Evento Costiero"
+        tools:layout="@layout/fragment_evento_costiero" />
+
+    <fragment
+        android:id="@+id/IncendioFragment"
+        android:name="com.example.prova1.IncendioFragment"
+        android:label="Incendio Boschivo"
+        tools:layout="@layout/fragment_incendio" />
+
+    <fragment
+        android:id="@+id/ValangaFragment"
+        android:name="com.example.prova1.ValangaFragment"
+        android:label="Valanga"
+        tools:layout="@layout/fragment_valanga" />
+
+    <fragment
+        android:id="@+id/PericoloMarinoFragment"
+        android:name="com.example.prova1.PericoloMarinoFragment"
+        android:label="Pericolo Marino"
+        tools:layout="@layout/fragment_pericolo_marino" />
 
     <fragment
         android:id="@+id/ImpostazioniFragment"

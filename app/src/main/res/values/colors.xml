@@ -24,7 +24,7 @@
     <color name="alert_yellow">#FFEB3B</color>
     <color name="alert_orange">#FF9800</color>
     <color name="alert_red">#F44336</color>
-    <color name="alert_purple">#9C27B0</color>
+    <color name="alert_purple">#E1BEE7</color> <!-- Viola più chiaro/tenero per leggibilità -->
     <color name="alert_blue">#2196F3</color>
     <color name="alert_cyan">#00BCD4</color>
 
