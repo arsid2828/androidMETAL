@@ -28,6 +28,7 @@ public class LocationData implements Parcelable {
     private transient double visibility;
     private transient String sunrise;
     private transient String sunset;
+    private transient double pressureMsl;
 
     // This field is now initialized at declaration and is not transient.
     // This ensures it's handled by both Gson and Parcelable.
@@ -104,6 +105,7 @@ public class LocationData implements Parcelable {
     public double getVisibility() { return visibility; }
     public String getSunrise() { return sunrise; }
     public String getSunset() { return sunset; }
+    public double getPressureMsl() { return pressureMsl; }
     
     // Defensive getter for the alert severity map
     public Map<String, Integer> getAlertTypeSeverity() { 
@@ -132,5 +134,6 @@ public class LocationData implements Parcelable {
     public void setVisibility(double visibility) { this.visibility = visibility; }
     public void setSunrise(String sunrise) { this.sunrise = sunrise; }
     public void setSunset(String sunset) { this.sunset = sunset; }
+    public void setPressureMsl(double pressureMsl) { this.pressureMsl = pressureMsl; }
     public void setAlertTypeSeverity(Map<String, Integer> alertTypeSeverity) { this.alertTypeSeverity = alertTypeSeverity; }
 }

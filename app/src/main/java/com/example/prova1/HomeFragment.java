@@ -324,6 +324,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         currentJoiner.add("relative_humidity_2m");
         currentJoiner.add("precipitation");
         currentJoiner.add("wind_speed_10m");
+        currentJoiner.add("pressure_msl");
 
         if (prefs.getBoolean("cloud_cover", false)) {
             currentJoiner.add("cloud_cover");
@@ -356,6 +357,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                                 locationData.setHumidity(data.getCurrent().getRelativeHumidity2m());
                                 locationData.setWindSpeed(data.getCurrent().getWindSpeed10m());
                                 locationData.setPrecipitation(data.getCurrent().getPrecipitation());
+                                locationData.setPressureMsl(data.getCurrent().getPressureMsl());
                                 if (prefs.getBoolean("cloud_cover", false)) {
                                     locationData.setCloudCover(data.getCurrent().getCloudCover());
                                 }
@@ -848,23 +850,5 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                 .setOnlyAlertOnce(true);
 
         NotificationManagerCompat.from(context).notify(AIR_QUALITY_NOTIFICATION_ID, builder.build());
-    }
-
-    @SuppressLint("NewApi")
-    private boolean isNotificationActive(int notificationId, String title) {
-        Context context = getContext();
-        if (context == null) return false;
-
-        android.app.NotificationManager notificationManager = (android.app.NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        android.service.notification.StatusBarNotification[] activeNotifications = notificationManager.getActiveNotifications();
-        for (android.service.notification.StatusBarNotification sbn : activeNotifications) {
-            if (sbn.getId() == notificationId) {
-                String existingTitle = sbn.getNotification().extras.getString(android.app.Notification.EXTRA_TITLE);
-                if (title.equals(existingTitle)) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }

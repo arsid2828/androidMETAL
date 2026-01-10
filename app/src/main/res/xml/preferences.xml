@@ -32,6 +32,11 @@
             app:title="Alba e Tramonto"
             app:defaultValue="false" />
 
+        <SwitchPreferenceCompat
+            app:key="pressure"
+            app:title="Pressione"
+            app:defaultValue="false" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

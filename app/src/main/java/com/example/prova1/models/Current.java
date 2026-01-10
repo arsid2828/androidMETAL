@@ -39,6 +39,9 @@ public class Current {
     @SerializedName("snowfall")
     private double snowfall;
 
+    @SerializedName("pressure_msl")
+    private double pressureMsl;
+
     public String getTime() { return time; }
     public int getInterval() { return interval; }
     public double getTemperature2m() { return temperature2m; }
@@ -51,4 +54,5 @@ public class Current {
     public double getApparentTemperature() { return apparentTemperature; }
     public double getUvIndex() { return uvIndex; }
     public double getSnowfall() { return snowfall; }
+    public double getPressureMsl() { return pressureMsl; }
 }

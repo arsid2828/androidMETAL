@@ -74,6 +74,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         private final TextView humidityText;
         private final TextView windText;
         private final TextView precipitationText;
+        private final LinearLayout pressureLayout;
+        private final TextView pressureText;
         private final LinearLayout pm25Layout;
         private final TextView pm25Text;
         private final LinearLayout cloudCoverLayout;
@@ -103,6 +105,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             humidityText = itemView.findViewById(R.id.humidity_text);
             windText = itemView.findViewById(R.id.wind_text);
             precipitationText = itemView.findViewById(R.id.precipitation_text);
+            pressureLayout = itemView.findViewById(R.id.pressure_layout);
+            pressureText = itemView.findViewById(R.id.pressure_text);
             pm25Layout = itemView.findViewById(R.id.pm25_layout);
             pm25Text = itemView.findViewById(R.id.pm25_text);
             cloudCoverLayout = itemView.findViewById(R.id.cloud_cover_layout);
@@ -152,6 +156,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
                 humidityText.setText(String.format("%d%%", location.getHumidity()));
                 windText.setText(String.format("%.1f km/h", location.getWindSpeed()));
                 precipitationText.setText(String.format("%.1f mm", location.getPrecipitation()));
+                pressureText.setText(String.format("%.1f hPa", location.getPressureMsl()));
             } else {
                 weatherDescription.setVisibility(View.VISIBLE);
                 weatherDescription.setText(location.getWeatherInfo());
@@ -164,6 +169,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             boolean showUvIndex = prefs.getBoolean("uv_index", false) && hasWeather;
             boolean showVisibility = prefs.getBoolean("visibility", false) && hasWeather;
             boolean showSunriseSunset = prefs.getBoolean("sunrise_sunset", false) && location.getSunrise() != null && location.getSunset() != null;
+            boolean showPressure = prefs.getBoolean("pressure", false) && hasWeather;
 
             pm25Layout.setVisibility(showPm25 ? View.VISIBLE : View.GONE);
             if(showPm25) {
@@ -204,6 +210,11 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
                     sunriseSunsetLabel.setText("Alba (domani)");
                     sunriseSunsetText.setText(sunrise.format(DateTimeFormatter.ofPattern("HH:mm")));
                 }
+            }
+
+            pressureLayout.setVisibility(showPressure ? View.VISIBLE : View.GONE);
+            if (showPressure) {
+                pressureText.setText(String.format("%.1f hPa", location.getPressureMsl()));
             }
 
             if (location.isFavorite()) {

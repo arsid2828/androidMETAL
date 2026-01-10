@@ -92,7 +92,7 @@
             app:flow_horizontalStyle="spread_inside"
             app:flow_verticalGap="8dp"
             app:flow_horizontalGap="8dp"
-            app:constraint_referenced_ids="temperature_layout,humidity_layout,wind_layout,precipitation_layout,pm25_layout,cloud_cover_layout,apparent_temperature_layout,uv_index_layout,visibility_layout,sunrise_sunset_layout"
+            app:constraint_referenced_ids="temperature_layout,humidity_layout,wind_layout,precipitation_layout,pressure_layout,pm25_layout,cloud_cover_layout,apparent_temperature_layout,uv_index_layout,visibility_layout,sunrise_sunset_layout"
             app:layout_constraintTop_toBottomOf="@+id/weather_description"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -229,6 +229,38 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/pressure_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:background="@drawable/pressure_background">
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_pressure"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pressione"
+                    android:textAppearance="?attr/textAppearanceCaption" />
+                <TextView
+                    android:id="@+id/pressure_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceBody1"
+                    android:textStyle="bold"
+                    tools:text="1000 hPa" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/pm25_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -301,7 +333,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:orientation="horizontal"
+            android.orientation="horizontal"
             android:padding="8dp"
             android:visibility="gone"
             tools:visibility="visible"
