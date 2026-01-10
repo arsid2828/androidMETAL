@@ -108,7 +108,7 @@ public class AlertWorker extends Worker {
 
     private void checkOpenMeteoAlerts(LocationData locationData) {
         try {
-            String currentParams = "temperature_2m,wind_speed_10m,visibility";
+            String currentParams = "temperature_2m,wind_speed_10m,visibility,uv_index";
             Response<OpenMeteoResponse> response = WeatherApiClient.getClient().create(WeatherApiService.class)
                     .getForecast(locationData.getLatitude(), locationData.getLongitude(), currentParams, "", "auto")
                     .execute();
@@ -126,6 +126,10 @@ public class AlertWorker extends Worker {
                     double visibility = data.getCurrent().getVisibility();
                     int visibilitySeverity = getVisibilitySeverity(visibility);
                     compareAndNotify(locationData, "visibility", visibilitySeverity, String.format(Locale.getDefault(), "Visibilità di %.1f km", visibility / 1000), MainApplication.VISIBILITY_CHANNEL_ID);
+
+                    double uvIndex = data.getCurrent().getUvIndex();
+                    int uvSeverity = getUvSeverity(uvIndex);
+                    compareAndNotify(locationData, "uv", uvSeverity, String.format(Locale.getDefault(), "Indice UV di %.1f", uvIndex), MainApplication.UV_INDEX_CHANNEL_ID);
                 }
             }
         } catch (Exception e) {
@@ -208,6 +212,8 @@ public class AlertWorker extends Worker {
             readableAlertType = "Temperatura";
         } else if (alertType.equals("visibility")) {
             readableAlertType = "Visibilità";
+        } else if (alertType.equals("uv")) {
+            readableAlertType = "Raggi UV";
         } else if (alertType.startsWith("feed_")) {
             String feedType = alertType.substring(5);
             if (feedType.equals("Altro") || feedType.equals("Sconosciuto")) {
@@ -258,6 +264,14 @@ public class AlertWorker extends Worker {
         if (visibilityInMeters < 1000) return 2; // Moderate fog
         if (visibilityInMeters < 5000) return 1; // Mist or poor visibility
         return 0; // Good visibility
+    }
+
+    private int getUvSeverity(double uvIndex) {
+        if (uvIndex >= 11) return 4; // Extreme
+        if (uvIndex >= 8) return 3; // Very High
+        if (uvIndex >= 6) return 2; // High
+        if (uvIndex >= 3) return 1; // Moderate
+        return 0; // Low
     }
 
     private int getFeedSeverity(String title) {
