@@ -53,6 +53,8 @@ import com.example.prova1.ui.AddLocationDialogFragment;
 import com.example.prova1.ui.LocationAdapter;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
+import com.google.android.gms.tasks.CancellationTokenSource;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,7 +64,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.StringJoiner;
 
 import retrofit2.Call;
@@ -85,15 +86,30 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
     private static final double WIND_SPEED_THRESHOLD = 30.0;
     private static final double PM25_THRESHOLD = 25.0;
 
-    private final ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
+    private final ActivityResultLauncher<String[]> requestMultiplePermissionsLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), permissions -> {
+                boolean fineLocationGranted = permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false);
+                boolean coarseLocationGranted = permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false);
+
+                if (fineLocationGranted || coarseLocationGranted) {
                     requestBackgroundLocationPermission();
                 } else {
-                    Context context = getContext();
-                    if (context != null) {
-                        Toast.makeText(context, "Permesso GPS negato.", Toast.LENGTH_LONG).show();
-                    }
+                    // Mostra un dialogo più esplicativo
+                    new AlertDialog.Builder(requireContext())
+                            .setTitle("Permesso di Posizione Necessario")
+                            .setMessage("L'app ha bisogno di accedere alla tua posizione per mostrare i dati meteo e le allerte. Per favore, concedi il permesso nelle impostazioni.")
+                            .setPositiveButton("Apri Impostazioni", (dialog, which) -> {
+                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                Uri uri = Uri.fromParts("package", requireActivity().getPackageName(), null);
+                                intent.setData(uri);
+                                startActivity(intent);
+                            })
+                            .setNegativeButton("Annulla", (dialog, which) -> {
+                                Toast.makeText(getContext(), "Permesso di posizione negato.", Toast.LENGTH_LONG).show();
+                                dialog.dismiss();
+                            })
+                            .create()
+                            .show();
                 }
             });
 
@@ -180,8 +196,12 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
             fetchAllDataForLocation(location);
         }
 
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestMultiplePermissionsLauncher.launch(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+            });
         } else {
             getCurrentLocationAndFetchData(isCurrentLocationFavorite);
         }
@@ -232,7 +252,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
 
     @SuppressLint("MissingPermission")
     private void getCurrentLocationAndFetchData(boolean isFavorite) {
-        fusedLocationClient.getLastLocation()
+        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, new CancellationTokenSource().getToken())
                 .addOnSuccessListener(requireActivity(), location -> {
                     Context context = getContext();
                     if (location != null) {
