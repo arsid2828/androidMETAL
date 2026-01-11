@@ -47,7 +47,7 @@ public class MainApplication extends Application {
             NotificationChannel feedChannel = new NotificationChannel(
                     FEED_CHANNEL_ID,
                     "Notifiche Allarmi Meteo",
-                    NotificationManager.IMPORTANCE_HIGH);
+                    NotificationManager.IMPORTANCE_MAX);
             feedChannel.setDescription("Canale per notifiche relative a feed di allarmi.");
 
             NotificationChannel tempChannel = new NotificationChannel(

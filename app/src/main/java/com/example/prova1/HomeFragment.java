@@ -3,6 +3,7 @@ package com.example.prova1;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -561,9 +562,6 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
             return;
         }
 
-        Map<String, Integer> previousAlertTypeSeverity = new HashMap<>(locationData.getAlertTypeSeverity());
-        locationData.getAlertTypeSeverity().clear();
-
         List<MeteoAlarmAlert> allAlerts = new ArrayList<>();
         for (AtomEntry entry : feed.getEntries()) {
             if (entry.getTitle() != null && entry.getTitle().toLowerCase().contains(region.toLowerCase())) {
@@ -619,16 +617,12 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
             alertsBuilder.append("⚠️ ").append(alert.summary).append(" | ");
 
             WindAlert newAlert = new WindAlert(System.currentTimeMillis(), locationData.getName(), alert.title, alert.summary, alert.color);
+
             if (!isAlertAlreadyNotified(newAlert)) {
                 alertViewModel.addWindAlert(newAlert);
-            }
-
-            Integer previousSeverity = previousAlertTypeSeverity.get(alert.type);
-            if (previousSeverity == null || alert.severity > previousSeverity) {
                 int notificationId = (locationData.getName() + alert.title + alert.summary).hashCode();
                 sendFeedNotification(alert.title, alert.summary, alert.durationText, alert.color, locationData, notificationId);
             }
-            locationData.getAlertTypeSeverity().put(alert.type, alert.severity);
         }
 
         String finalAlertInfo = alertsBuilder.toString().trim();
@@ -713,10 +707,12 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         Context context = getContext();
         if (context == null) return;
 
-        WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), title, summary, color);
-        if (isAlertAlreadyNotified(newAlert)) return;
-
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
+
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, notificationId /* Request code */, intent,
+                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, MainApplication.FEED_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
@@ -725,7 +721,8 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                 .setColor(color)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(summary))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setOnlyAlertOnce(true);
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
 
         NotificationManagerCompat.from(context).notify(notificationId, builder.build());
     }
