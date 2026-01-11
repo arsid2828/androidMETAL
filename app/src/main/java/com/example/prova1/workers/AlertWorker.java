@@ -311,13 +311,16 @@ public class AlertWorker extends Worker {
         if (summary == null) return "Sconosciuto";
         summary = summary.toLowerCase();
         if (summary.contains("wind")) return "Vento";
-        if (summary.contains("rain")) return "Pioggia";
+        if (summary.contains("rain") || summary.contains("flood")) return "Pioggia/Inondazione";
         if (summary.contains("snow") || summary.contains("ice")) return "Neve/Ghiaccio";
-        if (summary.contains("thunderstorms")) return "Temporali";
+        if (summary.contains("thunderstorm")) return "Temporali";
         if (summary.contains("fog")) return "Nebbia";
-        if (summary.contains("temperature")) return "Temperatura";
-        if (summary.contains("coastal") || summary.contains("sea")) return "Costiero";
-        if (summary.contains("forest fire")) return "Incendi";
+        if (summary.contains("high temperature") || summary.contains("heat")) return "Alta Temperatura";
+        if (summary.contains("low temperature") || summary.contains("frost")) return "Bassa Temperatura";
+        if (summary.contains("coastal") || summary.contains("sea") || summary.contains("marine hazard")) return "Costiero/Marino";
+        if (summary.contains("forest fire")) return "Incendi Boschivi";
+        if (summary.contains("avalanche")) return "Valanga";
+        if (summary.contains("drought")) return "Siccità";
         return "Altro";
     }
 }

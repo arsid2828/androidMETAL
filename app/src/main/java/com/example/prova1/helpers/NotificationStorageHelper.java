@@ -1,7 +1,7 @@
 package com.example.prova1.helpers;
 
 import android.content.Context;
-
+import androidx.core.app.NotificationManagerCompat;
 import com.example.prova1.models.WindAlert;
 import com.google.gson.Gson;
 
@@ -57,7 +57,6 @@ public class NotificationStorageHelper {
         return alerts;
     }
 
-    // Cambiato da private a public per renderlo accessibile dal ViewModel
     public static void overwriteAlerts(Context context, List<WindAlert> alerts) {
         Gson gson = new Gson();
         try (FileOutputStream fos = context.openFileOutput(FILE_NAME, Context.MODE_PRIVATE)) {
@@ -68,5 +67,9 @@ public class NotificationStorageHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void hideVisibleNotifications(Context context) {
+        NotificationManagerCompat.from(context).cancelAll();
     }
 }

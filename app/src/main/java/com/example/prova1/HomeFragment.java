@@ -41,6 +41,7 @@ import com.example.prova1.api.FeedApiService;
 import com.example.prova1.api.WeatherApiClient;
 import com.example.prova1.api.WeatherApiService;
 import com.example.prova1.data.LocationRepository;
+import com.example.prova1.helpers.NotificationStorageHelper;
 import com.example.prova1.models.AlertViewModel;
 import com.example.prova1.models.AtomEntry;
 import com.example.prova1.models.AtomFeed;
@@ -60,6 +61,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 import retrofit2.Call;
@@ -138,6 +140,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
     @Override
     public void onResume() {
         super.onResume();
+        NotificationStorageHelper.hideVisibleNotifications(requireContext());
         refreshData();
     }
 
@@ -156,6 +159,8 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
     public void refreshData() {
         Context context = getContext();
         if (context == null) return;
+
+        NotificationStorageHelper.hideVisibleNotifications(requireContext());
 
         if (!swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(true);
 
@@ -517,6 +522,20 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         }
     }
 
+    private boolean isAlertAlreadyNotified(WindAlert newAlert) {
+        List<WindAlert> existingAlerts = alertViewModel.getWindAlerts().getValue();
+        if (existingAlerts == null) {
+            return false;
+        }
+        for (WindAlert existingAlert : existingAlerts) {
+            if (existingAlert.getTitle().equals(newAlert.getTitle()) &&
+                    existingAlert.getLocation().equals(newAlert.getLocation())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private static class MeteoAlarmAlert {
         String type;
         int severity;
@@ -598,9 +617,11 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         StringBuilder alertsBuilder = new StringBuilder();
         for (MeteoAlarmAlert alert : mostSevereAlerts.values()) {
             alertsBuilder.append("⚠️ ").append(alert.summary).append(" | ");
-            
+
             WindAlert newAlert = new WindAlert(System.currentTimeMillis(), locationData.getName(), alert.title, alert.summary, alert.color);
-            alertViewModel.addWindAlert(newAlert);
+            if (!isAlertAlreadyNotified(newAlert)) {
+                alertViewModel.addWindAlert(newAlert);
+            }
 
             Integer previousSeverity = previousAlertTypeSeverity.get(alert.type);
             if (previousSeverity == null || alert.severity > previousSeverity) {
@@ -668,6 +689,8 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         }
         String contentText = String.format("Vento a %.1f km/h a %s", windSpeed, location.getName());
         WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), title, contentText, color);
+
+        if (isAlertAlreadyNotified(newAlert)) return;
         alertViewModel.addWindAlert(newAlert);
 
         Context context = getContext();
@@ -689,6 +712,10 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
     private void sendFeedNotification(String title, String summary, String durationText, int color, LocationData location, int notificationId) {
         Context context = getContext();
         if (context == null) return;
+
+        WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), title, summary, color);
+        if (isAlertAlreadyNotified(newAlert)) return;
+
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return;
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, MainApplication.FEED_CHANNEL_ID)
@@ -725,6 +752,8 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         String notificationTitle = "In questo momento a " + location.getName() + " " + titleSuffix;
         String contentText = String.format("Temperatura: %.1f°C a %s", temp, location.getName());
         WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), notificationTitle, contentText, color);
+
+        if (isAlertAlreadyNotified(newAlert)) return;
         alertViewModel.addWindAlert(newAlert);
 
         Context context = getContext();
@@ -741,7 +770,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
 
         NotificationManagerCompat.from(context).notify(location.getName().hashCode(), builder.build());
     }
-    
+
     @SuppressLint({"MissingPermission", "NewApi"})
     private void sendUvIndexNotification(double uvIndex, LocationData location) {
         String title;
@@ -765,10 +794,12 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
             contentText = String.format("Indice UV: %.1f. Consigliata protezione solare.", uvIndex);
             color = Color.YELLOW;
         } else {
-            return; 
+            return;
         }
 
         WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), title, contentText, color);
+
+        if (isAlertAlreadyNotified(newAlert)) return;
         alertViewModel.addWindAlert(newAlert);
 
         Context context = getContext();
@@ -805,6 +836,8 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         String notificationTitle = "In questo momento a " + location.getName() + " " + titleSuffix;
         String contentText = String.format("Visibilità: %.1f km a %s", visibility / 1000, location.getName());
         WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), notificationTitle, contentText, color);
+
+        if (isAlertAlreadyNotified(newAlert)) return;
         alertViewModel.addWindAlert(newAlert);
 
         Context context = getContext();
@@ -841,6 +874,8 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         }
         String contentText = String.format("Qualità dell'aria in PM2.5: %.1f µg/m³ a %s", pm25, location.getName());
         WindAlert newAlert = new WindAlert(System.currentTimeMillis(), location.getName(), title, contentText, color);
+
+        if (isAlertAlreadyNotified(newAlert)) return;
         alertViewModel.addWindAlert(newAlert);
 
         Context context = getContext();
