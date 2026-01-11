@@ -483,7 +483,8 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
         try {
             List<Address> addresses = geocoder.getFromLocation(locationData.getLatitude(), locationData.getLongitude(), 1);
             if (addresses == null || addresses.isEmpty()) {
-                locationData.setAlertInfo("");
+                Log.e("GEOCODER_ERROR", "Nessun indirizzo trovato per le coordinate: " + locationData.getLatitude() + ", " + locationData.getLongitude());
+                locationData.setAlertInfo("Errore: impossibile ottenere l'indirizzo.");
                 locationData.setAlertSeverity(0);
                 locationAdapter.notifyDataSetChanged();
                 swipeRefreshLayout.setRefreshing(false);
@@ -498,6 +499,15 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
             String countryName = address.getCountryName();
             String region = address.getAdminArea();
 
+            if (countryName == null || region == null) {
+                Log.e("GEOCODER_ERROR", "Dati indirizzo incompleti: Paese=" + countryName + ", Regione=" + region);
+                locationData.setAlertInfo("Errore: dati indirizzo incompleti.");
+                locationData.setAlertSeverity(0);
+                locationAdapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+                return;
+            }
+
             String feedUrl;
             if ("italy".equalsIgnoreCase(countryName)) {
                 feedUrl = "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-italy";
@@ -506,7 +516,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
             } else if ("spain".equalsIgnoreCase(countryName)) {
                 feedUrl = "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-spain";
             } else {
-                locationData.setAlertInfo("");
+                locationData.setAlertInfo("Nessun feed per questa nazione.");
                 locationData.setAlertSeverity(0);
                 locationAdapter.notifyDataSetChanged();
                 swipeRefreshLayout.setRefreshing(false);
@@ -521,7 +531,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                                 AtomFeed feed = response.body();
                                 findAlertForRegion(feed, region, locationData);
                             } else {
-                                locationData.setAlertInfo("");
+                                locationData.setAlertInfo("Errore nel caricamento del feed.");
                                 locationData.setAlertSeverity(0);
                             }
                             locationAdapter.notifyDataSetChanged();
@@ -531,7 +541,7 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                         @Override
                         public void onFailure(@NonNull Call<AtomFeed> call, @NonNull Throwable t) {
                             Log.e("FEED_ERROR", "Errore di rete feed", t);
-                            locationData.setAlertInfo("");
+                            locationData.setAlertInfo("Errore di rete nel caricamento del feed.");
                             locationData.setAlertSeverity(0);
                             locationAdapter.notifyDataSetChanged();
                             swipeRefreshLayout.setRefreshing(false);
@@ -540,6 +550,10 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
 
         } catch (IOException e) {
             Log.e("GEOCODER_ERROR", "Errore Geocoder: " + e.getMessage());
+            locationData.setAlertInfo("Errore Geocoder.");
+            locationData.setAlertSeverity(0);
+            locationAdapter.notifyDataSetChanged();
+            swipeRefreshLayout.setRefreshing(false);
         }
     }
 
