@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (destinationId == R.id.notificationsFragment) {
                 toolbar.setNavigationIcon(R.drawable.ic_notifications);
             } else if (destinationId == R.id.allerteFragment) {
-                toolbar.setNavigationIcon(R.drawable.ic_alert);
+                toolbar.setNavigationIcon(R.drawable.ic_question_triangle);
             }
 
             invalidateOptionsMenu();

@@ -10,6 +10,6 @@
         android:title="Notifications" />
     <item
         android:id="@+id/navigation_alerts"
-        android:icon="@drawable/ic_alert"
+        android:icon="@drawable/ic_question_triangle"
         android:title="Alerts" />
 </menu>
