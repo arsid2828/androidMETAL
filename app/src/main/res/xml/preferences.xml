@@ -54,7 +54,7 @@
         <SwitchPreferenceCompat
             app:key="precipitation"
             app:title="Precipitazioni"
-            app:icon="@drawable/ic_weather_cloud"
+            app:icon="@drawable/ic_mm_precipitazioni"
             android:layout="@layout/preference_switch_card"
             app:defaultValue="false" />
 
