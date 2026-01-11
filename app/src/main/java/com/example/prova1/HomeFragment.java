@@ -496,11 +496,11 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
                 locationData.setName(address.getLocality() != null ? address.getLocality() : "Posizione Sconosciuta");
             }
 
-            String countryName = address.getCountryName();
+            String countryCode = address.getCountryCode();
             String region = address.getAdminArea();
 
-            if (countryName == null || region == null) {
-                Log.e("GEOCODER_ERROR", "Dati indirizzo incompleti: Paese=" + countryName + ", Regione=" + region);
+            if (countryCode == null || region == null) {
+                Log.e("GEOCODER_ERROR", "Dati indirizzo incompleti: Paese=" + countryCode + ", Regione=" + region);
                 locationData.setAlertInfo("Errore: dati indirizzo incompleti.");
                 locationData.setAlertSeverity(0);
                 locationAdapter.notifyDataSetChanged();
@@ -509,11 +509,11 @@ public class HomeFragment extends Fragment implements AddLocationDialogFragment.
             }
 
             String feedUrl;
-            if ("italy".equalsIgnoreCase(countryName)) {
+            if ("IT".equalsIgnoreCase(countryCode)) {
                 feedUrl = "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-italy";
-            } else if ("hungary".equalsIgnoreCase(countryName)) {
+            } else if ("HU".equalsIgnoreCase(countryCode)) {
                 feedUrl = "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-hungary";
-            } else if ("spain".equalsIgnoreCase(countryName)) {
+            } else if ("ES".equalsIgnoreCase(countryCode)) {
                 feedUrl = "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-spain";
             } else {
                 locationData.setAlertInfo("Nessun feed per questa nazione.");
