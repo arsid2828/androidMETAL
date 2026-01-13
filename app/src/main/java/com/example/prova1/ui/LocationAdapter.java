@@ -228,8 +228,10 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
 
             if (location.isCurrentLocation()) {
                 favoriteButton.setVisibility(View.GONE);
+                deleteButton.setVisibility(View.GONE);
             } else {
                 favoriteButton.setVisibility(View.VISIBLE);
+                deleteButton.setVisibility(View.VISIBLE);
                 if (location.isFavorite()) {
                     favoriteButton.setImageResource(R.drawable.ic_heart_filled);
                 } else {

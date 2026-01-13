@@ -4,14 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/weather_background"
     tools:context=".MainActivity">
-
-    <!-- Background Image -->
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/background_rain"
-        android:scaleType="centerCrop" />
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
