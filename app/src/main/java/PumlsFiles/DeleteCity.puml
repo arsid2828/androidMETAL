@@ -1,0 +1,27 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+actor Utente
+participant LocationAdapter
+participant HomeFragment
+participant LocationRepository
+
+== Cancellazione Città ==
+
+Utente -> LocationAdapter : Clicca sull'icona elimina (deleteButton)
+LocationAdapter -> HomeFragment : onDeleteClick(position)
+
+== Aggiornamento Dati ==
+
+HomeFragment -> HomeFragment : locations.remove(position)
+HomeFragment -> LocationAdapter : setLocations(locations)
+HomeFragment -> LocationRepository : saveLocations(locations)
+
+== Aggiornamento Interfaccia ==
+
+LocationAdapter -> LocationAdapter : notifyDataSetChanged()
+LocationAdapter --> Utente : La città scompare dalla lista
+
+@enduml

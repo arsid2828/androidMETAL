@@ -1,0 +1,35 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+actor Utente
+participant SettingsFragment
+participant SharedPreferences
+participant HomeFragment
+participant WeatherApiService
+participant LocationAdapter
+
+== Modifica Parametri Visualizzati ==
+
+Utente -> SettingsFragment : Attiva/Disattiva switch (es. PM2.5, UV Index)
+SettingsFragment -> SharedPreferences : Salva stato preferenza (key, boolean)
+
+== Aggiornamento Home con nuovi parametri ==
+
+Utente -> HomeFragment : Torna alla Home (onResume)
+HomeFragment -> SharedPreferences : Legge preferenze aggiornate
+HomeFragment -> WeatherApiService : Richiede dati (includendo nuovi parametri se attivi)
+WeatherApiService --> HomeFragment : Risposta con dati aggiornati
+
+== Visualizzazione Condizionale ==
+
+HomeFragment -> LocationAdapter : setLocations(locations)
+LocationAdapter -> LocationAdapter : bind(locationData)
+note right of LocationAdapter
+  Controlla SharedPreferences per decidere
+  quali parametri mostrare nella card
+end note
+LocationAdapter --> Utente : Mostra/Nasconde i parametri selezionati
+
+@enduml

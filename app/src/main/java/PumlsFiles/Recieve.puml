@@ -1,0 +1,34 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+participant WeatherApiService
+participant HomeFragment
+participant AlertViewModel
+participant NotificationManagerCompat
+actor Utente
+
+== Rilevamento Condizione Allerta ==
+
+WeatherApiService -> HomeFragment : onResponse(OpenMeteoResponse)
+HomeFragment -> HomeFragment : Analizza dati (es. velocità vento, UV, Temp)
+
+alt Condizione di allerta rilevata (es. Vento > 30km/h)
+    HomeFragment -> AlertViewModel : isAlertAlreadyNotified(newAlert)
+    AlertViewModel --> HomeFragment : false (non ancora notificata)
+    
+    HomeFragment -> AlertViewModel : addWindAlert(newAlert)
+    
+    == Invio Notifica ==
+    
+    HomeFragment -> NotificationManagerCompat : notify(WIND_NOTIFICATION_ID, builder.build())
+    NotificationManagerCompat -> Utente : Visualizza notifica push su dispositivo
+    
+    == Interazione ==
+    
+    Utente -> NotificationManagerCompat : Clicca sulla notifica
+    NotificationManagerCompat -> HomeFragment : Apre l'app (MainActivity/Home)
+end
+
+@enduml

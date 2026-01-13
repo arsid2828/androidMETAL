@@ -1,0 +1,40 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+actor Utente
+participant HomeFragment
+participant AddLocationDialogFragment
+participant Geocoder
+participant LocationRepository
+participant WeatherApiService
+database "Open-Meteo API" as API
+participant LocationAdapter
+
+== Aggiunta Nuova Città ==
+
+Utente -> HomeFragment : Clicca aggiungi città
+HomeFragment -> AddLocationDialogFragment : show()
+Utente -> AddLocationDialogFragment : Inserisce nome città e clicca "Aggiungi"
+AddLocationDialogFragment -> HomeFragment : onDialogPositiveClick(cityName)
+
+== Risoluzione Coordinate ==
+
+HomeFragment -> Geocoder : getFromLocationName(cityName)
+Geocoder --> HomeFragment : List<Address> (lat, lon)
+
+== Recupero Dati e Salvataggio ==
+
+HomeFragment -> LocationRepository : saveLocations(locations)
+HomeFragment -> WeatherApiService : getForecast(lat, lon, ...)
+WeatherApiService -> API : Request meteo data
+API --> WeatherApiService : Response (JSON)
+WeatherApiService --> HomeFragment : onResponse(OpenMeteoResponse)
+
+== Aggiornamento Interfaccia ==
+
+HomeFragment -> LocationAdapter : notifyDataSetChanged()
+LocationAdapter --> Utente : Visualizza dati della nuova città
+
+@enduml

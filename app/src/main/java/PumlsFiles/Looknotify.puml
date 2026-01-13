@@ -1,0 +1,39 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+actor Utente
+participant NotificationsFragment
+participant AlertViewModel
+participant AlertAdapter
+database "Alert LiveData" as DB
+
+== Visualizzazione Notifiche ==
+
+Utente -> NotificationsFragment : Apre sezione Notifiche
+NotificationsFragment -> AlertViewModel : getWindAlerts().observe()
+AlertViewModel -> DB : Richiesta dati
+DB --> AlertViewModel : Lista allerta
+AlertViewModel --> NotificationsFragment : Aggiorna lista UI
+NotificationsFragment -> AlertAdapter : submitList(windAlerts)
+AlertAdapter --> Utente : Visualizza elenco notifiche salvate
+
+== Eliminazione Singola ==
+
+Utente -> AlertAdapter : Clicca elimina su una notifica
+AlertAdapter -> NotificationsFragment : onDeleteClick(alert)
+NotificationsFragment -> AlertViewModel : deleteAlert(alert)
+AlertViewModel -> DB : Rimuove alert
+DB --> AlertViewModel : Notifica cambiamento
+AlertViewModel --> NotificationsFragment : Update UI (lista aggiornata)
+
+== Eliminazione Totale ==
+
+Utente -> NotificationsFragment : Clicca sul tasto "Elimina tutto" (FAB)
+NotificationsFragment -> AlertViewModel : deleteAllAlerts()
+AlertViewModel -> DB : Svuota archivio
+DB --> AlertViewModel : Notifica cambiamento (lista vuota)
+AlertViewModel --> NotificationsFragment : Update UI (nasconde lista e FAB)
+
+@enduml

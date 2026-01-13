@@ -1,0 +1,39 @@
+@startmindmap
+'https://plantuml.com/mindmap-diagram
+
+caption Architettura del Sistema - Prova1 (androidMETAL)
+title Mappa Concettuale dell'Architettura
+
+* <&layers> App Android (Prova1)
+** <&window> UI Layer (View)
+*** HomeFragment (Dashboard principale)
+*** NotificationsFragment (Storico allerte)
+*** SettingsFragment (Impostazioni)
+*** LocationAdapter & AlertAdapter
+*** AddLocationDialogFragment
+** <&cog> Logic Layer (ViewModel)
+*** AlertViewModel (Gestione stato allerte)
+*** LiveData (Sincronizzazione UI-Dati)
+** <&folder> Data Layer (Repository)
+*** LocationRepository (Salvataggio località)
+*** SharedPreferences (Preferenze utente)
+** <&transfer> Network Layer (API)
+*** Retrofit Client
+*** WeatherApiService (Open-Meteo)
+*** AirQualityApiService (Qualità Aria)
+*** FeedApiService (MeteoAlarm RSS/Atom)
+** <&phone> Android System Services
+*** FusedLocationProvider (GPS)
+*** NotificationManager (Push Notifications)
+*** Geocoder (Conversione indirizzi)
+** <&globe> External Services
+*** Open-Meteo API (Meteo & Aria)
+*** MeteoAlarm (Feeds Regionali)
+
+header
+Architettura MVVM e Componenti Core
+endheader
+
+center footer Sviluppato in Android Studio con Retrofit e Jetpack
+
+@endmindmap
