@@ -1,0 +1,197 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package com.example.prova1.models {
+    class OpenMeteoResponse {
+        - double latitude
+        - double longitude
+        - double generationtimeMs
+        - int utcOffsetSeconds
+        - String timezone
+        - String timezoneAbbreviation
+        - double elevation
+        - CurrentUnits currentUnits
+        - Current current
+        - Daily daily
+        + getLatitude(): double
+        + getLongitude(): double
+        + getGenerationtimeMs(): double
+        + getUtcOffsetSeconds(): int
+        + getTimezone(): String
+        + getTimezoneAbbreviation(): String
+        + getElevation(): double
+        + getCurrentUnits(): CurrentUnits
+        + getCurrent(): Current
+        + getDaily(): Daily
+    }
+
+    class Current {
+        - String time
+        - int interval
+        - double temperature2m
+        - int relativeHumidity2m
+        - double precipitation
+        - int precipitationProbability
+        - double windSpeed10m
+        - double visibility
+        - double pm25
+        - int cloudCover
+        - double apparentTemperature
+        - double uvIndex
+        - double snowfall
+        - double pressureMsl
+        + getTime(): String
+        + getInterval(): int
+        + getTemperature2m(): double
+        + getRelativeHumidity2m(): int
+        + getPrecipitation(): double
+        + getPrecipitationProbability(): int
+        + getWindSpeed10m(): double
+        + getVisibility(): double
+        + getPm25(): double
+        + getCloudCover(): int
+        + getApparentTemperature(): double
+        + getUvIndex(): double
+        + getSnowfall(): double
+        + getPressureMsl(): double
+    }
+
+    class CurrentUnits {
+        - String time
+        - String interval
+        - String temperature2m
+        - String relativeHumidity2m
+        - String precipitation
+        - String windSpeed10m
+        - String pm25
+        + getTime(): String
+        + getInterval(): String
+        + getTemperature2m(): String
+        + getRelativeHumidity2m(): String
+        + getPrecipitation(): String
+        + getWindSpeed10m(): String
+        + getPm25(): String
+    }
+
+    class Daily {
+        - List<String> time
+        - List<String> sunrise
+        - List<String> sunset
+        + getTime(): List<String>
+        + getSunrise(): List<String>
+        + getSunset(): List<String>
+    }
+
+    class LocationData {
+        - String name
+        - double latitude
+        - double longitude
+        - String weatherInfo
+        - String alertInfo
+        - int alertSeverity
+        - String airQualityInfo
+        - boolean isFavorite
+        - boolean isCurrentLocation
+        - double temperature
+        - int humidity
+        - double windSpeed
+        - double precipitation
+        - int precipitationProbability
+        - double pm25
+        - int cloudCover
+        - double apparentTemperature
+        - double uvIndex
+        - double visibility
+        - String sunrise
+        - String sunset
+        - double pressureMsl
+        - Map<String, Integer> alertTypeSeverity
+        + getName(): String
+        + getLatitude(): double
+        + getLongitude(): double
+        + getWeatherInfo(): String
+        + ...()
+    }
+
+    class WindAlert {
+        - long timestamp
+        - String location
+        - String title
+        - String content
+        - int color
+        + getTimestamp(): long
+        + getLocation(): String
+        + getTitle(): String
+        + getContent(): String
+        + getColor(): int
+        + getFormattedDate(): String
+        + getFormattedTime(): String
+    }
+
+    class AlertViewModel {
+        - MutableLiveData<List<WindAlert>> windAlerts
+        + getWindAlerts(): LiveData<List<WindAlert>>
+        + addNewAlerts(List<WindAlert>)
+        + addWindAlert(WindAlert)
+        + deleteAlert(WindAlert)
+        + deleteAllAlerts()
+    }
+
+    class MeteoAlarmAlert {
+        - String type
+        - int severity
+        - String title
+        - String summary
+        - String durationText
+        - int color
+        + getType(): String
+        + getSeverity(): int
+        + getTitle(): String
+        + getSummary(): String
+        + getDurationText(): String
+        + getColor(): int
+    }
+
+    class AtomFeed {
+        - List<AtomEntry> entries
+        + getEntries(): List<AtomEntry>
+    }
+
+    class AtomEntry {
+        - String title
+        - String summary
+        + getTitle(): String
+        + getSummary(): String
+    }
+
+    package airquality {
+        class AirQualityResponse {
+            - Current current
+            - CurrentUnits currentUnits
+            + getCurrent(): Current
+            + getCurrentUnits(): CurrentUnits
+        }
+
+        class Current {
+            - String time
+            - double pm2_5
+            + getTime(): String
+            + getPm2_5(): double
+        }
+
+        class CurrentUnits {
+            - String pm2_5
+            + getPm2_5(): String
+        }
+    }
+}
+
+OpenMeteoResponse *-- Current
+OpenMeteoResponse *-- CurrentUnits
+OpenMeteoResponse *-- Daily
+AtomFeed "1" *-- "many" AtomEntry
+AlertViewModel o-- WindAlert
+AirQualityResponse *-- airquality.Current
+AirQualityResponse *-- airquality.CurrentUnits
+
+@enduml
