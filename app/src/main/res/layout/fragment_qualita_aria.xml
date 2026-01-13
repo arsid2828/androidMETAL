@@ -35,11 +35,32 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:text="Range:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Range: PM2.5 da 25 a 49 µg/m³\nDescrizione: Inquinamento moderato. Possibili effetti sulla salute di gruppi sensibili" />
+                android:text="PM2.5 da 25 a 49 µg/m³" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Descrizione:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Inquinamento moderato. Possibili effetti sulla salute di gruppi sensibili" />
         </LinearLayout>
 
         <!-- Livello Rosso -->
@@ -58,11 +79,32 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:text="Range:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Range: PM2.5 da 50 a 74 µg/m³\nDescrizione: Inquinamento elevato. Effetti sulla salute per tutti. Possibili sintomi respiratori anche in persone sane." />
+                android:text="PM2.5 da 50 a 74 µg/m³" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Descrizione:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Inquinamento elevato. Effetti sulla salute per tutti. Possibili sintomi respiratori anche in persone sane." />
         </LinearLayout>
 
         <!-- Livello Viola -->
@@ -81,11 +123,32 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:text="Range:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Range: PM2.5 superiore a 75 µg/m³\nDescrizione: Inquinamento molto elevato. Emergenza sanitaria. Rischio di gravi effetti sulla salute anche con esposizioni brevi." />
+                android:text="PM2.5 superiore a 75 µg/m³" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Descrizione:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Inquinamento molto elevato. Emergenza sanitaria. Rischio di gravi effetti sulla salute anche con esposizioni brevi." />
         </LinearLayout>
 
         <!-- Nota Tecnica -->

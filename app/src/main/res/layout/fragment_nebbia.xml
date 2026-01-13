@@ -35,11 +35,32 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:text="Condizioni:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nFoschia o nebbia moderata, visibilità tra 500m e 1km.\nIstruzioni:\nIn auto: Accendere le luci anabbaglianti e i fendinebbia" />
+                android:text="Foschia o nebbia moderata, visibilità tra 500m e 1km." />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Istruzioni:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="4dp"
+                android:text="In auto: Accendere le luci anabbaglianti e i fendinebbia" />
         </LinearLayout>
 
         <!-- Livello Arancione -->
@@ -58,11 +79,32 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:text="Condizioni:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nNebbia fitta, visibilità tra 100m e 500m. Banchi di nebbia improvvisi su strade e autostrade.\nIstruzioni:\nRidurre drasticamente la velocità. Se la visibilità è troppo scarsa, fermarsi in area di servizio o piazzola sicura con le luci di posizione accese." />
+                android:text="Nebbia fitta, visibilità tra 100m e 500m. Banchi di nebbia improvvisi su strade e autostrade." />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Istruzioni:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Ridurre drasticamente la velocità. Se la visibilità è troppo scarsa, fermarsi in area di servizio o piazzola sicura con le luci di posizione accese." />
         </LinearLayout>
 
         <!-- Livello Rosso -->
@@ -81,12 +123,33 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:text="Condizioni:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Nebbia densissima, visibilità inferiore ai 100m. Condizioni di &#34;cecità&#34; alla guida." />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Istruzioni:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:paddingBottom="16dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nNebbia densissima, visibilità inferiore ai 100m. Condizioni di &#34;cecità&#34; alla guida.\nIstruzioni:\nNON mettersi in viaggio. Rinviare la partenza.\nSe già in strada e impossibilitati a raggiungere un\'area sicura: accendere le 4 frecce, procedere a velocità minima e uscire alla prima uscita possibile o fermarsi in piazzola." />
+                android:text="NON mettersi in viaggio. Rinviare la partenza.\nSe già in strada e impossibilitati a raggiungere un\'area sicura: accendere le 4 frecce, procedere a velocità minima e uscire alla prima uscita possibile o fermarsi in piazzola." />
         </LinearLayout>
 
     </LinearLayout>

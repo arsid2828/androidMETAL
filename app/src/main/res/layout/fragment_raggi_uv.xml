@@ -35,11 +35,32 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:text="Condizione esterna:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizione esterna:\nGiornate parzialmente nuvolose o soleggiate in primavera/autunno, o estate in zone temperate nelle ore non centrali.\nCosa fare:\nCerca l'ombra nelle ore centrali (dalle 11:00 alle 16:00). Indossa occhiali da sole." />
+                android:text="Giornate parzialmente nuvolose o soleggiate in primavera/autunno, o estate in zone temperate nelle ore non centrali." />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Cosa fare:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Cerca l'ombra nelle ore centrali (dalle 11:00 alle 16:00). Indossa occhiali da sole." />
         </LinearLayout>
 
         <!-- Livello Alto -->
@@ -58,11 +79,32 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:text="Condizione esterna:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizione esterna:\nGiornate prevalentemente soleggiate in estate, in montagna, o al mare con cielo sereno.\nCosa fare:\nRiduci al minimo l'esposizione tra le 11:00 e le 16:00. Stai all'ombra il più possibile." />
+                android:text="Giornate prevalentemente soleggiate in estate, in montagna, o al mare con cielo sereno." />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Cosa fare:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Riduci al minimo l'esposizione tra le 11:00 e le 16:00. Stai all'ombra il più possibile." />
         </LinearLayout>
 
         <!-- Livello Molto Alto -->
@@ -81,11 +123,32 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:text="Condizione esterna:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizione esterna:\nGiornate di pieno estate al mare, in alta montagna, o in paesi tropicali/subtropicali. Cielo molto sereno.\nCosa fare:\nEvita di stare all'aperto nelle ore centrali (dalle 11:00 alle 17:00). Se devi uscire, cerca assolutamente l'ombra. Maglietta, crema solare e cappello sono OBBLIGATORI." />
+                android:text="Giornate di pieno estate al mare, in alta montagna, o in paesi tropicali/subtropicali. Cielo molto sereno." />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Cosa fare:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Evita di stare all'aperto nelle ore centrali (dalle 11:00 alle 17:00). Se devi uscire, cerca assolutamente l'ombra. Maglietta, crema solare e cappello sono OBBLIGATORI." />
         </LinearLayout>
 
         <!-- Livello Estremo -->
@@ -104,11 +167,32 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:text="Condizione esterna:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizione esterna:\nCondizioni eccezionali: altitudini elevate (oltre 2500m), latitudini tropicali a mezzogiorno, superfici riflettenti (neve, sabbia chiara, acqua).\nCosa fare:\nRimani in casa nelle ore di picco. Le scottature possono avvenire in meno di 15 minuti." />
+                android:text="Condizioni eccezionali: altitudini elevate (oltre 2500m), latitudini tropicali a mezzogiorno, superfici riflettenti (neve, sabbia chiara, acqua)." />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Cosa fare:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Rimani in casa nelle ore di picco. Le scottature possono avvenire in meno di 15 minuti." />
         </LinearLayout>
 
         <!-- Nota Tecnica -->

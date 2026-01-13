@@ -35,11 +35,32 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:text="Condizioni:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nPioggia persistente e moderata. Precipitazioni che possono causare allagamenti localizzati in zone basse o con scarichi inefficienti.\nIstruzioni:\nIn auto: Guidare con prudenza, aumentare la distanza di sicurezza per rischio di aquaplaning su asfalto bagnato.\nIn zones a rischio: Monitorare piccoli corsi d'acqua e fossi." />
+                android:text="Pioggia persistente e moderata. Precipitazioni che possono causare allagamenti localizzati in zone basse o con scarichi inefficienti." />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Istruzioni:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="4dp"
+                android:text="In auto: Guidare con prudenza, aumentare la distanza di sicurezza per rischio di aquaplaning su asfalto bagnato.\nIn zones a rischio: Monitorare piccoli corsi d'acqua e fossi." />
         </LinearLayout>
 
         <!-- Livello Arancione -->
@@ -58,11 +79,32 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:text="Condizioni:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nPiogge intense e/o prolungate. Nubifragi localizzati che possono causare rapidi rigonfiamenti di torrenti.\nIstruzioni:\nIn auto: EVITARE di transitare in sottopassi, strade allagate o vicino agli argini di fossi e torrenti in piena." />
+                android:text="Piogge intense e/o prolungate. Nubifragi localizzati che possono causare rapidi rigonfiamenti di torrenti." />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Istruzioni:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="4dp"
+                android:text="In auto: EVITARE di transitare in sottopassi, strade allagate o vicino agli argini di fossi e torrenti in piena." />
         </LinearLayout>
 
         <!-- Livello Rosso -->
@@ -81,12 +123,33 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:text="Condizioni:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Piogge torrenziali, persistenti e diffuse su ampia area. Nubifragi estremi con altissimo rischio di alluvioni lampo." />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Istruzioni:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:paddingBottom="16dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nPiogge torrenziali, persistenti e diffuse su ampia area. Nubifragi estremi con altissimo rischio di alluvioni lampo.\nIstruzioni:\nNON METTERSI IN VIAGGIO PER NESSUN MOTIVO. Restare in casa ai piani più alti, lontani da seminterrati e cantine.\nSe ci si trova all'aperto, cercare immediatamente rifugio in un'area rialzata e sicura. NON tentare di tornare a casa o raggiungere la macchina se le acque stanno salendo rapidamente.\nSeguire immediatamente le indicazioni delle autorità (Protezione Civile, Vigili del Fuoco, Comune) che potrebbero ordinare l'evacuazione dell'area." />
+                android:text="NON METTERSI IN VIAGGIO PER NESSUN MOTIVO. Restare in casa ai piani più alti, lontani da seminterrati e cantine.\nSe ci si trova all'aperto, cercare immediatamente rifugio in un'area rialzata e sicura. NON tentare di tornare a casa o raggiungere la macchina se le acque stanno salendo rapidamente.\nSeguire immediatamente le indicazioni delle autorità (Protezione Civile, Vigili del Fuoco, Comune) che potrebbero ordinare l'evacuazione dell'area." />
         </LinearLayout>
 
     </LinearLayout>

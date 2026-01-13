@@ -35,11 +35,32 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:text="Condizioni:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nTemporali localizzati, brevi ma intensi, con possibile grandine isolata, raffiche di vento forti, rovesci.\nIstruzioni:\nRimanere informati sull'evoluzione meteo.\nIn auto, prestare attenzione a forti raffiche di vento laterali e aquaplaning." />
+                android:text="Temporali localizzati, brevi ma intensi, con possibile grandine isolata, raffiche di vento forti, rovesci." />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Istruzioni:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Rimanere informati sull'evoluzione meteo.\nIn auto, prestare attenzione a forti raffiche di vento laterali e aquaplaning." />
         </LinearLayout>
 
         <!-- Livello Arancione -->
@@ -58,11 +79,32 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:text="Condizioni:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nTemporali forti, organizzati in linee, con grandine frequente, venti molto forti (burrasca), possibili tornado o downburst.\nIstruzioni:\nIn auto, evitare sottopassi o strade allagabili. Fermarsi in area sicura se la visibilità diventa nulla.\nNON sostare sotto alberi, pensiline, strutture leggere. NON usare apparecchiature elettriche collegate alla rete o il telefono fisso." />
+                android:text="Temporali forti, organizzati in linee, con grandine frequente, venti molto forti (burrasca), possibili tornado o downburst." />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Istruzioni:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="4dp"
+                android:text="In auto, evitare sottopassi o strade allagabili. Fermarsi in area sicura se la visibilità diventa nulla.\nNON sostare sotto alberi, pensiline, strutture leggere. NON usare apparecchiature elettriche collegate alla rete o il telefono fisso." />
         </LinearLayout>
 
         <!-- Livello Rosso -->
@@ -81,12 +123,33 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:text="Condizioni:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="4dp"
+                android:text="Nubifragi con allagamenti lampo, grandine di grosse dimensioni, venti devastanti (tempesta), tornado." />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Istruzioni:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:paddingBottom="16dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Condizioni:\nNubifragi con allagamenti lampo, grandine di grosse dimensioni, venti devastanti (tempesta), tornado.\nIstruzioni:\nRimanere in casa, nel luogo più sicuro (interno, lontano da muri esterni e vetrate).\nSe negli scantinati, salire ai piani superiori a causa del rischio allagamento lampo." />
+                android:text="Rimanere in casa, nel luogo più sicuro (interno, lontano da muri esterni e vetrate).\nSe negli scantinati, salire ai piani superiori a causa del rischio allagamento lampo." />
         </LinearLayout>
 
     </LinearLayout>
