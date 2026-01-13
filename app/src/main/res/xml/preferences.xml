@@ -46,9 +46,9 @@
 
         <SwitchPreferenceCompat
             app:key="pressure"
-            app:title="Pressione"
+            app:title="Pressione (hPa=EttoPascal)"
             app:icon="@drawable/ic_pressure"
-            android:layout="@layout/preference_switch_card"
+            android:layout="@layout/preference_pressure_card"
             app:defaultValue="false" />
 
         <SwitchPreferenceCompat
