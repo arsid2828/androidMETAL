@@ -69,6 +69,7 @@
             android:layout_marginEnd="16dp" />
 
         <TextView
+            android:id="@+id/pressure_info_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="16dp"
@@ -78,8 +79,12 @@
             android:text="La pressione sul livello del mare è solitamente di 1013 hPa"
             android:textAppearance="?attr/textAppearanceCaption"
             android:textColor="?android:attr/textColorSecondary"
-            android:maxLines="1"
-            android:ellipsize="end" />
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

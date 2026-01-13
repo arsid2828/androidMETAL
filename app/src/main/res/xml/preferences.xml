@@ -44,7 +44,7 @@
             android:layout="@layout/preference_switch_card"
             app:defaultValue="false" />
 
-        <SwitchPreferenceCompat
+        <com.example.prova1.PressureSwitchPreference
             app:key="pressure"
             app:title="Pressione (hPa=EttoPascal)"
             app:icon="@drawable/ic_pressure"
